@@ -112,7 +112,7 @@
 
         .navbar-left h1 {
             font-size: 1.5rem;
-            color: #1b4332;
+            color: #7b9f90;
         }
 
         .navbar-right {

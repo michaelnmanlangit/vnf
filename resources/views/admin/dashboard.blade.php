@@ -41,7 +41,7 @@
         </div>
         <div class="stat-card">
             <h3></h3>
-            <p>Active Inventory Items</p>
+            <p>Active Inventory Item</p>
         </div>
         <div class="stat-card">
             <h3></h3>

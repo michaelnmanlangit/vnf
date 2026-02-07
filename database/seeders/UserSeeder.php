@@ -15,43 +15,53 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create Admin user
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@vnf.com',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@vnf.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
 
         // Create Warehouse Staff user
-        User::create([
-            'name' => 'Maria Garcia',
-            'email' => 'warehouse@vnf.com',
-            'password' => Hash::make('warehouse123'),
-            'role' => 'warehouse_staff',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'warehouse@vnf.com'],
+            [
+                'name' => 'Maria Garcia',
+                'password' => Hash::make('warehouse123'),
+                'role' => 'warehouse_staff',
+            ]
+        );
 
         // Create Delivery Personnel user
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'delivery@vnf.com',
-            'password' => Hash::make('delivery123'),
-            'role' => 'delivery_personnel',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'delivery@vnf.com'],
+            [
+                'name' => 'John Doe',
+                'password' => Hash::make('delivery123'),
+                'role' => 'delivery_personnel',
+            ]
+        );
 
         // Additional warehouse staff
-        User::create([
-            'name' => 'Pedro Santos',
-            'email' => 'pedro@vnf.com',
-            'password' => Hash::make('warehouse123'),
-            'role' => 'warehouse_staff',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'pedro@vnf.com'],
+            [
+                'name' => 'Pedro Santos',
+                'password' => Hash::make('warehouse123'),
+                'role' => 'warehouse_staff',
+            ]
+        );
 
         // Additional delivery personnel
-        User::create([
-            'name' => 'Miguel Rivera',
-            'email' => 'miguel@vnf.com',
-            'password' => Hash::make('delivery123'),
-            'role' => 'delivery_personnel',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'miguel@vnf.com'],
+            [
+                'name' => 'Miguel Rivera',
+                'password' => Hash::make('delivery123'),
+                'role' => 'delivery_personnel',
+            ]
+        );
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\WarehouseDashboardController;
 use App\Http\Controllers\DeliveryDashboardController;
+use App\Http\Controllers\EmployeeController;
 
 // Public routes
 Route::get('/', function () {
@@ -19,6 +20,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::resource('/admin/employees', EmployeeController::class)->names([
+        'index' => 'admin.employees.index',
+        'create' => 'admin.employees.create',
+        'store' => 'admin.employees.store',
+        'edit' => 'admin.employees.edit',
+        'update' => 'admin.employees.update',
+        'destroy' => 'admin.employees.destroy',
+    ]);
 });
 
 // Warehouse staff routes

@@ -46,4 +46,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the employee record associated with this user.
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, 'email', 'email');
+    }
+
+    /**
+     * Get the user's position from their employee record.
+     */
+    public function getPositionAttribute()
+    {
+        return $this->employee()?->first()?->position ?? 'User';
+    }
 }

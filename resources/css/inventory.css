@@ -1,0 +1,647 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Inventory Management - List/Table Styling */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --light-gray: #ecf0f1;
+    --border-color: #bdc3c7;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+}
+
+.inventory-grid-container {
+    padding: 1rem;
+}
+
+/* Toolbar Styling */
+.inventory-toolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.6rem 0.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    justify-content: flex-end;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.toolbar-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex: 0 1 auto;
+    order: 2;
+}
+
+.search-box {
+    flex: 0 1 280px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    background: white;
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.search-box input::placeholder {
+    color: var(--text-light);
+}
+
+.search-icon {
+    color: var(--text-light);
+    margin-left: 0.5rem;
+}
+
+.filter-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+    flex: 0 1 auto;
+}
+
+.filter-group select {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.filter-group select:hover,
+.filter-group select:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+/* Multi-Select Dropdown */
+.multi-select-wrapper {
+    position: relative;
+}
+
+.multi-select-toggle {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    background: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.multi-select-toggle:hover {
+    border-color: var(--secondary-color);
+}
+
+.multi-select-toggle svg {
+    transition: transform 0.3s;
+}
+
+.multi-select-toggle.active svg {
+    transform: rotate(180deg);
+}
+
+.multi-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    min-width: 280px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    display: none;
+}
+
+.multi-select-dropdown.active {
+    display: block;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.filter-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+}
+
+.filter-option:hover {
+    color: var(--secondary-color);
+}
+
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--secondary-color);
+}
+
+.filter-option span {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--light-gray);
+}
+
+.filter-apply,
+.filter-reset {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.filter-apply {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.filter-apply:hover {
+    background: #2980b9;
+}
+
+.filter-reset {
+    background: var(--light-gray);
+    color: var(--text-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-reset:hover {
+    background: var(--border-color);
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex: 0 1 auto;
+    order: 1;
+}
+
+.clear-filters {
+    padding: 0.6rem 1.2rem;
+    background: var(--light-gray);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: none;
+}
+
+.clear-filters:hover {
+    background: var(--border-color);
+    color: var(--primary-color);
+}
+
+.add-inventory-btn {
+    padding: 0.6rem 1.2rem;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.add-inventory-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* List/Table Styling */
+.inventory-list {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif;
+}
+
+.inventory-table thead {
+    background: var(--primary-color);
+    color: white;
+}
+
+.inventory-table thead th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.inventory-table thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.inventory-table thead th.sortable:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sort-icon {
+    display: inline-block;
+    margin-left: 0.5rem;
+    opacity: 0.5;
+    transition: all 0.3s;
+    vertical-align: middle;
+}
+
+.inventory-table thead th.sortable:hover .sort-icon {
+    opacity: 1;
+}
+
+.inventory-table thead th.sortable.asc .sort-icon {
+    opacity: 1;
+    transform: scaleY(-1);
+}
+
+.inventory-table thead th.sortable.desc .sort-icon {
+    opacity: 1;
+}
+
+.inventory-table tbody tr {
+    border-bottom: 1px solid var(--light-gray);
+    transition: background-color 0.3s;
+}
+
+.inventory-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.inventory-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.inventory-table tbody td {
+    padding: 1.2rem 1.5rem;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.inventory-row td:first-child {
+    font-weight: 600;
+}
+
+.inventory-id {
+    text-align: center;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.inventory-name {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-in-stock {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-low-stock {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-out-of-stock {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Actions Cell */
+.actions-cell {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--light-gray);
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-action:hover {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+    background: #f8f9fa;
+}
+
+.btn-action.edit {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-action.edit:hover {
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.btn-action.delete {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-action.delete:hover {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+.empty-state h2 {
+    color: var(--text-dark);
+    margin: 1rem 0;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    color: var(--text-light);
+    margin: 0.5rem 0 2rem 0;
+}
+
+.empty-state-btn {
+    padding: 0.75rem 2rem;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.empty-state-btn:hover {
+    background: #2980b9;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.modal-body {
+    margin-bottom: 1.5rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.modal-body p {
+    margin: 0;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.btn-modal {
+    padding: 0.625rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-cancel {
+    background: var(--light-gray);
+    color: var(--text-dark);
+}
+
+.btn-cancel:hover {
+    background: var(--border-color);
+}
+
+.btn-confirm {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: #c0392b;
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .inventory-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+
+    .toolbar-form, .toolbar-actions {
+        order: unset;
+        width: 100%;
+    }
+
+    .search-box, .filter-group, .add-inventory-btn {
+        width: 100%;
+    }
+
+    .actions-cell {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-table {
+        font-size: 0.75rem;
+    }
+
+    .inventory-table thead th,
+    .inventory-table tbody td {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}

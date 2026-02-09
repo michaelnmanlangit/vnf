@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\WarehouseDashboardController;
 use App\Http\Controllers\DeliveryDashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\InventoryController;
 
 // Public routes
 Route::get('/', function () {
@@ -27,6 +28,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         'edit' => 'admin.employees.edit',
         'update' => 'admin.employees.update',
         'destroy' => 'admin.employees.destroy',
+    ]);
+    Route::resource('/admin/inventory', InventoryController::class)->names([
+        'index' => 'admin.inventory.index',
+        'create' => 'admin.inventory.create',
+        'store' => 'admin.inventory.store',
+        'edit' => 'admin.inventory.edit',
+        'update' => 'admin.inventory.update',
+        'destroy' => 'admin.inventory.destroy',
     ]);
 });
 

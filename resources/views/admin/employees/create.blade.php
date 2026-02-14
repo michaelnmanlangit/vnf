@@ -105,9 +105,6 @@
                         <option value="maintenance" {{ old('department') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                     </select>
                     @error('department')<span class="error">{{ $message }}</span>@enderror
-                    <div id="accountNotice" style="display: none; margin-top: 0.5rem; padding: 0.75rem; background-color: #e8f4f8; border-left: 4px solid #3498db; color: #2c3e50; font-size: 0.85rem;">
-                        ✓ A user account will be auto-created for this employee with default password: <strong>DefaultPass@2026</strong>
-                    </div>
                 </div>
 
                 <div class="form-group">
@@ -151,19 +148,43 @@
 
 @vite(['resources/css/employees-form.css', 'resources/js/employees-form.js'])
 <script>
-    document.getElementById('departmentSelect').addEventListener('change', function() {
-        const accountNotice = document.getElementById('accountNotice');
-        if (this.value === 'warehouse' || this.value === 'delivery') {
-            accountNotice.style.display = 'block';
-        } else {
-            accountNotice.style.display = 'none';
-        }
-    });
-
-    // Show notice on page load if department is already selected
+    const positionSelect = document.querySelector('select[name="position"]');
     const departmentSelect = document.getElementById('departmentSelect');
-    if (departmentSelect.value === 'warehouse' || departmentSelect.value === 'delivery') {
-        document.getElementById('accountNotice').style.display = 'block';
+
+    // Map positions to their departments
+    const positionDepartmentMap = {
+        'Inventory Officer': 'warehouse',
+        'Temperature Technician': 'warehouse',
+        'Payment Coordinator': 'warehouse',
+        'Driver': 'delivery',
+        'Manager': 'administration',
+        'Supervisor': 'production',
+        'Specialist': 'production',
+        'Operator': 'production',
+        'Assistant': 'production'
+    };
+
+    function updateDepartment() {
+        const position = positionSelect.value;
+        const mappedDept = positionDepartmentMap[position];
+
+        if (mappedDept) {
+            // Position has a fixed department
+            departmentSelect.value = mappedDept;
+            departmentSelect.style.pointerEvents = 'none';
+            departmentSelect.style.opacity = '0.6';
+            departmentSelect.style.cursor = 'not-allowed';
+        } else {
+            // Position doesn't have a fixed department, allow manual selection
+            departmentSelect.style.pointerEvents = 'auto';
+            departmentSelect.style.opacity = '1';
+            departmentSelect.style.cursor = 'pointer';
+        }
     }
+
+    positionSelect.addEventListener('change', updateDepartment);
+
+    // Initialize on page load
+    updateDepartment();
 </script>
 @endsection

@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/css/employees-form.css',
                 'resources/css/inventory.css',
                 'resources/css/inventory-form.css',
+                'resources/css/billing.css',
                 'resources/js/app.js',
                 'resources/js/admin.js',
                 'resources/js/app-layout.js',

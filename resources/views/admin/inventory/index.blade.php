@@ -191,9 +191,7 @@
 
     <!-- Pagination -->
     @if($inventory->hasPages())
-    <div class="pagination-wrapper">
         {{ $inventory->appends(request()->query())->render('pagination.bootstrap-5') }}
-    </div>
     @endif
 </div>
 

@@ -81,16 +81,6 @@
                     </select>
                     @error('storage_location')<span class="error">{{ $message }}</span>@enderror
                 </div>
-                <div class="form-group">
-                    <label>Status <span class="required">*</span></label>
-                    <select name="status" required>
-                        <option value="">Select Status</option>
-                        @foreach($statuses as $st)
-                        <option value="{{ $st }}" {{ old('status') == $st ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $st)) }}</option>
-                        @endforeach
-                    </select>
-                    @error('status')<span class="error">{{ $message }}</span>@enderror
-                </div>
             </div>
         </div>
 

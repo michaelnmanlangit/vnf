@@ -188,16 +188,6 @@
         </div>
 
         <div class="login-body">
-            @if ($errors->any())
-                <div class="alert alert-error">
-                    <strong>Login Failed!</strong>
-                    <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf

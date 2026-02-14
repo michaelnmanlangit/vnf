@@ -61,7 +61,22 @@ class EmployeeController extends Controller
         $departments = ['production', 'warehouse', 'delivery', 'administration', 'maintenance'];
         $statuses = ['active', 'inactive', 'on_leave'];
 
-        return view('admin.employees.index', compact('employees', 'departments', 'statuses'));
+        // Calculate statistics
+        $stats = [
+            'total' => Employee::count(),
+            'active' => Employee::where('employment_status', 'active')->count(),
+            'inactive' => Employee::where('employment_status', 'inactive')->count(),
+            'on_leave' => Employee::where('employment_status', 'on_leave')->count(),
+            'by_department' => [
+                'production' => Employee::where('department', 'production')->count(),
+                'warehouse' => Employee::where('department', 'warehouse')->count(),
+                'delivery' => Employee::where('department', 'delivery')->count(),
+                'administration' => Employee::where('department', 'administration')->count(),
+                'maintenance' => Employee::where('department', 'maintenance')->count(),
+            ]
+        ];
+
+        return view('admin.employees.index', compact('employees', 'departments', 'statuses', 'stats'));
     }
 
     /**
@@ -107,7 +122,7 @@ class EmployeeController extends Controller
         
         if (in_array($validated['department'], ['warehouse', 'delivery'])) {
             $role = $this->getRole($validated['department'], $validated['position']);
-            $defaultPassword = 'DefaultPass@2026';
+            $defaultPassword = $this->generatePassword($validated['first_name'], $validated['last_name'], $employee->id);
             
             // Check if user account already exists
             if (!User::where('email', $validated['email'])->exists()) {
@@ -128,7 +143,10 @@ class EmployeeController extends Controller
 
         $successMessage = 'Employee created successfully!';
         if ($accountCreated) {
-            $successMessage .= " Account created: {$accountDetails['email']} with role: {$accountDetails['role']}";
+            $successMessage .= " Account created";
+            return redirect()->route('admin.employees.edit', $employee)
+                ->with('success', $successMessage)
+                ->with('accountDetails', $accountDetails);
         }
 
         return redirect()->route('admin.employees.index')
@@ -141,8 +159,9 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
+        $user = User::where('email', $employee->email)->first();
         $salaryRanges = $this->generateSalaryRanges();
-        return view('admin.employees.edit', compact('employee', 'salaryRanges'));
+        return view('admin.employees.edit', compact('employee', 'salaryRanges', 'user'));
     }
 
     /**
@@ -179,17 +198,25 @@ class EmployeeController extends Controller
         $oldDepartment = $employee->department;
         $employee->update($validated);
 
-        // Handle account creation if department changed to warehouse or delivery
+        // Handle account removal if department changed from warehouse/delivery to non-account role
         $accountCreated = false;
         $accountDetails = null;
         
-        if (in_array($validated['department'], ['warehouse', 'delivery'])) {
+        if (!in_array($validated['department'], ['warehouse', 'delivery']) && 
+            in_array($oldDepartment, ['warehouse', 'delivery'])) {
+            // Department changed to non-account role, remove user account
+            $user = User::where('email', $employee->email)->first();
+            if ($user) {
+                $user->delete();
+            }
+        } elseif (in_array($validated['department'], ['warehouse', 'delivery'])) {
+            // Department is warehouse or delivery, create or update account
             $user = User::where('email', $validated['email'])->first();
             
             if (!$user) {
                 // Account doesn't exist, create one
                 $role = $this->getRole($validated['department'], $validated['position']);
-                $defaultPassword = 'DefaultPass@2026';
+                $defaultPassword = $this->generatePassword($validated['first_name'], $validated['last_name'], $employee->id);
                 
                 User::create([
                     'name' => $validated['first_name'] . ' ' . $validated['last_name'],
@@ -224,7 +251,13 @@ class EmployeeController extends Controller
 
         $successMessage = 'Employee updated successfully!';
         if ($accountCreated) {
-            $successMessage .= " Account created: {$accountDetails['email']} with role: {$accountDetails['role']}";
+            $successMessage .= " Account created";
+            return redirect()->route('admin.employees.edit', $employee)
+                ->with('success', $successMessage)
+                ->with('accountDetails', $accountDetails);
+        } elseif (!in_array($validated['department'], ['warehouse', 'delivery']) && 
+                  in_array($oldDepartment, ['warehouse', 'delivery'])) {
+            $successMessage .= " User account removed.";
         }
 
         return redirect()->route('admin.employees.index')
@@ -236,6 +269,12 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
+        // Delete associated user account if exists
+        $user = User::where('email', $employee->email)->first();
+        if ($user) {
+            $user->delete();
+        }
+
         // Delete image if exists
         if ($employee->image && file_exists(public_path($employee->image))) {
             unlink(public_path($employee->image));
@@ -278,6 +317,16 @@ class EmployeeController extends Controller
             return 'delivery_personnel';
         }
         return 'user';
+    }
+
+    /**
+     * Generate default password based on first name, last name, and employee id
+     */
+    private function generatePassword($firstName, $lastName, $employeeId)
+    {
+        $firstNamePart = ucfirst(strtolower($firstName));
+        $lastNamePart = ucfirst(strtolower($lastName));
+        return $firstNamePart . $lastNamePart . $employeeId;
     }
 }
 

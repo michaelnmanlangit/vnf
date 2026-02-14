@@ -24,13 +24,13 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Create Warehouse Staff user
+        // Create Warehouse Staff user  
         User::updateOrCreate(
             ['email' => 'warehouse@vnf.com'],
             [
                 'name' => 'Maria Garcia',
                 'password' => Hash::make('warehouse123'),
-                'role' => 'warehouse_staff',
+                'role' => 'inventory_staff',
             ]
         );
 
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Pedro Santos',
                 'password' => Hash::make('warehouse123'),
-                'role' => 'warehouse_staff',
+                'role' => 'inventory_staff',
             ]
         );
 

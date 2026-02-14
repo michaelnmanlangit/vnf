@@ -8,6 +8,91 @@
 @endsection
 @section('content')
 <div class="employee-grid-container">
+    <!-- Department Statistics -->
+    <div class="department-stats">
+        <div class="dept-cards">
+            <div class="dept-card dept-production">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Production</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['by_department']['production'] }}</span>
+                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['production'] / $stats['total'] * 100), 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dept-card dept-warehouse">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Warehouse</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['by_department']['warehouse'] }}</span>
+                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['warehouse'] / $stats['total'] * 100), 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dept-card dept-delivery">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Delivery</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['by_department']['delivery'] }}</span>
+                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['delivery'] / $stats['total'] * 100), 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dept-card dept-administration">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Administration</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['by_department']['administration'] }}</span>
+                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['administration'] / $stats['total'] * 100), 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dept-card dept-maintenance">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Maintenance</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['by_department']['maintenance'] }}</span>
+                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['maintenance'] / $stats['total'] * 100), 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Search & Filter Toolbar -->
     <div class="employee-toolbar">
         <form method="GET" action="{{ route('admin.employees.index') }}" id="filterForm" class="toolbar-form">
@@ -191,9 +276,7 @@
 
     <!-- Pagination -->
     @if($employees->hasPages())
-    <div class="pagination-wrapper">
         {{ $employees->appends(request()->query())->render('pagination.bootstrap-5') }}
-    </div>
     @endif
 </div>
 

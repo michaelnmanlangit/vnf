@@ -65,8 +65,7 @@ class InventoryController extends Controller
     {
         $categories = ['ice', 'meat', 'seafood', 'vegetables', 'fruits', 'beverages', 'dairy'];
         $storageLocations = ['Unit A', 'Unit B', 'Unit C', 'Unit D', 'Unit E'];
-        $statuses = ['in_stock', 'low_stock'];
-        return view('admin.inventory.create', compact('categories', 'storageLocations', 'statuses'));
+        return view('admin.inventory.create', compact('categories', 'storageLocations'));
     }
 
     /**
@@ -84,9 +83,11 @@ class InventoryController extends Controller
             'expiration_date' => 'required|date|after_or_equal:today',
             'date_received' => 'required|date|before_or_equal:today',
             'supplier' => 'required|string|max:255',
-            'status' => 'required|in:in_stock,low_stock',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        // Automatically determine status based on quantity and expiration date
+        $validated['status'] = $this->determineStatus($validated['quantity'], $validated['expiration_date']);
 
         Inventory::create($validated);
 
@@ -101,8 +102,7 @@ class InventoryController extends Controller
     {
         $categories = ['ice', 'meat', 'seafood', 'vegetables', 'fruits', 'beverages', 'dairy'];
         $storageLocations = ['Unit A', 'Unit B', 'Unit C', 'Unit D', 'Unit E'];
-        $statuses = ['in_stock', 'low_stock', 'expired', 'expiring_soon'];
-        return view('admin.inventory.edit', compact('inventory', 'categories', 'storageLocations', 'statuses'));
+        return view('admin.inventory.edit', compact('inventory', 'categories', 'storageLocations'));
     }
 
     /**
@@ -120,9 +120,11 @@ class InventoryController extends Controller
             'expiration_date' => 'required|date',
             'date_received' => 'required|date',
             'supplier' => 'required|string|max:255',
-            'status' => 'required|in:in_stock,low_stock,expired,expiring_soon',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        // Automatically determine status based on quantity and expiration date
+        $validated['status'] = $this->determineStatus($validated['quantity'], $validated['expiration_date']);
 
         $inventory->update($validated);
 
@@ -138,5 +140,170 @@ class InventoryController extends Controller
         $inventory->delete();
         return redirect()->route('admin.inventory.index')
             ->with('success', 'Inventory item deleted successfully!');
+    }
+
+    /**
+     * Display inventory list for warehouse staff (read-only).
+     */
+    public function warehouseIndex(Request $request)
+    {
+        $query = Inventory::query();
+
+        // Search by product name
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort by column
+        $sortColumn = $request->get('sort_column', 'id');
+        $sortDirection = $request->get('sort_direction', 'asc');
+
+        // Allowed columns for sorting
+        $allowedColumns = ['id', 'product_name', 'quantity', 'location', 'status', 'updated_at'];
+        if (!in_array($sortColumn, $allowedColumns)) {
+            $sortColumn = 'id';
+        }
+
+        // Validate sort direction
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Apply sorting
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $inventory = $query->paginate(20);
+
+        return view('warehouse.inventory.index', compact('inventory'));
+    }
+
+    /**
+     * Display details of a specific inventory item for warehouse staff (read-only).
+     */
+    public function warehouseShow(Inventory $inventory)
+    {
+        return view('warehouse.inventory.show', compact('inventory'));
+    }
+
+    /**
+     * Display temperature monitoring list for temperature staff (read-only).
+     */
+    public function warehouseTemperatureIndex(Request $request)
+    {
+        $query = Inventory::query();
+
+        // Search by product name
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort by column
+        $sortColumn = $request->get('sort_column', 'id');
+        $sortDirection = $request->get('sort_direction', 'asc');
+
+        // Allowed columns for sorting
+        $allowedColumns = ['id', 'product_name', 'quantity', 'location', 'updated_at'];
+        if (!in_array($sortColumn, $allowedColumns)) {
+            $sortColumn = 'id';
+        }
+
+        // Validate sort direction
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Apply sorting
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $inventory = $query->paginate(20);
+
+        return view('warehouse.temperature.index', compact('inventory'));
+    }
+
+    /**
+     * Display temperature details for a specific inventory item.
+     */
+    public function warehouseTemperatureShow(Inventory $inventory)
+    {
+        return view('warehouse.temperature.show', compact('inventory'));
+    }
+
+    /**
+     * Display payment management list for payment staff (read-only).
+     */
+    public function warehousePaymentIndex(Request $request)
+    {
+        $query = Inventory::query();
+
+        // Search by product name
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort by column
+        $sortColumn = $request->get('sort_column', 'id');
+        $sortDirection = $request->get('sort_direction', 'asc');
+
+        // Allowed columns for sorting
+        $allowedColumns = ['id', 'product_name', 'quantity', 'unit_cost', 'updated_at'];
+        if (!in_array($sortColumn, $allowedColumns)) {
+            $sortColumn = 'id';
+        }
+
+        // Validate sort direction
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Apply sorting
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $inventory = $query->paginate(20);
+
+        return view('warehouse.payment.index', compact('inventory'));
+    }
+
+    /**
+     * Display payment details for a specific inventory item.
+     */
+    public function warehousePaymentShow(Inventory $inventory)
+    {
+        return view('warehouse.payment.show', compact('inventory'));
+    }
+
+    /**
+     * Automatically determine inventory status based on quantity and expiration date.
+     */
+    private function determineStatus($quantity, $expirationDate)
+    {
+        $expirationDate = \Carbon\Carbon::parse($expirationDate);
+        $daysToExpiration = now()->diffInDays($expirationDate, false);
+
+        // Check if expired
+        if ($daysToExpiration < 0) {
+            return 'expired';
+        }
+
+        // Check if expiring soon (within 30 days)
+        if ($daysToExpiration <= 30) {
+            return 'expiring_soon';
+        }
+
+        // Check stock level (low stock if quantity <= 10)
+        if ($quantity <= 10) {
+            return 'low_stock';
+        }
+
+        // Default to in stock
+        return 'in_stock';
     }
 }

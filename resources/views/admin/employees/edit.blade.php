@@ -142,26 +142,6 @@
                     @error('address')<span class="error">{{ $message }}</span>@enderror
                 </div>
             </div>
-
-            @php
-                $user = \App\Models\User::where('email', $employee->email)->first();
-            @endphp
-
-            @if($user)
-            <div class="form-row">
-                <div class="form-group">
-                    <label>User Role</label>
-                    <select name="user_role">
-                        <option value="admin" {{ old('user_role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="inventory_staff" {{ old('user_role', $user->role) == 'inventory_staff' ? 'selected' : '' }}>Inventory Staff</option>
-                        <option value="temperature_staff" {{ old('user_role', $user->role) == 'temperature_staff' ? 'selected' : '' }}>Temperature Staff</option>
-                        <option value="payment_staff" {{ old('user_role', $user->role) == 'payment_staff' ? 'selected' : '' }}>Payment Staff</option>
-                        <option value="delivery_personnel" {{ old('user_role', $user->role) == 'delivery_personnel' ? 'selected' : '' }}>Delivery Personnel</option>
-                    </select>
-                    @error('user_role')<span class="error">{{ $message }}</span>@enderror
-                </div>
-            </div>
-            @endif
         </div>
 
         <div class="form-actions">
@@ -169,6 +149,37 @@
             <a href="{{ route('admin.employees.index') }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
+</div>
+
+<!-- Account Details Modal -->
+<div class="modal-overlay" id="accountModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Account Created Successfully</h3>
+        </div>
+        <div class="modal-body">
+            <div class="account-details">
+                <div class="detail-item">
+                    <label>Email:</label>
+                    <div class="detail-value" id="accountEmail">-</div>
+                </div>
+                <div class="detail-item">
+                    <label>Password:</label>
+                    <div class="detail-value password-field">
+                        <span id="accountPassword">-</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <label>Role:</label>
+                    <div class="detail-value" id="accountRole">-</div>
+                </div>
+            </div>
+            <p class="account-notice">Please save this password securely. The employee will need this to log in.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-confirm" onclick="goToEmployeeIndex()">Close</button>
+        </div>
+    </div>
 </div>
 
 <!-- Update Confirmation Modal -->
@@ -189,6 +200,47 @@
 
 @vite(['resources/css/employees-form.css', 'resources/js/employees-form.js'])
 <script>
+    // Position to Department Mapping
+    const positionSelect = document.querySelector('select[name="position"]');
+    const departmentSelect = document.getElementById('departmentSelect');
+
+    // Map positions to their departments
+    const positionDepartmentMap = {
+        'Inventory Officer': 'warehouse',
+        'Temperature Technician': 'warehouse',
+        'Payment Coordinator': 'warehouse',
+        'Driver': 'delivery',
+        'Manager': 'administration',
+        'Supervisor': 'production',
+        'Specialist': 'production',
+        'Operator': 'production',
+        'Assistant': 'production'
+    };
+
+    function updateDepartment() {
+        const position = positionSelect.value;
+        const mappedDept = positionDepartmentMap[position];
+
+        if (mappedDept) {
+            // Position has a fixed department
+            departmentSelect.value = mappedDept;
+            departmentSelect.style.pointerEvents = 'none';
+            departmentSelect.style.opacity = '0.6';
+            departmentSelect.style.cursor = 'not-allowed';
+        } else {
+            // Position doesn't have a fixed department, allow manual selection
+            departmentSelect.style.pointerEvents = 'auto';
+            departmentSelect.style.opacity = '1';
+            departmentSelect.style.cursor = 'pointer';
+        }
+    }
+
+    positionSelect.addEventListener('change', updateDepartment);
+
+    // Initialize on page load
+    updateDepartment();
+
+    // Existing modal and update logic
     let updateFormToSubmit = null;
 
     function showUpdateModal() {
@@ -212,12 +264,51 @@
         }
     }
 
-    // Close modal when clicking outside
-    document.addEventListener('click', function(event) {
-        const modal = document.getElementById('updateModal');
-        if (event.target === modal) {
-            hideUpdateModal();
+    function closeAccountModal() {
+        document.getElementById('accountModal').classList.remove('active');
+    }
+
+    function goToEmployeeIndex() {
+        window.location.href = '{{ route("admin.employees.index") }}';
+    }
+
+    function showAccountModal(email, password, role) {
+        document.getElementById('accountEmail').textContent = email;
+        document.getElementById('accountPassword').textContent = password;
+        document.getElementById('accountRole').textContent = role;
+        document.getElementById('accountModal').classList.add('active');
+    }
+
+    function copyPassword() {
+        const password = document.getElementById('accountPassword').textContent;
+        navigator.clipboard.writeText(password).then(() => {
+            alert('Password copied to clipboard!');
+        });
+    }
+
+    // Check if there are account details to display
+    document.addEventListener('DOMContentLoaded', function() {
+        const accountDetailsStr = '{{ session("accountDetails") ? json_encode(session("accountDetails")) : "" }}';
+        if (accountDetailsStr) {
+            try {
+                const accountDetails = JSON.parse(accountDetailsStr.replace(/&quot;/g, '"'));
+                showAccountModal(accountDetails.email, accountDetails.password, accountDetails.role);
+            } catch (e) {
+                console.error('Error parsing account details');
+            }
         }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const updateModal = document.getElementById('updateModal');
+            const accountModal = document.getElementById('accountModal');
+            if (event.target === updateModal) {
+                hideUpdateModal();
+            }
+            if (event.target === accountModal) {
+                closeAccountModal();
+            }
+        });
     });
 </script>
 @endsection

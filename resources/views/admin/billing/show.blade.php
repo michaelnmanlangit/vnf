@@ -6,14 +6,6 @@
 
 @section('content')
 <div class="billing-container">
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
-    @endif
-
     <!-- Header Navigation -->
     <div class="receipt-page-header">
         <a href="{{ route('admin.billing.index') }}" class="manage-customers-btn">
@@ -97,7 +89,7 @@
             @foreach($invoice->items as $index => $item)
                 <div class="receipt-item-row" style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
                     <div style="width: 75%;">
-                        <strong>{{ number_format($item->quantity, 0) }}x {{ $item->product_name }}</strong>
+                        <strong>{{ number_format($item->quantity, 0) }}{{ $item->unit }} {{ $item->product_name }}</strong>
                     </div>
                     <div style="width: 25%; text-align: right;">
                         <strong>₱{{ number_format($item->total, 2) }}</strong>
@@ -153,8 +145,104 @@
         </div>
     </div>
 
+    <!-- Payment Recording Section (Not Printed) -->
+    @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
+    <div class="payment-recording-section">
+        <div class="payment-section-header">
+            <h3>Record Payment</h3>
+            <p class="balance-info">
+                Outstanding Balance: <strong>₱{{ number_format($invoice->balance, 2) }}</strong>
+            </p>
+        </div>
+
+        <form action="{{ route('admin.billing.payment.store', $invoice->id) }}" method="POST" class="payment-form">
+            @csrf
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="amount">Payment Amount *</label>
+                    <input type="number" name="amount" id="amount" step="0.01" min="0.01" 
+                           value="{{ $invoice->balance }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="payment_date">Payment Date *</label>
+                    <input type="date" name="payment_date" id="payment_date" 
+                           value="{{ date('Y-m-d') }}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="payment_method">Payment Method *</label>
+                    <select name="payment_method" id="payment_method" required>
+                        <option value="">Select Method</option>
+                        <option value="cash" selected>Cash</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="check">Check</option>
+                        <option value="online_payment">Online Payment</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="payment_reference">Reference Number</label>
+                    <input type="text" name="payment_reference" id="payment_reference" 
+                           placeholder="Optional reference number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea name="notes" id="notes" rows="2" placeholder="Optional payment notes"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    Record Payment
+                </button>
+            </div>
+        </form>
+    </div>
+    @endif
+
+    <!-- Payment History Section -->
+    @if($invoice->payments->count() > 0)
+    <div class="payment-history-section">
+        <h3>Payment History</h3>
+        <div class="payment-history-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Reference</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($invoice->payments as $payment)
+                    <tr>
+                        <td>{{ $payment->payment_date->format('M d, Y') }}</td>
+                        <td>{{ $payment->payment_reference ?? '-' }}</td>
+                        <td>
+                            <span class="payment-method-badge">
+                                {{ ucwords(str_replace('_', ' ', $payment->payment_method)) }}
+                            </span>
+                        </td>
+                        <td><strong>₱{{ number_format($payment->amount, 2) }}</strong></td>
+                        <td>{{ $payment->notes ?? '-' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
 
 </div>
+
+
 
 
 @endsection

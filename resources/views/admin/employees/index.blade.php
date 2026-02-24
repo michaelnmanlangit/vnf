@@ -7,10 +7,37 @@
 @vite(['resources/css/employees.css', 'resources/js/employees.js'])
 @endsection
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success" id="successAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('successAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-error" id="errorAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('error') }}</span>
+        <button onclick="document.getElementById('errorAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
 <div class="employee-grid-container">
     <!-- Department Statistics -->
     <div class="department-stats">
         <div class="dept-cards">
+            <div class="dept-card dept-total">
+                <div class="dept-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+                    </svg>
+                </div>
+                <div class="dept-content">
+                    <span class="dept-name">Total</span>
+                    <div class="dept-bottom">
+                        <span class="dept-count">{{ $stats['total'] }}</span>
+                        <span class="dept-percentage">employees</span>
+                    </div>
+                </div>
+            </div>
             <div class="dept-card dept-production">
                 <div class="dept-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -55,38 +82,6 @@
                     <div class="dept-bottom">
                         <span class="dept-count">{{ $stats['by_department']['delivery'] }}</span>
                         <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['delivery'] / $stats['total'] * 100), 1) : 0 }}%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="dept-card dept-administration">
-                <div class="dept-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                </div>
-                <div class="dept-content">
-                    <span class="dept-name">Administration</span>
-                    <div class="dept-bottom">
-                        <span class="dept-count">{{ $stats['by_department']['administration'] }}</span>
-                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['administration'] / $stats['total'] * 100), 1) : 0 }}%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="dept-card dept-maintenance">
-                <div class="dept-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                    </svg>
-                </div>
-                <div class="dept-content">
-                    <span class="dept-name">Maintenance</span>
-                    <div class="dept-bottom">
-                        <span class="dept-count">{{ $stats['by_department']['maintenance'] }}</span>
-                        <span class="dept-percentage">{{ $stats['total'] > 0 ? round(($stats['by_department']['maintenance'] / $stats['total'] * 100), 1) : 0 }}%</span>
                     </div>
                 </div>
             </div>

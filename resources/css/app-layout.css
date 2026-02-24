@@ -192,3 +192,44 @@ footer {
 .btn-confirm:hover {
     background: #c82333;
 }
+
+/* Logout Modal - Specific styles to prevent override from other CSS files */
+#logoutModal .modal-content {
+    max-width: 400px !important;
+    width: 90% !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+#logoutModal .modal-header {
+    padding: 2rem 2rem 1rem 2rem !important;
+    border-bottom: none !important;
+    display: block !important;
+}
+
+#logoutModal .modal-header h3 {
+    margin: 0 !important;
+    font-size: 1.5rem !important;
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+
+#logoutModal .modal-body {
+    padding: 0 2rem 1.5rem 2rem !important;
+    margin: 0 !important;
+}
+
+#logoutModal .modal-body p {
+    margin: 0 !important;
+    color: #666 !important;
+    line-height: 1.6 !important;
+}
+
+#logoutModal .modal-footer {
+    padding: 0 2rem 2rem 2rem !important;
+    border-top: none !important;
+    display: flex !important;
+    gap: 0.75rem !important;
+    justify-content: flex-end !important;
+}

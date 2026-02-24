@@ -147,6 +147,15 @@
 }
 
 /* Department Color Themes */
+.dept-total {
+    border-top-color: #4299e1;
+}
+
+.dept-total .dept-icon {
+    background: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+}
+
 .dept-production {
     border-top-color: #8e44ad;
 }

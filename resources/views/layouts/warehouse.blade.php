@@ -32,6 +32,15 @@
             <div class="menu-section">
                 <div class="menu-section-title">Operations</div>
                 
+                <!-- My Tasks - Available for all warehouse staff -->
+                <a href="{{ route('staff.tasks.index') }}" class="menu-item {{ request()->routeIs('staff.tasks.*') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    My Tasks
+                </a>
+                
                 @if(auth()->user()->role === 'inventory_staff')
                 <a href="{{ route('warehouse.inventory.index') }}" class="menu-item {{ request()->routeIs('warehouse.inventory.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,6 +74,13 @@
 
     <div class="main-content">
         <nav class="top-navbar">
+            <button type="button" class="menu-toggle" id="menuToggle" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
             <div class="navbar-left">
                 <h1>@yield('page-title', 'Dashboard')</h1>
             </div>
@@ -125,29 +141,6 @@
     <form method="POST" action="{{ route('logout') }}" id="logout-form-warehouse" style="display: none;">
         @csrf
     </form>
-    </div>
-
-    <script>
-        function showLogoutModal() {
-            document.getElementById('logoutModal').classList.add('active');
-        }
-
-        function hideLogoutModal() {
-            document.getElementById('logoutModal').classList.remove('active');
-        }
-
-        // Close modal when clicking outside
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutModal = document.getElementById('logoutModal');
-            if (logoutModal) {
-                logoutModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        hideLogoutModal();
-                    }
-                });
-            }
-        });
-    </script>
     
     @vite(['resources/js/warehouse.js'])
     @yield('scripts')

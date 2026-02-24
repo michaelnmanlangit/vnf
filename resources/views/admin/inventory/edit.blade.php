@@ -82,18 +82,6 @@
                     </select>
                     @error('storage_location')<span class="error">{{ $message }}</span>@enderror
                 </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h2>Storage Conditions</h2>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Temperature (°C) <span class="required">*</span></label>
-                    <input type="number" name="temperature_requirement" value="{{ old('temperature_requirement', $inventory->temperature_requirement) }}" step="0.1" min="-50" max="0" required>
-                    @error('temperature_requirement')<span class="error">{{ $message }}</span>@enderror
-                </div>
                 <div class="form-group">
                     <label>Expiration Date <span class="required">*</span></label>
                     <input type="date" name="expiration_date" value="{{ old('expiration_date', $inventory->expiration_date->toDateString()) }}" required>

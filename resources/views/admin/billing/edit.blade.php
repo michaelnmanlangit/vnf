@@ -2,8 +2,14 @@
 
 @section('title', 'Edit Invoice')
 
+@section('page-title', 'Edit Invoice')
+
+@section('styles')
+@vite(['resources/css/billing.css'])
+@endsection
+
 @section('content')
-<div class="billing-container">
+<div class="billing-form-container">
     @if($errors->any())
         <div class="alert alert-error">
             <ul>
@@ -21,7 +27,7 @@
         <div class="form-grid">
             <!-- Invoice Information -->
             <div class="form-section">
-                <h3>Invoice Information</h3>
+                <h2>Invoice Information</h2>
                 
                 <div class="form-group">
                     <label>Invoice Number</label>
@@ -54,7 +60,7 @@
 
             <!-- Customer Information -->
             <div class="form-section">
-                <h3>Customer Information</h3>
+                <h2>Customer Information</h2>
                 
                 <div class="form-group">
                     <label>Select Customer <span class="required">*</span></label>
@@ -71,7 +77,7 @@
 
         <!-- Invoice Summary -->
         <div class="form-section">
-            <h3>Invoice Summary</h3>
+            <h2>Invoice Summary</h2>
             
             <div class="invoice-summary">
                 <div class="summary-row">
@@ -104,7 +110,7 @@
 
         <!-- Notes -->
         <div class="form-section">
-            <h3>Notes</h3>
+            <h2>Notes</h2>
             <div class="form-group">
                 <textarea name="notes" rows="4" class="form-control" placeholder="Additional notes or terms...">{{ $invoice->notes }}</textarea>
             </div>
@@ -112,14 +118,103 @@
 
         <!-- Actions -->
         <div class="form-actions">
-            <button type="submit" class="btn-submit">Update Invoice</button>
+            <button type="button" class="btn-submit" onclick="showUpdateModal()">Update Invoice</button>
             <a href="{{ route('admin.billing.show', $invoice->id) }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>
-@endsection
 
-@section('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/billing.css'])
+<!-- Update Confirmation Modal -->
+<div class="modal-overlay" id="updateModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Update</h3>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to update invoice <strong id="invoiceNumberToUpdate"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-cancel" onclick="hideUpdateModal()">Cancel</button>
+            <button type="button" class="btn-modal btn-confirm" style="background: #3498db;" onclick="confirmUpdate()">Update</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let updateFormToSubmit = null;
+    let hasChanges = false;
+    let originalData = {};
+
+    // Store original form data
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const formData = new FormData(form);
+        
+        for (let [key, value] of formData.entries()) {
+            originalData[key] = value;
+        }
+
+        // Monitor changes
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('change', checkForChanges);
+            input.addEventListener('input', checkForChanges);
+        });
+    });
+
+    function checkForChanges() {
+        const form = document.querySelector('form');
+        const formData = new FormData(form);
+        hasChanges = false;
+        
+        for (let [key, value] of formData.entries()) {
+            if (originalData[key] !== value) {
+                hasChanges = true;
+                break;
+            }
+        }
+        
+        const submitBtn = document.querySelector('.btn-submit');
+        if (hasChanges) {
+            submitBtn.style.background = '#3498db';
+            submitBtn.style.cursor = 'pointer';
+        } else {
+            submitBtn.style.background = '#bdc3c7';
+            submitBtn.style.cursor = 'not-allowed';
+        }
+    }
+
+    function showUpdateModal() {
+        if (!hasChanges) {
+            alert('No changes detected.');
+            return;
+        }
+        
+        const form = document.querySelector('form');
+        const invoiceNumber = '{{ $invoice->invoice_number }}';
+        
+        document.getElementById('invoiceNumberToUpdate').textContent = invoiceNumber;
+        document.getElementById('updateModal').style.display = 'flex';
+        updateFormToSubmit = form;
+    }
+
+    function hideUpdateModal() {
+        document.getElementById('updateModal').style.display = 'none';
+        updateFormToSubmit = null;
+    }
+
+    function confirmUpdate() {
+        if (updateFormToSubmit) {
+            updateFormToSubmit.submit();
+        }
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const updateModal = document.getElementById('updateModal');
+        if (event.target === updateModal) {
+            hideUpdateModal();
+        }
+    });
+</script>
 @endsection

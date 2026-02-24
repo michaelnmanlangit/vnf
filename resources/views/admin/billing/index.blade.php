@@ -9,6 +9,18 @@
 @endsection
 
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success" id="successAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('successAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-error" id="errorAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('error') }}</span>
+        <button onclick="document.getElementById('errorAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
 <div class="billing-grid-container">
     <!-- Status Statistics -->
     <div class="status-stats">
@@ -150,30 +162,30 @@
                     </div>
                 </div>
             </div>
-        </form>
 
-        <!-- Actions -->
-        <div class="toolbar-actions">
-            @if(request('search') || request('status'))
-                <a href="{{ route('admin.billing.index') }}" class="clear-filters">Clear All</a>
-            @endif
-            <a href="{{ route('admin.billing.customers') }}" class="manage-customers-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                Customers
-            </a>
-            <a href="{{ route('admin.billing.create') }}" class="add-invoice-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                New Invoice
-            </a>
-        </div>
+            <!-- Actions -->
+            <div class="toolbar-actions">
+                @if(request('search') || request('status'))
+                    <a href="{{ route('admin.billing.index') }}" class="clear-filters">Clear All</a>
+                @endif
+                <a href="{{ route('admin.billing.customers') }}" class="manage-customers-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Customers
+                </a>
+                <a href="{{ route('admin.billing.create') }}" class="add-invoice-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Invoice
+                </a>
+            </div>
+        </form>
     </div>
 
     <!-- Invoices List -->
@@ -184,16 +196,13 @@
                     <th>Invoice #</th>
                     <th class="sortable" data-column="customer">
                         Customer
-                        <svg class="sort-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 2L9 6H3L6 2Z" fill="currentColor"/>
-                            <path d="M6 10L3 6H9L6 10Z" fill="currentColor" opacity="0.3"/>
+                        <svg class="sort-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M19 12l-7 7-7-7"></path>
                         </svg>
                     </th>
                     <th>Invoice Date</th>
                     <th>Due Date</th>
                     <th>Amount</th>
-                    <th>Paid</th>
-                    <th>Balance</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -208,8 +217,6 @@
                         <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
                         <td>{{ $invoice->due_date->format('M d, Y') }}</td>
                         <td>₱{{ number_format($invoice->total_amount, 2) }}</td>
-                        <td>₱{{ number_format($invoice->total_paid, 2) }}</td>
-                        <td>₱{{ number_format($invoice->balance, 2) }}</td>
                         <td>
                             <span class="status-badge {{ $invoice->status }}">
                                 {{ ucwords(str_replace('_', ' ', $invoice->status)) }}
@@ -249,7 +256,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9">
+                        <td colspan="7">
                             <div class="empty-state">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -311,6 +318,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 filterToggle.classList.remove('active');
                 filterDropdown.classList.remove('active');
             }
+        });
+    }
+
+    // Table horizontal scroll indicator
+    const billingList = document.querySelector('.billing-list');
+    if (billingList) {
+        function updateScrollIndicator() {
+            const isScrolledToEnd = billingList.scrollLeft + billingList.clientWidth >= billingList.scrollWidth - 5;
+            if (isScrolledToEnd) {
+                billingList.classList.add('scrolled-end');
+            } else {
+                billingList.classList.remove('scrolled-end');
+            }
+            
+            // Mark as scrolled to hide hint
+            if (billingList.scrollLeft > 10) {
+                billingList.classList.add('scrolled');
+            }
+        }
+        
+        billingList.addEventListener('scroll', updateScrollIndicator);
+        updateScrollIndicator(); // Initial check
+        
+        // Add touch feedback for mobile
+        let isScrolling;
+        billingList.addEventListener('scroll', function() {
+            billingList.style.cursor = 'grabbing';
+            clearTimeout(isScrolling);
+            isScrolling = setTimeout(function() {
+                billingList.style.cursor = 'grab';
+            }, 150);
         });
     }
 

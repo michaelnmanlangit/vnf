@@ -58,7 +58,7 @@ class EmployeeController extends Controller
         }
 
         $employees = $query->paginate(20);
-        $departments = ['production', 'warehouse', 'delivery', 'administration', 'maintenance'];
+        $departments = ['production', 'warehouse', 'delivery', 'administration'];
         $statuses = ['active', 'inactive', 'on_leave'];
 
         // Calculate statistics
@@ -72,7 +72,6 @@ class EmployeeController extends Controller
                 'warehouse' => Employee::where('department', 'warehouse')->count(),
                 'delivery' => Employee::where('department', 'delivery')->count(),
                 'administration' => Employee::where('department', 'administration')->count(),
-                'maintenance' => Employee::where('department', 'maintenance')->count(),
             ]
         ];
 
@@ -99,13 +98,19 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email',
             'phone' => 'required|string|max:255',
             'position' => 'required|string|max:255',
-            'department' => 'required|in:production,warehouse,delivery,administration,maintenance',
+            'department' => 'required|in:production,warehouse,delivery,administration',
             'employment_status' => 'required|in:active,inactive,on_leave',
+            'return_date' => 'nullable|date|after_or_equal:today|required_if:employment_status,on_leave',
             'hire_date' => 'required|date',
             'salary' => 'nullable|numeric|min:0',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Clear return_date if not on leave
+        if ($validated['employment_status'] !== 'on_leave') {
+            $validated['return_date'] = null;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -121,7 +126,6 @@ class EmployeeController extends Controller
         $accountDetails = null;
         
         if (in_array($validated['department'], ['warehouse', 'delivery'])) {
-            $role = $this->getRole($validated['department'], $validated['position']);
             $defaultPassword = $this->generatePassword($validated['first_name'], $validated['last_name'], $employee->id);
             
             // Check if user account already exists
@@ -175,14 +179,20 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email,' . $employee->id,
             'phone' => 'required|string|max:255',
             'position' => 'required|string|max:255',
-            'department' => 'required|in:production,warehouse,delivery,administration,maintenance',
+            'department' => 'required|in:production,warehouse,delivery,administration',
             'employment_status' => 'required|in:active,inactive,on_leave',
+            'return_date' => 'nullable|date|after_or_equal:today|required_if:employment_status,on_leave',
             'hire_date' => 'required|date',
             'salary' => 'nullable|numeric|min:0',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'user_role' => 'nullable|in:admin,inventory_staff,temperature_staff,payment_staff,delivery_personnel',
         ]);
+
+        // Clear return_date if not on leave
+        if ($validated['employment_status'] !== 'on_leave') {
+            $validated['return_date'] = null;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -324,8 +334,8 @@ class EmployeeController extends Controller
      */
     private function generatePassword($firstName, $lastName, $employeeId)
     {
-        $firstNamePart = ucfirst(strtolower($firstName));
-        $lastNamePart = ucfirst(strtolower($lastName));
+        $firstNamePart = ucfirst(strtolower(str_replace(' ', '', $firstName)));
+        $lastNamePart = ucfirst(strtolower(str_replace(' ', '', $lastName)));
         return $firstNamePart . $lastNamePart . $employeeId;
     }
 }

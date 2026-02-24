@@ -31,7 +31,7 @@
 
             <div class="menu-section">
                 <div class="menu-section-title">Operations</div>
-                <a href="#" class="menu-item">
+                <a href="{{ route('admin.temperature.index') }}" class="menu-item {{ request()->routeIs('admin.temperature.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path>
                     </svg>
@@ -62,6 +62,13 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     Employee Management
+                </a>
+                <a href="{{ route('admin.tasks.index') }}" class="menu-item {{ request()->routeIs('admin.tasks.*') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    Work Assignments
                 </a>
             </div>
 
@@ -116,12 +123,6 @@
         </nav>
 
         <div class="content-area">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             @if(session('error'))
                 <div class="alert alert-error">
                     {{ session('error') }}

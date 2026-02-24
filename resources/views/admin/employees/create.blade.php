@@ -69,15 +69,11 @@
                         <optgroup label="Warehouse - Payment">
                             <option value="Payment Coordinator" {{ old('position') == 'Payment Coordinator' ? 'selected' : '' }}>Payment Coordinator</option>
                         </optgroup>
+                        <optgroup label="Production">
+                            <option value="Operator" {{ old('position') == 'Operator' ? 'selected' : '' }}>Operator</option>
+                        </optgroup>
                         <optgroup label="Delivery">
                             <option value="Driver" {{ old('position') == 'Driver' ? 'selected' : '' }}>Driver</option>
-                        </optgroup>
-                        <optgroup label="Other">
-                            <option value="Manager" {{ old('position') == 'Manager' ? 'selected' : '' }}>Manager</option>
-                            <option value="Supervisor" {{ old('position') == 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
-                            <option value="Specialist" {{ old('position') == 'Specialist' ? 'selected' : '' }}>Specialist</option>
-                            <option value="Operator" {{ old('position') == 'Operator' ? 'selected' : '' }}>Operator</option>
-                            <option value="Assistant" {{ old('position') == 'Assistant' ? 'selected' : '' }}>Assistant</option>
                         </optgroup>
                     </select>
                     @error('position')<span class="error">{{ $message }}</span>@enderror
@@ -109,7 +105,7 @@
 
                 <div class="form-group">
                     <label>Employment Status <span class="required">*</span></label>
-                    <select name="employment_status" required>
+                    <select name="employment_status" id="employmentStatusSelect" required>
                         <option value="">Select Status</option>
                         <option value="active" {{ old('employment_status') == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ old('employment_status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -119,7 +115,36 @@
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-row" id="returnDateRow" style="display: none;">
+                <div class="form-group">
+                    <label>Return Date <span class="required" id="returnDateRequired">*</span></label>
+                    <input type="date" name="return_date" id="returnDateInput" value="{{ old('return_date') }}" min="{{ date('Y-m-d') }}">
+                    <small style="color: #7f8c8d; font-size: 0.85rem; display: block; margin-top: 0.25rem;">Employee will automatically become active on this date</small>
+                    @error('return_date')<span class="error">{{ $message }}</span>@enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Salary</label>
+                    <select name="salary">
+                        <option value="">Select Salary</option>
+                        @foreach($salaryRanges as $value => $label)
+                            <option value="{{ $value }}" {{ old('salary') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('salary')<span class="error">{{ $message }}</span>@enderror
+                </div>
+            </div>
+
+            <div class="form-row" id="addressRow" style="display: none;">
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" name="address" value="{{ old('address') }}" placeholder="House No., Street, Barangay...">
+                    @error('address')<span class="error">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group"></div>
+            </div>
+
+            <div class="form-row" id="normalFieldsRow">
                 <div class="form-group">
                     <label>Salary</label>
                     <select name="salary">
@@ -186,5 +211,33 @@
 
     // Initialize on page load
     updateDepartment();
+
+    // Handle return date visibility based on employment status
+    const employmentStatusSelect = document.getElementById('employmentStatusSelect');
+    const returnDateRow = document.getElementById('returnDateRow');
+    const returnDateInput = document.getElementById('returnDateInput');
+    const returnDateRequired = document.getElementById('returnDateRequired');
+
+    function toggleReturnDateField() {
+        if (employmentStatusSelect.value === 'on_leave') {
+            returnDateRow.style.display = 'grid';
+            document.getElementById('addressRow').style.display = 'grid';
+            document.getElementById('normalFieldsRow').style.display = 'none';
+            returnDateInput.required = true;
+            returnDateRequired.style.display = 'inline';
+        } else {
+            returnDateRow.style.display = 'none';
+            document.getElementById('addressRow').style.display = 'none';
+            document.getElementById('normalFieldsRow').style.display = 'grid';
+            returnDateInput.required = false;
+            returnDateRequired.style.display = 'none';
+            returnDateInput.value = '';
+        }
+    }
+
+    employmentStatusSelect.addEventListener('change', toggleReturnDateField);
+
+    // Initialize on page load
+    toggleReturnDateField();
 </script>
 @endsection

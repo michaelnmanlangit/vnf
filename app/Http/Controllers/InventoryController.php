@@ -79,12 +79,14 @@ class InventoryController extends Controller
             'quantity' => 'required|numeric|min:0',
             'unit' => 'required|in:kg,liter,pieces,boxes',
             'storage_location' => 'required|in:Unit A,Unit B,Unit C,Unit D,Unit E',
-            'temperature_requirement' => 'required|numeric|min:-50|max:0',
             'expiration_date' => 'required|date|after_or_equal:today',
             'date_received' => 'required|date|before_or_equal:today',
             'supplier' => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        // Set default temperature requirement based on category
+        $validated['temperature_requirement'] = $this->getDefaultTemperatureForCategory($validated['category']);
 
         // Automatically determine status based on quantity and expiration date
         $validated['status'] = $this->determineStatus($validated['quantity'], $validated['expiration_date']);
@@ -116,12 +118,14 @@ class InventoryController extends Controller
             'quantity' => 'required|numeric|min:0',
             'unit' => 'required|in:kg,liter,pieces,boxes',
             'storage_location' => 'required|in:Unit A,Unit B,Unit C,Unit D,Unit E',
-            'temperature_requirement' => 'required|numeric|min:-50|max:0',
             'expiration_date' => 'required|date',
             'date_received' => 'required|date',
             'supplier' => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        // Set default temperature requirement based on category
+        $validated['temperature_requirement'] = $this->getDefaultTemperatureForCategory($validated['category']);
 
         // Automatically determine status based on quantity and expiration date
         $validated['status'] = $this->determineStatus($validated['quantity'], $validated['expiration_date']);
@@ -278,6 +282,24 @@ class InventoryController extends Controller
     public function warehousePaymentShow(Inventory $inventory)
     {
         return view('warehouse.payment.show', compact('inventory'));
+    }
+
+    /**
+     * Get default temperature requirement based on product category.
+     */
+    private function getDefaultTemperatureForCategory($category)
+    {
+        $temperatures = [
+            'meat' => -18,
+            'seafood' => -25,
+            'vegetables' => -15,
+            'fruits' => -18,
+            'ice' => -10,
+            'dairy' => -20,
+            'beverages' => -15,
+        ];
+
+        return $temperatures[$category] ?? -18;
     }
 
     /**

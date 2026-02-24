@@ -13,6 +13,26 @@ use Illuminate\Support\Facades\DB;
 
 class BillingController extends Controller
 {
+    /**
+     * Constructor - Auto-check for overdue invoices
+     */
+    public function __construct()
+    {
+        // Check for overdue invoices on every billing controller access
+        $this->checkOverdueInvoices();
+    }
+
+    /**
+     * Check and update overdue invoices
+     */
+    private function checkOverdueInvoices()
+    {
+        Invoice::where('status', '!=', 'paid')
+            ->where('status', '!=', 'cancelled')
+            ->where('due_date', '<', now())
+            ->update(['status' => 'overdue']);
+    }
+
     // ============ INVOICES ============
     /**
      * Display a listing of invoices.
@@ -333,16 +353,16 @@ class BillingController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        // Check if payment exceeds balance
+        // Calculate balance and handle overpayment
         $balance = $invoice->total_amount - $invoice->total_paid;
-        if ($validated['amount'] > $balance) {
-            return back()->with('error', 'Payment amount exceeds invoice balance.');
-        }
+        $paymentAmount = $validated['amount'];
+        $actualPaymentAmount = min($paymentAmount, $balance); // Only record up to the balance
+        $change = $paymentAmount > $balance ? $paymentAmount - $balance : 0;
 
         $payment = Payment::create([
             'invoice_id' => $invoice->id,
             'payment_reference' => $validated['payment_reference'] ?? null,
-            'amount' => $validated['amount'],
+            'amount' => $actualPaymentAmount, // Record only the amount that goes toward the invoice
             'payment_date' => $validated['payment_date'],
             'payment_method' => $validated['payment_method'],
             'notes' => $validated['notes'] ?? null,

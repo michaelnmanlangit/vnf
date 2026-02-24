@@ -7,6 +7,12 @@
 @vite(['resources/css/inventory.css', 'resources/js/inventory.js'])
 @endsection
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success" id="successAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('successAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
 <div class="inventory-grid-container">
     <!-- Search & Filter Toolbar -->
     <div class="inventory-toolbar">
@@ -146,7 +152,7 @@
                         <td class="inventory-id">{{ str_pad($item->id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td class="inventory-name">{{ $item->product_name }}</td>
                         <td>{{ ucfirst($item->category) }}</td>
-                        <td>{{ number_format($item->quantity, 2) }} {{ $item->unit }}</td>
+                        <td>{{ number_format($item->quantity, 0) }} {{ $item->unit }}</td>
                         <td>
                             <span class="status-badge status-{{ str_replace('_', '-', $item->status) }}">
                                 {{ ucfirst(str_replace('_', ' ', $item->status)) }}

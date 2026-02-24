@@ -22,10 +22,18 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        // Validate all fields including reCAPTCHA
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'g-recaptcha-response' => ['required', 'recaptcha'],
+        ], [
+            'g-recaptcha-response.required' => 'Please complete the reCAPTCHA verification.',
+            'g-recaptcha-response.recaptcha' => 'reCAPTCHA verification failed. Please try again.',
         ]);
+
+        // Extract only email and password for authentication
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();

@@ -4,11 +4,23 @@
 
 @section('page-title', 'Customers')
 @section('styles')
-@vite(['resources/css/billing.css'])
+@vite(['resources/css/billing.css', 'resources/css/employees-form.css'])
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endsection
 
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success" id="successAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('success') }}</span>
+        <button onclick="document.getElementById('successAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-error" id="errorAlert" style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+        <span>{{ session('error') }}</span>
+        <button onclick="document.getElementById('errorAlert').remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;color:inherit;font-size:1.2rem;line-height:1;">&times;</button>
+    </div>
+@endif
 <!-- Back Button -->
 <a href="{{ route('admin.billing.index') }}" class="manage-customers-btn" style="display: inline-flex; margin-bottom: 1rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -75,7 +87,7 @@
             @if(request('search') || request('status'))
                 <a href="{{ route('admin.billing.customers') }}" class="clear-filters">Clear All</a>
             @endif
-            <button type="button" class="add-invoice-btn" onclick="document.getElementById('customerModal').style.display='flex'">
+            <button type="button" class="add-invoice-btn" onclick="document.getElementById('customerModal').classList.add('active')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -97,8 +109,6 @@
                         </svg>
                     </th>
                     <th>Contact Person</th>
-                    <th>Email</th>
-                    <th>Phone</th>
                     <th>Type</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -109,8 +119,6 @@
                     <tr>
                         <td><strong>{{ $customer->business_name }}</strong></td>
                         <td>{{ $customer->contact_person }}</td>
-                        <td>{{ $customer->email ?? '-' }}</td>
-                        <td>{{ $customer->phone }}</td>
                         <td>{{ ucwords(str_replace('_', ' ', $customer->customer_type)) }}</td>
                         <td>
                             <span class="status-badge {{ $customer->status }}">
@@ -144,7 +152,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="5">
                             <div class="empty-state">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -173,25 +181,24 @@
 </div>
 
 <!-- Add Customer Modal -->
-<div id="customerModal" class="modal">
+<div id="customerModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Add New Customer</h2>
-            <button type="button" class="modal-close" onclick="document.getElementById('customerModal').style.display='none'">&times;</button>
+            <h3>Add New Customer</h3>
         </div>
 
-        <form action="{{ route('admin.billing.customer.store') }}" method="POST">
+        <form action="{{ route('admin.billing.customer.store') }}" method="POST" class="customer-form">
             @csrf
             
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Business Name <span style="color: red;">*</span></label>
+                        <label>Business Name <span class="required">*</span></label>
                         <input type="text" name="business_name" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Contact Person <span style="color: red;">*</span></label>
+                        <label>Contact Person <span class="required">*</span></label>
                         <input type="text" name="contact_person" required>
                     </div>
                 </div>
@@ -203,15 +210,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Phone <span style="color: red;">*</span></label>
+                        <label>Phone <span class="required">*</span></label>
                         <input type="text" name="phone" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Customer Type <span style="color: red;">*</span></label>
+                        <label>Customer Type <span class="required">*</span></label>
                         <select name="customer_type" required>
+                            <option value="">Select Customer Type</option>
                             <option value="wet_market">Wet Market</option>
                             <option value="restaurant">Restaurant</option>
                             <option value="meat_supplier">Meat Supplier</option>
@@ -223,53 +231,56 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Status <span style="color: red;">*</span></label>
+                        <label>Status <span class="required">*</span></label>
                         <select name="status" required>
+                            <option value="">Select Status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Address <span style="color: red;">*</span></label>
-                    <textarea name="address" rows="3" required></textarea>
-                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Address <span class="required">*</span></label>
+                        <textarea name="address" rows="3" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea name="notes" rows="3"></textarea>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea name="notes" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('customerModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Customer</button>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="addCustomerButton">Add Customer</button>
+                <button type="button" class="btn-cancel" onclick="document.getElementById('customerModal').classList.remove('active')">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Edit Customer Modal -->
-<div id="editCustomerModal" class="modal">
+<div id="editCustomerModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Edit Customer</h2>
+            <h3>Edit Customer</h3>
         </div>
 
-        <form id="editCustomerForm" method="POST">
+        <form id="editCustomerForm" method="POST" class="customer-form">
             @csrf
             @method('PUT')
             
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Business Name <span style="color: red;">*</span></label>
+                        <label>Business Name <span class="required">*</span></label>
                         <input type="text" name="business_name" id="edit_business_name" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Contact Person <span style="color: red;">*</span></label>
+                        <label>Contact Person <span class="required">*</span></label>
                         <input type="text" name="contact_person" id="edit_contact_person" required>
                     </div>
                 </div>
@@ -281,15 +292,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Phone <span style="color: red;">*</span></label>
+                        <label>Phone <span class="required">*</span></label>
                         <input type="text" name="phone" id="edit_phone" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Customer Type <span style="color: red;">*</span></label>
+                        <label>Customer Type <span class="required">*</span></label>
                         <select name="customer_type" id="edit_customer_type" required>
+                            <option value="">Select Customer Type</option>
                             <option value="wet_market">Wet Market</option>
                             <option value="restaurant">Restaurant</option>
                             <option value="meat_supplier">Meat Supplier</option>
@@ -301,28 +313,31 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Status <span style="color: red;">*</span></label>
+                        <label>Status <span class="required">*</span></label>
                         <select name="status" id="edit_status" required>
+                            <option value="">Select Status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Address <span style="color: red;">*</span></label>
-                    <textarea name="address" id="edit_address" rows="3" required></textarea>
-                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Address <span class="required">*</span></label>
+                        <textarea name="address" id="edit_address" rows="3" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea name="notes" id="edit_notes" rows="3"></textarea>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea name="notes" id="edit_notes" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editCustomerModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="updateCustomerButton">Update Customer</button>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="updateCustomerButton">Update Customer</button>
+                <button type="button" class="btn-cancel" onclick="document.getElementById('editCustomerModal').classList.remove('active')">Cancel</button>
             </div>
         </form>
     </div>
@@ -383,7 +398,7 @@ function editCustomer(id) {
         input.addEventListener('input', checkCustomerFormChanges);
     });
 
-    document.getElementById('editCustomerModal').style.display = 'flex';
+    document.getElementById('editCustomerModal').classList.add('active');
 }
 
 function checkCustomerFormChanges() {
@@ -504,6 +519,43 @@ document.addEventListener('click', function(e) {
     const modal = document.getElementById('deleteModal');
     if (e.target === modal) {
         hideDeleteModal();
+    }
+    const customerModal = document.getElementById('customerModal');
+    if (e.target === customerModal) {
+        customerModal.classList.remove('active');
+    }
+    const editCustomerModal = document.getElementById('editCustomerModal');
+    if (e.target === editCustomerModal) {
+        editCustomerModal.classList.remove('active');
+    }
+});
+
+// Enhanced form change detection like employee form
+document.addEventListener('DOMContentLoaded', function() {
+    // Add customer form change detection
+    const addCustomerForm = document.querySelector('#customerModal .customer-form');
+    const editCustomerForm = document.querySelector('#editCustomerModal .customer-form');
+    
+    if (addCustomerForm) {
+        const addButton = document.getElementById('addCustomerButton');
+        const addFormInputs = addCustomerForm.querySelectorAll('input, select, textarea');
+        
+        let addFormTouched = false;
+        
+        addFormInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                addFormTouched = true;
+                addButton.disabled = false;
+                addButton.style.opacity = '1';
+                addButton.style.cursor = 'pointer';
+            });
+            input.addEventListener('input', function() {
+                addFormTouched = true;
+                addButton.disabled = false;
+                addButton.style.opacity = '1';
+                addButton.style.cursor = 'pointer';
+            });
+        });
     }
 });</script>
 @endsection

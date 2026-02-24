@@ -14,7 +14,7 @@ class EmployeeFactory extends Factory
      */
     public function definition(): array
     {
-        $departments = ['production', 'warehouse', 'delivery', 'administration', 'maintenance'];
+        $departments = ['production', 'warehouse', 'delivery', 'administration'];
         $warehousePositions = ['Inventory Officer', 'Temperature Technician', 'Payment Coordinator', 'Warehouse Manager', 'Warehouse Supervisor'];
         $deliveryPositions = ['Driver', 'Delivery Manager', 'Delivery Supervisor'];
         $otherPositions = ['Manager', 'Supervisor', 'Specialist', 'Operator', 'Assistant'];

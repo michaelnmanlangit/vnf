@@ -5,7 +5,7 @@ services:
   github:
     branch: main
     deploy_on_push: true
-  build_command: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache
+  build_command: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force
   run_command: heroku-php-apache2 public/
   http_port: 8080
   instance_size_slug: basic-xxs
@@ -21,6 +21,8 @@ services:
     value: "false"
   - key: APP_URL
     value: https://vnf-app-93blz.ondigitalocean.app
+  - key: DB_CONNECTION
+    value: pgsql
   - key: DATABASE_URL
     value: "${dev-db-751593.DATABASE_URL}"
   - key: SESSION_DRIVER

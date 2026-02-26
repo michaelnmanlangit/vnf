@@ -20,9 +20,9 @@ services:
   - key: APP_DEBUG
     value: "false"
   - key: APP_URL
-    value: https://vnf-app-bz9qk.ondigitalocean.app
+    value: https://vnf-app-93blz.ondigitalocean.app
   - key: DATABASE_URL
-    value: "postgresql://vnfdb:REPLACE_WITH_PASSWORD@app-b82d280b-d69a-48d6-a27e-2abb007b0eab-do-user-28294724-0.f.db.ondigitalocean.com:25060/vnfdb?sslmode=require"
+    value: "${dev-db-751593.DATABASE_URL}"
   - key: SESSION_DRIVER
     value: database
   - key: QUEUE_CONNECTION

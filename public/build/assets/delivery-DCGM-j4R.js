@@ -1,0 +1,1 @@
+function o(){document.getElementById("logoutModal").classList.remove("active")}document.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("logoutModal");t&&t.addEventListener("click",function(e){e.target===this&&o()})});

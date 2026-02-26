@@ -1,0 +1,146 @@
+{
+  "resources/css/admin.css": {
+    "file": "assets/admin-CoWPeOez.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true,
+    "name": "admin",
+    "names": [
+      "admin.css"
+    ]
+  },
+  "resources/css/app-layout.css": {
+    "file": "assets/app-layout-BjXd1dy6.css",
+    "src": "resources/css/app-layout.css",
+    "isEntry": true,
+    "name": "app-layout",
+    "names": [
+      "app-layout.css"
+    ]
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BbTTazls.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/billing.css": {
+    "file": "assets/billing-mM0IVGZh.css",
+    "src": "resources/css/billing.css",
+    "isEntry": true,
+    "name": "billing",
+    "names": [
+      "billing.css"
+    ]
+  },
+  "resources/css/delivery.css": {
+    "file": "assets/delivery-96pmIQKG.css",
+    "src": "resources/css/delivery.css",
+    "isEntry": true,
+    "name": "delivery",
+    "names": [
+      "delivery.css"
+    ]
+  },
+  "resources/css/employees-form.css": {
+    "file": "assets/employees-form-BzD5O2VJ.css",
+    "src": "resources/css/employees-form.css",
+    "isEntry": true,
+    "name": "employees-form",
+    "names": [
+      "employees-form.css"
+    ]
+  },
+  "resources/css/employees.css": {
+    "file": "assets/employees-B_IfWkp5.css",
+    "src": "resources/css/employees.css",
+    "isEntry": true,
+    "name": "employees",
+    "names": [
+      "employees.css"
+    ]
+  },
+  "resources/css/inventory-form.css": {
+    "file": "assets/inventory-form-C96KQb5D.css",
+    "src": "resources/css/inventory-form.css",
+    "isEntry": true,
+    "name": "inventory-form",
+    "names": [
+      "inventory-form.css"
+    ]
+  },
+  "resources/css/inventory.css": {
+    "file": "assets/inventory-Wqoz_iPC.css",
+    "src": "resources/css/inventory.css",
+    "isEntry": true,
+    "name": "inventory",
+    "names": [
+      "inventory.css"
+    ]
+  },
+  "resources/css/warehouse.css": {
+    "file": "assets/warehouse-C14kwTvn.css",
+    "src": "resources/css/warehouse.css",
+    "isEntry": true,
+    "name": "warehouse",
+    "names": [
+      "warehouse.css"
+    ]
+  },
+  "resources/js/admin.js": {
+    "file": "assets/admin-DLbE0-9j.js",
+    "name": "admin",
+    "src": "resources/js/admin.js",
+    "isEntry": true
+  },
+  "resources/js/app-layout.js": {
+    "file": "assets/app-layout-DCGM-j4R.js",
+    "name": "app-layout",
+    "src": "resources/js/app-layout.js",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-CAiCLEjY.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/delivery.js": {
+    "file": "assets/delivery-DCGM-j4R.js",
+    "name": "delivery",
+    "src": "resources/js/delivery.js",
+    "isEntry": true
+  },
+  "resources/js/employees-form.js": {
+    "file": "assets/employees-form-BxA1CLbF.js",
+    "name": "employees-form",
+    "src": "resources/js/employees-form.js",
+    "isEntry": true
+  },
+  "resources/js/employees.js": {
+    "file": "assets/employees-CDxtRMBS.js",
+    "name": "employees",
+    "src": "resources/js/employees.js",
+    "isEntry": true
+  },
+  "resources/js/inventory-form.js": {
+    "file": "assets/inventory-form-i_clXXmw.js",
+    "name": "inventory-form",
+    "src": "resources/js/inventory-form.js",
+    "isEntry": true
+  },
+  "resources/js/inventory.js": {
+    "file": "assets/inventory-CWWqNO4T.js",
+    "name": "inventory",
+    "src": "resources/js/inventory.js",
+    "isEntry": true
+  },
+  "resources/js/warehouse.js": {
+    "file": "assets/warehouse-DLbE0-9j.js",
+    "name": "warehouse",
+    "src": "resources/js/warehouse.js",
+    "isEntry": true
+  }
+}

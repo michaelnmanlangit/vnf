@@ -1,0 +1,43 @@
+name: vnf-app
+region: sgp
+services:
+- name: vnf
+  github:
+    branch: main
+    deploy_on_push: true
+  build_command: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache
+  run_command: heroku-php-apache2 public/
+  http_port: 8080
+  instance_size_slug: basic-xxs
+  instance_count: 1
+  envs:
+  - key: APP_NAME
+    value: "V&F Ice Plant"
+  - key: APP_ENV
+    value: production
+  - key: APP_KEY
+    value: "REPLACE_WITH_APP_KEY"
+  - key: APP_DEBUG
+    value: "false"
+  - key: APP_URL
+    value: https://vnf-app-bz9qk.ondigitalocean.app
+  - key: DATABASE_URL
+    value: "postgresql://vnfdb:REPLACE_WITH_PASSWORD@app-b82d280b-d69a-48d6-a27e-2abb007b0eab-do-user-28294724-0.f.db.ondigitalocean.com:25060/vnfdb?sslmode=require"
+  - key: SESSION_DRIVER
+    value: database
+  - key: QUEUE_CONNECTION
+    value: database
+  - key: CACHE_STORE
+    value: file
+  - key: FILESYSTEM_DISK
+    value: local
+  - key: LOG_CHANNEL
+    value: stack
+  - key: LOG_LEVEL
+    value: error
+  - key: MAIL_MAILER
+    value: "null"
+  - key: RECAPTCHA_SITE_KEY
+    value: "6Ld2Y2wsAAAAAMUTZ8AW2B3ipz0WmOKq0uJdQrGG"
+  - key: RECAPTCHA_SECRET_KEY
+    value: "6Ld2Y2wsAAAAAEEozE7YXLsnHmv6B1gszpvSlQbS"

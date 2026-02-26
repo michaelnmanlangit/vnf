@@ -103,6 +103,15 @@
     color: #e74c3c;
 }
 
+.status-partial {
+    border-top-color: #e67e22;
+}
+
+.status-partial .status-icon {
+    background: rgba(230, 126, 34, 0.1);
+    color: #e67e22;
+}
+
 .status-revenue {
     border-top-color: #9b59b6;
     min-width: 0; /* Allow card to shrink */
@@ -3246,51 +3255,75 @@ select.form-control {
         margin: 0;
         padding: 0;
     }
-    
-    /* Hide everything by default */
-    html, body, * {
+
+    /* Reset all spacing — force 80mm thermal width */
+    html {
         margin: 0 !important;
         padding: 0 !important;
-    }
-    
-    body {
         width: 80mm !important;
         background: white !important;
         overflow: visible !important;
     }
-    
-    /* Hide all non-receipt elements */
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 80mm !important;
+        max-width: 80mm !important;
+        min-height: auto !important;
+        display: block !important;   /* override admin.css flex body */
+        background: white !important;
+        overflow: visible !important;
+    }
+
+    /* Hide sidebar, navbar, footer, modals, payment forms - NOT main-content */
+    .sidebar,
+    .top-navbar,
+    nav.top-navbar,
+    footer,
+    .modal-overlay,
     .receipt-page-header,
     .receipt-page-actions,
-    .manage-customers-btn,
-    .btn-submit,
-    .btn-primary,
-    .btn-cancel,
-    header,
-    nav,
-    .navbar,
-    .sidebar,
-    .admin-sidebar,
-    .admin-header,
-    .breadcrumb,
+    .payment-recording-section,
+    .payment-history-section,
     .alert,
     .alert-success,
     .alert-error,
-    .billing-toolbar,
-    .action-buttons,
-    .pagination-wrapper,
-    .receipt-actions,
-    .receipt-header,
-    .form-section,
+    .btn-submit,
+    .btn-primary,
     .btn-back,
-    .status-badge,
-    .main-content,
-    .admin-layout,
-    .page-header {
+    #changeDisplay {
         display: none !important;
     }
-    
-    /* Show only billing container */
+
+    /* Strip layout from wrapper containers so receipt is visible */
+    .main-content {
+        display: block !important;
+        width: 80mm !important;
+        max-width: 80mm !important;
+        margin: 0 !important;           /* override admin.css margin-left: 260px */
+        padding: 0 !important;
+        flex: none !important;
+        min-height: auto !important;
+        background: white !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+    }
+
+    .content-area {
+        display: block !important;
+        width: 80mm !important;
+        max-width: 80mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+    }
+
+    /* Strip billing container */
     .billing-container {
         width: 80mm !important;
         max-width: none !important;
@@ -3300,7 +3333,7 @@ select.form-control {
         box-shadow: none !important;
         display: block !important;
     }
-    
+
     /* Show receipt container */
     .receipt-container {
         width: 80mm !important;
@@ -3312,8 +3345,9 @@ select.form-control {
         border: none !important;
         border-radius: 0 !important;
         display: block !important;
+        overflow: visible !important;
     }
-    
+
     /* Receipt content for print */
     .receipt-content {
         width: 100% !important;
@@ -3328,7 +3362,7 @@ select.form-control {
         line-height: 1.2 !important;
         color: #000 !important;
     }
-    
+
     /* Company header thermal style */
     .company-header {
         text-align: center !important;
@@ -3336,25 +3370,25 @@ select.form-control {
         padding-bottom: 0.5rem !important;
         border-bottom: 1px dotted #000 !important;
     }
-    
+
     .company-header h1 {
         font-size: 14px !important;
         font-weight: bold !important;
         margin: 0 !important;
         letter-spacing: 1px !important;
     }
-    
+
     .company-tagline {
         font-size: 9px !important;
         margin: 0.2rem 0 !important;
     }
-    
+
     .company-contact span {
         font-size: 9px !important;
         display: block !important;
         margin: 0.1rem 0 !important;
     }
-    
+
     /* Receipt title */
     .receipt-title {
         text-align: center !important;
@@ -3364,7 +3398,7 @@ select.form-control {
         padding: 0.3rem 0 !important;
         border-bottom: 1px dotted #000 !important;
     }
-    
+
     /* Invoice section */
     .invoice-title-section {
         text-align: center !important;
@@ -3372,39 +3406,39 @@ select.form-control {
         border-bottom: 1px dotted #000 !important;
         padding-bottom: 0.5rem !important;
     }
-    
+
     .invoice-title-section h2 {
         font-size: 12px !important;
         margin: 0 !important;
     }
-    
+
     /* Customer details */
     .receipt-details-grid {
         margin-bottom: 0.5rem !important;
         padding-bottom: 0.5rem !important;
         border-bottom: 1px dotted #000 !important;
     }
-    
+
     .bill-to-section h3 {
         font-size: 10px !important;
         margin: 0 0 0.2rem 0 !important;
     }
-    
+
     .customer-info h4 {
         font-size: 10px !important;
         margin: 0 !important;
     }
-    
+
     .customer-info p {
         font-size: 9px !important;
         margin: 0.1rem 0 !important;
     }
-    
+
     .meta-row {
         font-size: 9px !important;
         margin: 0.1rem 0 !important;
     }
-    
+
     /* Items header */
     .receipt-items-header {
         font-size: 10px !important;
@@ -3413,13 +3447,13 @@ select.form-control {
         padding-bottom: 0.2rem !important;
         margin-bottom: 0.3rem !important;
     }
-    
+
     /* Items list */
     .receipt-item-row {
         font-size: 9px !important;
         margin-bottom: 0.1rem !important;
     }
-    
+
     /* Items sold summary */
     .items-sold-summary {
         text-align: center !important;
@@ -3429,7 +3463,7 @@ select.form-control {
         border-bottom: 1px dotted #000 !important;
         padding-bottom: 0.3rem !important;
     }
-    
+
     /* Totals section */
     .receipt-totals {
         border-top: 1px dotted #000 !important;
@@ -3441,7 +3475,7 @@ select.form-control {
         border-radius: 0 !important;
         margin: 0 !important;
     }
-    
+
     .totals-row {
         font-size: 10px !important;
         border-bottom: none !important;
@@ -3449,7 +3483,7 @@ select.form-control {
         display: flex !important;
         justify-content: space-between !important;
     }
-    
+
     .total-line {
         border-top: 1px dotted #000 !important;
         margin-top: 0.3rem !important;
@@ -3457,18 +3491,18 @@ select.form-control {
         font-size: 12px !important;
         font-weight: bold !important;
     }
-    
+
     /* Notes */
     .receipt-notes {
         margin: 0.5rem 0 !important;
         font-size: 9px !important;
     }
-    
+
     .receipt-notes h4 {
         font-size: 10px !important;
         margin: 0 0 0.2rem 0 !important;
     }
-    
+
     /* Footer */
     .receipt-footer {
         text-align: center !important;
@@ -3476,14 +3510,14 @@ select.form-control {
         padding-top: 0.5rem !important;
         border-top: 1px dotted #000 !important;
     }
-    
+
     .receipt-thank-you {
         font-size: 12px !important;
         font-weight: bold !important;
         letter-spacing: 2px !important;
         margin: 0.5rem 0 !important;
     }
-    
+
     .receipt-transaction-info {
         font-size: 8px !important;
         margin: 0.3rem 0 !important;

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'V&F Ice Plant') - Admin Panel</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
     @yield('styles')
@@ -12,8 +14,10 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>V&F Ice Plant</h2>
-            <p>Admin Panel</p>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <img src="{{ asset('logo.png') }}" alt="V&F Logo" style="width:40px;height:40px;flex-shrink:0;">
+                <h2 style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
+            </div>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-section">
@@ -75,20 +79,44 @@
             <div class="menu-section">
                 <div class="menu-section-title">Financial</div>
                 <a href="{{ route('admin.billing.index') }}" class="menu-item {{ request()->routeIs('admin.billing.*') ? 'active' : '' }}">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                    Billing & Payments
+                    <span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;">₱</span>
+                    Billing & Invoice
                 </a>
-                <a href="#" class="menu-item">
+                <button type="button" class="menu-item menu-dropdown-toggle {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" id="reportsToggle" aria-expanded="{{ request()->routeIs('admin.reports.*') ? 'true' : 'false' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
-                    Reports
-                </a>
+                    <span style="flex:1;text-align:left;">Reports</span>
+                    <svg class="menu-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="menu-submenu {{ request()->routeIs('admin.reports.*') ? 'open' : '' }}" id="reportsSubmenu">
+                    <a href="{{ route('admin.reports.inventory') }}"   class="menu-subitem {{ request()->routeIs('admin.reports.inventory') ? 'active' : '' }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        Inventory
+                    </a>
+                    <a href="{{ route('admin.reports.temperature') }}" class="menu-subitem {{ request()->routeIs('admin.reports.temperature') ? 'active' : '' }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+                        Temperature
+                    </a>
+                    <a href="{{ route('admin.reports.financial') }}"   class="menu-subitem {{ request()->routeIs('admin.reports.financial') ? 'active' : '' }}">
+                        <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:14px;font-size:.8rem;font-weight:700;line-height:1;">₱</span>
+                        Financial
+                    </a>
+                </div>
             </div>
 
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="{{ route('profile.show') }}" class="menu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    My Profile
+                </a>
+            </div>
 
         </nav>
     </div>
@@ -107,7 +135,7 @@
             </div>
             <div class="navbar-right">
                 <div class="user-info">
-                    <span><strong>{{ auth()->user()->employee?->first()?->position ?? 'Admin' }} {{ auth()->user()->name }}</strong></span>
+                    <span><strong>{{ auth()->user()->employee?->first()?->position ?? 'Admin' }}</strong> {{ auth()->user()->name }}</span>
                 </div>
                 <div class="navbar-actions">
                     <button type="button" class="btn-logout" onclick="showLogoutModal()">
@@ -158,5 +186,31 @@
     </form>
 
     @yield('scripts')
+
+    <script>
+    (function () {
+        var toggle  = document.getElementById('reportsToggle');
+        var submenu = document.getElementById('reportsSubmenu');
+        if (!toggle || !submenu) return;
+
+        // If already open server-side, add animate class so transitions work going forward
+        if (submenu.classList.contains('open')) {
+            submenu.classList.add('open-animate');
+        }
+
+        toggle.addEventListener('click', function () {
+            var isOpen = submenu.classList.contains('open-animate');
+            if (isOpen) {
+                submenu.classList.remove('open-animate', 'open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.classList.remove('active');
+            } else {
+                submenu.classList.add('open-animate', 'open');
+                toggle.setAttribute('aria-expanded', 'true');
+                toggle.classList.add('active');
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

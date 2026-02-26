@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'V&F Ice Plant') - Delivery</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
     @vite(['resources/css/delivery.css', 'resources/js/delivery.js'])
     @yield('styles')
@@ -12,8 +14,10 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>V&F Ice Plant</h2>
-            <p>Delivery Personnel</p>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <img src="{{ asset('logo.png') }}" alt="V&F Logo" style="width:40px;height:40px;flex-shrink:0;">
+                <h2 style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
+            </div>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-section">

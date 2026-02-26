@@ -55,7 +55,14 @@ class InventoryController extends Controller
         $categories = ['ice', 'meat', 'seafood', 'vegetables', 'fruits', 'beverages', 'dairy'];
         $statuses = ['in_stock', 'low_stock', 'expired', 'expiring_soon'];
 
-        return view('admin.inventory.index', compact('inventory', 'categories', 'statuses'));
+        // Stat tile counts (always all items, not affected by filters)
+        $totalItems     = Inventory::count();
+        $inStockCount   = Inventory::where('status', 'in_stock')->count();
+        $lowStockCount  = Inventory::where('status', 'low_stock')->count();
+        $expiredCount   = Inventory::where('status', 'expired')->count();
+        $expiringSoonCount = Inventory::where('status', 'expiring_soon')->count();
+
+        return view('admin.inventory.index', compact('inventory', 'categories', 'statuses', 'totalItems', 'inStockCount', 'lowStockCount', 'expiredCount', 'expiringSoonCount'));
     }
 
     /**
@@ -93,7 +100,8 @@ class InventoryController extends Controller
 
         Inventory::create($validated);
 
-        return redirect()->route('admin.inventory.index')
+        $route = auth()->user()->role === 'admin' ? 'admin.inventory.index' : 'inventory.index';
+        return redirect()->route($route)
             ->with('success', 'Inventory item added successfully!');
     }
 
@@ -132,7 +140,8 @@ class InventoryController extends Controller
 
         $inventory->update($validated);
 
-        return redirect()->route('admin.inventory.index')
+        $route = auth()->user()->role === 'admin' ? 'admin.inventory.index' : 'inventory.index';
+        return redirect()->route($route)
             ->with('success', 'Inventory item updated successfully!');
     }
 
@@ -142,7 +151,8 @@ class InventoryController extends Controller
     public function destroy(Inventory $inventory)
     {
         $inventory->delete();
-        return redirect()->route('admin.inventory.index')
+        $route = auth()->user()->role === 'admin' ? 'admin.inventory.index' : 'inventory.index';
+        return redirect()->route($route)
             ->with('success', 'Inventory item deleted successfully!');
     }
 

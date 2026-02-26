@@ -94,6 +94,71 @@ body {
     flex-shrink: 0;
 }
 
+/* ── Sidebar sub-menu ─────────────────────────────── */
+.menu-dropdown-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    color: #ecf0f1;
+}
+.menu-dropdown-toggle:hover {
+    background: #34495e;
+    border-left-color: #3498db;
+    padding-left: 1.75rem;
+}
+.menu-dropdown-toggle.active {
+    background: #34495e;
+    border-left-color: #3498db;
+    color: #3498db;
+}
+.menu-chevron {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+.menu-dropdown-toggle[aria-expanded="true"] .menu-chevron {
+    transform: rotate(180deg);
+}
+.menu-submenu {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+}
+.menu-submenu.open-animate {
+    max-height: 200px;
+}
+/* legacy open class used server-side: pre-expand on page load */
+.menu-submenu.open {
+    max-height: 200px;
+}
+.menu-subitem {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1.5rem 0.6rem 3.25rem;
+    color: #b2bec3;
+    text-decoration: none;
+    font-size: 0.82rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+}
+.menu-subitem:hover {
+    background: #34495e;
+    color: #ecf0f1;
+    border-left-color: #3498db;
+    padding-left: 3.5rem;
+}
+.menu-subitem:hover::before { background: #3498db; }
+.menu-subitem.active {
+    background: #34495e;
+    border-left-color: #3498db;
+    color: #3498db;
+}
+.menu-subitem.active::before { background: #3498db; }
+
 .main-content {
     margin-left: 260px;
     flex: 1;
@@ -200,6 +265,30 @@ body {
 
 .btn-logout:hover {
     background: #c0392b;
+}
+
+.btn-profile {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    text-decoration: none;
+}
+
+.btn-profile:hover {
+    background: #2980b9;
 }
 
 .content-area {

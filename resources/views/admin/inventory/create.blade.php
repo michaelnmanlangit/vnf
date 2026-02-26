@@ -1,8 +1,11 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
 
 @section('title', 'Add Inventory')
 
 @section('page-title', 'Add New Inventory Item')
+@php
+    $r = auth()->user()->role === 'admin' ? 'admin.inventory' : 'inventory';
+@endphp
 
 @section('styles')
 @vite(['resources/css/inventory-form.css', 'resources/js/inventory-form.js'])
@@ -10,7 +13,7 @@
 
 @section('content')
 <div class="inventory-form-container">
-    <form method="POST" action="{{ route('admin.inventory.store') }}" class="inventory-form">
+    <form method="POST" action="{{ route($r . '.store') }}" class="inventory-form">
         @csrf
 
         <div class="form-section">
@@ -99,7 +102,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn-submit">Create Inventory Item</button>
-            <a href="{{ route('admin.inventory.index') }}" class="btn-cancel">Cancel</a>
+            <a href="{{ route($r . '.index') }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>

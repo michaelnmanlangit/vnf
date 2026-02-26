@@ -225,6 +225,37 @@
 
 @vite(['resources/css/employees-form.css', 'resources/js/employees-form.js'])
 <script>
+    // Image preview function
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Check if preview contains an image already
+                let img = preview.querySelector('img');
+                
+                if (img) {
+                    // Update existing image
+                    img.src = e.target.result;
+                } else {
+                    // Create new image and replace SVG/text
+                    img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Employee Photo';
+                    
+                    // Clear the preview and add the image
+                    preview.innerHTML = '';
+                    preview.appendChild(img);
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+
     // Position to Department Mapping
     const positionSelect = document.querySelector('select[name="position"]');
     const departmentSelect = document.getElementById('departmentSelect');

@@ -200,7 +200,7 @@ class BillingController extends Controller
      */
     public function edit($id)
     {
-        $invoice = Invoice::with('items')->findOrFail($id);
+        $invoice = Invoice::with(['items', 'payments'])->findOrFail($id);
         $customers = Customer::where('status', 'active')->orderBy('business_name')->get();
         $inventory = Inventory::orderBy('product_name')->get();
 
@@ -363,6 +363,8 @@ class BillingController extends Controller
             'invoice_id' => $invoice->id,
             'payment_reference' => $validated['payment_reference'] ?? null,
             'amount' => $actualPaymentAmount, // Record only the amount that goes toward the invoice
+            'tendered_amount' => $paymentAmount,
+            'change_amount' => $change,
             'payment_date' => $validated['payment_date'],
             'payment_method' => $validated['payment_method'],
             'notes' => $validated['notes'] ?? null,
@@ -376,6 +378,11 @@ class BillingController extends Controller
             $invoice->update(['status' => 'partially_paid']);
         }
 
-        return back()->with('success', 'Payment recorded successfully!');
+        $successMsg = 'Payment recorded successfully!';
+        if ($change > 0) {
+            $successMsg .= ' Change: ₱' . number_format($change, 2);
+        }
+
+        return back()->with('success', $successMsg);
     }
 }

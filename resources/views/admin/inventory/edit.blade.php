@@ -1,8 +1,11 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
 
 @section('title', 'Edit Inventory')
 
 @section('page-title', 'Edit Inventory Item')
+@php
+    $r = auth()->user()->role === 'admin' ? 'admin.inventory' : 'inventory';
+@endphp
 
 @section('styles')
 @vite(['resources/css/inventory-form.css', 'resources/js/inventory-form.js'])
@@ -10,7 +13,7 @@
 
 @section('content')
 <div class="inventory-form-container">
-    <form method="POST" action="{{ route('admin.inventory.update', $inventory) }}" class="inventory-form">
+    <form method="POST" action="{{ route($r . '.update', $inventory) }}" class="inventory-form">
         @csrf
         @method('PUT')
 
@@ -100,7 +103,7 @@
 
         <div class="form-actions">
             <button type="button" class="btn-submit" onclick="showUpdateModal()">Update Item</button>
-            <a href="{{ route('admin.inventory.index') }}" class="btn-cancel">Cancel</a>
+            <a href="{{ route($r . '.index') }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>

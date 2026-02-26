@@ -400,6 +400,16 @@
     color: #856404;
 }
 
+.status-expiring-soon {
+    background: #ffe5cc;
+    color: #cc5200;
+}
+
+.status-expired {
+    background: #f8d7da;
+    color: #721c24;
+}
+
 .status-out-of-stock {
     background: #f8d7da;
     color: #721c24;

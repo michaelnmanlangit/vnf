@@ -1,10 +1,14 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
 
 @section('title', 'Inventory Management')
 
 @section('page-title', 'Inventory Management')
+@php
+    $r = auth()->user()->role === 'admin' ? 'admin.inventory' : 'inventory';
+@endphp
 @section('styles')
-@vite(['resources/css/inventory.css', 'resources/js/inventory.js'])
+@vite(['resources/css/inventory.css', 'resources/css/billing.css', 'resources/js/inventory.js'])
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endsection
 @section('content')
 @if(session('success'))
@@ -14,9 +18,51 @@
     </div>
 @endif
 <div class="inventory-grid-container">
+
+    {{-- Stat Tiles --}}
+    <div class="status-stats">
+        <div class="status-cards">
+            <div class="status-card status-total">
+                <div class="status-icon"><i class="fas fa-warehouse" style="font-size:1.4rem;"></i></div>
+                <div class="status-content">
+                    <span class="status-name">Total Items</span>
+                    <div class="status-bottom"><span class="status-count">{{ $totalItems }}</span></div>
+                </div>
+            </div>
+            <div class="status-card status-paid">
+                <div class="status-icon"><i class="fas fa-check-circle" style="font-size:1.4rem;"></i></div>
+                <div class="status-content">
+                    <span class="status-name">In Stock</span>
+                    <div class="status-bottom"><span class="status-count">{{ $inStockCount }}</span></div>
+                </div>
+            </div>
+            <div class="status-card status-pending">
+                <div class="status-icon"><i class="fas fa-exclamation-triangle" style="font-size:1.4rem;"></i></div>
+                <div class="status-content">
+                    <span class="status-name">Low Stock</span>
+                    <div class="status-bottom"><span class="status-count">{{ $lowStockCount }}</span></div>
+                </div>
+            </div>
+            <div class="status-card status-partial">
+                <div class="status-icon"><i class="fas fa-clock" style="font-size:1.4rem;"></i></div>
+                <div class="status-content">
+                    <span class="status-name">Expiring Soon</span>
+                    <div class="status-bottom"><span class="status-count">{{ $expiringSoonCount }}</span></div>
+                </div>
+            </div>
+            <div class="status-card status-overdue">
+                <div class="status-icon"><i class="fas fa-ban" style="font-size:1.4rem;"></i></div>
+                <div class="status-content">
+                    <span class="status-name">Expired</span>
+                    <div class="status-bottom"><span class="status-count">{{ $expiredCount }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Search & Filter Toolbar -->
     <div class="inventory-toolbar">
-        <form method="GET" action="{{ route('admin.inventory.index') }}" id="filterForm" class="toolbar-form">
+        <form method="GET" action="{{ route($r . '.index') }}" id="filterForm" class="toolbar-form">
             <!-- Search Box -->
             <div class="search-box">
                 <input type="text" name="search" placeholder="Search by product name..." 
@@ -85,7 +131,7 @@
 
                         <div class="filter-actions">
                             <button type="submit" class="filter-apply">Apply</button>
-                            <a href="{{ route('admin.inventory.index') }}" class="filter-reset">Reset</a>
+                            <a href="{{ route($r . '.index') }}" class="filter-reset">Reset</a>
                         </div>
                     </div>
                 </div>
@@ -94,9 +140,9 @@
             <!-- Actions -->
             <div class="toolbar-actions">
                 @if(request('search') || request('category') || request('status'))
-                    <a href="{{ route('admin.inventory.index') }}" class="clear-filters">Clear All</a>
+                    <a href="{{ route($r . '.index') }}" class="clear-filters">Clear All</a>
                 @endif
-                <a href="{{ route('admin.inventory.create') }}" class="add-inventory-btn">
+                <a href="{{ route($r . '.create') }}" class="add-inventory-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -110,7 +156,7 @@
     <!-- Inventory List -->
     @if($inventory->count() > 0)
         <div class="inventory-list">
-            <table class="inventory-table" data-route="{{ route('admin.inventory.index') }}">
+            <table class="inventory-table" data-route="{{ route($r . '.index') }}">
                 <thead>
                     <tr>
                         <th class="sortable" data-column="id">
@@ -159,14 +205,14 @@
                             </span>
                         </td>
                         <td class="actions-cell">
-                            <a href="{{ route('admin.inventory.edit', $item) }}" class="btn-action edit" title="Edit Item">
+                            <a href="{{ route($r . '.edit', $item) }}" class="btn-action edit" title="Edit Item">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                 </svg>
                                 Edit
                             </a>
-                            <form method="POST" action="{{ route('admin.inventory.destroy', $item) }}" style="display: inline;" class="delete-form">
+                            <form method="POST" action="{{ route($r . '.destroy', $item) }}" style="display: inline;" class="delete-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn-action delete" onclick="showDeleteModal('{{ $item->id }}', '{{ $item->product_name }}')">
@@ -191,7 +237,7 @@
             <div class="empty-state-icon">📦</div>
             <h2>No Inventory Items Yet</h2>
             <p>Get started by adding your first inventory item to the system.</p>
-            <a href="{{ route('admin.inventory.create') }}" class="empty-state-btn">Add First Item</a>
+            <a href="{{ route($r . '.create') }}" class="empty-state-btn">Add First Item</a>
         </div>
     @endif
 

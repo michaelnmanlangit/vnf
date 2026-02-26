@@ -43,9 +43,9 @@ class LoginController extends Controller
             
             return match($user->role) {
                 'admin' => redirect()->intended('/admin/dashboard'),
-                'inventory_staff' => redirect()->intended('/warehouse/dashboard'),
-                'temperature_staff' => redirect()->intended('/warehouse/dashboard'),
-                'payment_staff' => redirect()->intended('/warehouse/dashboard'),
+                'inventory_staff' => redirect()->intended('/inventory'),
+                'temperature_staff' => redirect()->intended('/warehouse/temperature'),
+                'payment_staff' => redirect()->intended('/admin/billing'),
                 'delivery_personnel' => redirect()->intended('/delivery/dashboard'),
                 default => redirect()->intended('/'),
             };

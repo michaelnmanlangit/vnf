@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
 
 @section('title', 'Create Invoice')
 

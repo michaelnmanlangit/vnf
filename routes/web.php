@@ -3,15 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\WarehouseDashboardController;
 use App\Http\Controllers\DeliveryDashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\StorageAssignmentController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\TemperatureMonitoringController;
+use App\Http\Controllers\ProfileController;
 
 // Public routes
 Route::get('/', function () {
@@ -19,7 +20,9 @@ Route::get('/', function () {
         return match (auth()->user()->role) {
             'admin' => redirect('/admin/dashboard'),
             'storage_supervisor' => redirect('/supervisor/dashboard'),
-            'inventory_staff', 'temperature_staff', 'payment_staff' => redirect('/warehouse/dashboard'),
+            'inventory_staff' => redirect('/inventory'),
+            'temperature_staff' => redirect('/warehouse/temperature'),
+            'payment_staff' => redirect('/admin/billing'),
             'delivery_personnel' => redirect('/delivery/dashboard'),
             default => redirect('/login'),
         };
@@ -34,47 +37,26 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Admin routes
+// Profile routes (authenticated users)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// Admin-only routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('/admin/employees', EmployeeController::class)->names([
         'index' => 'admin.employees.index',
         'create' => 'admin.employees.create',
         'store' => 'admin.employees.store',
+        'show' => 'admin.employees.show',
         'edit' => 'admin.employees.edit',
         'update' => 'admin.employees.update',
         'destroy' => 'admin.employees.destroy',
     ]);
-    Route::resource('/admin/inventory', InventoryController::class)->names([
-        'index' => 'admin.inventory.index',
-        'create' => 'admin.inventory.create',
-        'store' => 'admin.inventory.store',
-        'edit' => 'admin.inventory.edit',
-        'update' => 'admin.inventory.update',
-        'destroy' => 'admin.inventory.destroy',
-    ]);
-    
-    // Billing routes
-    Route::prefix('admin/billing')->name('admin.billing.')->group(function () {
-        // Invoices
-        Route::get('/', [BillingController::class, 'index'])->name('index');
-        Route::get('/create', [BillingController::class, 'create'])->name('create');
-        Route::post('/', [BillingController::class, 'store'])->name('store');
-        Route::get('/{id}', [BillingController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [BillingController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [BillingController::class, 'update'])->name('update');
-        Route::delete('/{id}', [BillingController::class, 'destroy'])->name('destroy');
-        
-        // Customers
-        Route::get('/customers/list', [BillingController::class, 'customers'])->name('customers');
-        Route::post('/customers', [BillingController::class, 'storeCustomer'])->name('customer.store');
-        Route::put('/customer/{id}', [BillingController::class, 'updateCustomer'])->name('customer.update');
-        Route::delete('/customer/{id}', [BillingController::class, 'deleteCustomer'])->name('customer.delete');
-        
-        // Payments
-        Route::post('/{id}/payment', [BillingController::class, 'storePayment'])->name('payment.store');
-    });
-    
+
     // Task Assignment routes
     Route::resource('/admin/tasks', TaskAssignmentController::class)->names([
         'index' => 'admin.tasks.index',
@@ -99,6 +81,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/workers/all', [StorageAssignmentController::class, 'workers'])->name('workers');
     });
     
+    // Reports routes
+    Route::get('/admin/reports', fn() => redirect()->route('admin.reports.inventory'));
+    Route::get('/admin/reports/inventory',   [ReportsController::class, 'inventory'])->name('admin.reports.inventory');
+    Route::get('/admin/reports/temperature', [ReportsController::class, 'temperature'])->name('admin.reports.temperature');
+    Route::get('/admin/reports/financial',   [ReportsController::class, 'financial'])->name('admin.reports.financial');
+
     // Temperature Monitoring routes
     Route::prefix('admin/temperature')->name('admin.temperature.')->group(function () {
         Route::get('/', [TemperatureMonitoringController::class, 'index'])->name('index');
@@ -111,6 +99,50 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
 });
 
+// Inventory routes - accessible by admin only (staff uses /inventory below)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('/admin/inventory', InventoryController::class)->names([
+        'index' => 'admin.inventory.index',
+        'create' => 'admin.inventory.create',
+        'store' => 'admin.inventory.store',
+        'show' => 'admin.inventory.show',
+        'edit' => 'admin.inventory.edit',
+        'update' => 'admin.inventory.update',
+        'destroy' => 'admin.inventory.destroy',
+    ]);
+});
+
+// Inventory routes - clean URL for inventory_staff (no /admin/ prefix)
+Route::middleware(['auth', 'role:inventory_staff'])->group(function () {
+    Route::resource('/inventory', InventoryController::class)->names([
+        'index' => 'inventory.index',
+        'create' => 'inventory.create',
+        'store' => 'inventory.store',
+        'show' => 'inventory.show',
+        'edit' => 'inventory.edit',
+        'update' => 'inventory.update',
+        'destroy' => 'inventory.destroy',
+    ]);
+});
+
+// Billing routes - accessible by admin and payment_staff
+Route::middleware(['auth', 'role:admin,payment_staff'])->group(function () {
+    Route::prefix('admin/billing')->name('admin.billing.')->group(function () {
+        Route::get('/', [BillingController::class, 'index'])->name('index');
+        Route::get('/create', [BillingController::class, 'create'])->name('create');
+        Route::post('/', [BillingController::class, 'store'])->name('store');
+        Route::get('/{id}', [BillingController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [BillingController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [BillingController::class, 'update'])->name('update');
+        Route::delete('/{id}', [BillingController::class, 'destroy'])->name('destroy');
+        Route::get('/customers/list', [BillingController::class, 'customers'])->name('customers');
+        Route::post('/customers', [BillingController::class, 'storeCustomer'])->name('customer.store');
+        Route::put('/customer/{id}', [BillingController::class, 'updateCustomer'])->name('customer.update');
+        Route::delete('/customer/{id}', [BillingController::class, 'deleteCustomer'])->name('customer.delete');
+        Route::post('/{id}/payment', [BillingController::class, 'storePayment'])->name('payment.store');
+    });
+});
+
 // Storage Supervisor routes
 Route::middleware(['auth', 'role:storage_supervisor'])->group(function () {
     Route::get('/supervisor/dashboard', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
@@ -120,15 +152,8 @@ Route::middleware(['auth', 'role:storage_supervisor'])->group(function () {
     Route::get('/supervisor/attendance/history', [SupervisorController::class, 'attendanceHistory'])->name('supervisor.attendanceHistory');
 });
 
-// Warehouse staff routes - All roles
-Route::middleware(['auth', 'role:inventory_staff,temperature_staff,payment_staff'])->group(function () {
-    Route::get('/warehouse/dashboard', [WarehouseDashboardController::class, 'index'])->name('warehouse.dashboard');
-    
-    // Inventory Staff routes
-    Route::get('/warehouse/inventory', [InventoryController::class, 'warehouseIndex'])->name('warehouse.inventory.index');
-    Route::get('/warehouse/inventory/{inventory}', [InventoryController::class, 'warehouseShow'])->name('warehouse.inventory.show');
-    
-    // Temperature Staff routes - Temperature Monitoring
+// Warehouse staff routes - temperature_staff only
+Route::middleware(['auth', 'role:temperature_staff'])->group(function () {
     Route::prefix('warehouse/temperature')->name('warehouse.temperature.')->group(function () {
         Route::get('/', [TemperatureMonitoringController::class, 'index'])->name('index');
         Route::get('/{id}', [TemperatureMonitoringController::class, 'show'])->name('show');
@@ -138,10 +163,6 @@ Route::middleware(['auth', 'role:inventory_staff,temperature_staff,payment_staff
         Route::get('/chart-data', [TemperatureMonitoringController::class, 'getChartData'])->name('chartData');
         Route::post('/simulate', [TemperatureMonitoringController::class, 'simulateReadings'])->name('simulate');
     });
-    
-    // Payment Staff routes
-    Route::get('/warehouse/payment', [InventoryController::class, 'warehousePaymentIndex'])->name('warehouse.payment.index');
-    Route::get('/warehouse/payment/{inventory}', [InventoryController::class, 'warehousePaymentShow'])->name('warehouse.payment.show');
 });
 
 // Delivery personnel routes

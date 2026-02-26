@@ -98,6 +98,35 @@
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
     }
 
+    .unit-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        padding: 2rem 1.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        border: 1px solid #f1f5f9;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .storage-unit-item:hover .unit-card {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
+    }
+
+    .storage-unit-item.status-critical .unit-card {
+        border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .storage-unit-item.status-warning .unit-card {
+        border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .storage-unit-item.status-normal .unit-card {
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+
     .unit-svg-wrapper {
         position: relative;
         width: 200px;
@@ -213,8 +242,8 @@
         color: #6b7280;
     }
 
-    /* Modal Styles */
-    .modal {
+    /* Modal Styles - scoped to custom modals only */
+    .custom-modal {
         display: none;
         position: fixed;
         top: 0;
@@ -227,11 +256,11 @@
         justify-content: center;
     }
 
-    .modal.active {
+    .custom-modal.active {
         display: flex;
     }
 
-    .modal-content {
+    .custom-modal .modal-content {
         background: white;
         border-radius: 1rem;
         max-width: 500px;
@@ -241,26 +270,26 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    .modal-header {
+    .custom-modal .modal-header {
         padding: 1.5rem;
         border-bottom: 1px solid #e5e7eb;
     }
 
-    .modal-header h2 {
+    .custom-modal .modal-header h2 {
         font-size: 1.5rem;
         font-weight: 700;
         color: #111827;
     }
 
-    .modal-body {
+    .custom-modal .modal-body {
         padding: 1.5rem;
     }
 
-    .form-group {
+    .custom-modal .form-group {
         margin-bottom: 1.5rem;
     }
 
-    .form-label {
+    .custom-modal .form-label {
         display: block;
         font-size: 0.875rem;
         font-weight: 600;
@@ -268,7 +297,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .form-input {
+    .custom-modal .form-input {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid #e5e7eb;
@@ -277,13 +306,13 @@
         transition: border-color 0.2s;
     }
 
-    .form-input:focus {
+    .custom-modal .form-input:focus {
         outline: none;
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .modal-footer {
+    .custom-modal .modal-footer {
         padding: 1rem 1.5rem;
         border-top: 1px solid #e5e7eb;
         display: flex;
@@ -291,7 +320,7 @@
         justify-content: flex-end;
     }
 
-    .btn-modal {
+    .custom-modal .btn-modal {
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
         font-weight: 600;
@@ -300,22 +329,21 @@
         transition: all 0.2s;
     }
 
-    .btn-modal-cancel {
+    .custom-modal .btn-modal-cancel {
         background: white;
         color: #111827;
         border: 1px solid #e5e7eb;
     }
 
-    .btn-modal-cancel:hover {
+    .custom-modal .btn-modal-cancel:hover {
         background: #f3f4f6;
-    }
 
-    .btn-modal-submit {
+    .custom-modal .btn-modal-submit {
         background: #3b82f6;
         color: white;
     }
 
-    .btn-modal-submit:hover {
+    .custom-modal .btn-modal-submit:hover {
         background: #2563eb;
     }
 
@@ -386,18 +414,18 @@
             font-size: 1.75rem;
         }
 
-        .modal-content {
+        .custom-modal .modal-content {
             width: 95%;
             max-height: 95vh;
         }
 
-        .modal-header,
-        .modal-body,
-        .modal-footer {
+        .custom-modal .modal-header,
+        .custom-modal .modal-body,
+        .custom-modal .modal-footer {
             padding: 1rem;
         }
 
-        .modal-header h2 {
+        .custom-modal .modal-header h2 {
             font-size: 1.25rem;
         }
     }
@@ -451,6 +479,7 @@
     @foreach($storageUnits as $unit)
     <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.temperature.show' : 'warehouse.temperature.show', $unit['id']) }}" 
        class="storage-unit-item status-{{ $unit['status'] }}">
+        <div class="unit-card">
         <div class="unit-svg-wrapper">
             <svg height="200px" width="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                 <path class="colorable" style="fill:#9BB4C0;" d="M499.725,163.607L260.792,1.473c-2.893-1.963-6.69-1.964-9.583,0L12.275,163.607 c-2.34,1.587-3.742,4.231-3.742,7.06v332.8c0,4.713,3.821,8.533,8.533,8.533h477.867c4.713,0,8.533-3.821,8.533-8.533v-332.8 C503.467,167.838,502.066,165.194,499.725,163.607z"></path>
@@ -495,6 +524,7 @@
             <div class="unit-products-count">
                 {{ $unit['total_products'] }} products stored
             </div>
+        </div>
         </div>
     </a>
     @endforeach

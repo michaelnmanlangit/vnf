@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
 
 @section('title', 'Edit Invoice')
 
@@ -100,6 +100,17 @@
                     <span>Balance:</span>
                     <strong class="text-danger">₱{{ number_format($invoice->balance, 2) }}</strong>
                 </div>
+                @php $lastPmt = $invoice->payments->last(); @endphp
+                @if($lastPmt && ($lastPmt->change_amount ?? 0) > 0)
+                <div class="summary-row">
+                    <span>Last Cash Tendered:</span>
+                    <strong>₱{{ number_format($lastPmt->tendered_amount, 2) }}</strong>
+                </div>
+                <div class="summary-row" style="color:#27ae60;">
+                    <span>Last Change Given:</span>
+                    <strong style="color:#27ae60;">₱{{ number_format($lastPmt->change_amount, 2) }}</strong>
+                </div>
+                @endif
             </div>
 
             <p class="help-text">

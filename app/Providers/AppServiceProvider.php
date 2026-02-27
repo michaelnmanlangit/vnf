@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 use App\Models\Invoice;
 use App\Models\Employee;
 use App\Observers\InvoiceObserver;
@@ -25,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         // Register reCAPTCHA validation rule
         Validator::extend('recaptcha', function ($attribute, $value, $parameters, $validator) {
             $secretKey = config('services.recaptcha.secret_key');

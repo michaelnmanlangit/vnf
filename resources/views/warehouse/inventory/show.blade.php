@@ -5,7 +5,7 @@
 @section('page-title', 'Inventory Details')
 
 @section('styles')
-@vite(['resources/css/inventory.css'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css">
 @endsection
 
 @section('content')
@@ -183,7 +183,7 @@
     </div>
 </div>
 
-@vite(['resources/css/inventory.css'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css">
 <style>
     .inventory-detail-container {
         max-width: 1000px;

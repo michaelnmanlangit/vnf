@@ -8,7 +8,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
-    @vite(['resources/css/delivery.css', 'resources/js/delivery.js'])
+    <link rel="stylesheet" href="/build/assets/delivery-96pmIQKG.css">
+    <script src="/build/assets/delivery-DCGM-j4R.js" defer></script>
     @yield('styles')
 </head>
 <body>

@@ -8,7 +8,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
-    @vite(['resources/css/warehouse.css', 'resources/js/warehouse.js'])
+    <link rel="stylesheet" href="/build/assets/warehouse-C14kwTvn.css">
+    <script src="/build/assets/warehouse-DLbE0-9j.js" defer></script>
     @yield('styles')
 </head>
 <body>
@@ -124,7 +125,6 @@
         @csrf
     </form>
     
-    @vite(['resources/js/warehouse.js'])
     @yield('scripts')
 </body>
 </html>

@@ -5,7 +5,7 @@
 @section('page-title', 'Payment Management')
 
 @section('styles')
-@vite(['resources/css/inventory.css', 'resources/js/inventory.js'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><script src="/build/assets/inventory-CWWqNO4T.js" defer></script>
 @endsection
 
 @section('content')
@@ -87,7 +87,7 @@
     @endif
 </div>
 
-@vite(['resources/css/inventory.css', 'resources/js/inventory.js'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><script src="/build/assets/inventory-CWWqNO4T.js" defer></script>
 <script>
     // Filter toggle functionality
     const filterToggle = document.getElementById('filterToggle');

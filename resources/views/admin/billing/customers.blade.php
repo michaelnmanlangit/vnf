@@ -4,7 +4,7 @@
 
 @section('page-title', 'Customers')
 @section('styles')
-@vite(['resources/css/billing.css', 'resources/css/employees-form.css'])
+<link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css"><link rel="stylesheet" href="/build/assets/employees-form-BzD5O2VJ.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endsection
 

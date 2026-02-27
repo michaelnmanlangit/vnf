@@ -8,7 +8,7 @@
 @endphp
 
 @section('styles')
-@vite(['resources/css/inventory-form.css', 'resources/js/inventory-form.js'])
+<link rel="stylesheet" href="/build/assets/inventory-form-C96KQb5D.css"><script src="/build/assets/inventory-form-i_clXXmw.js" defer></script>
 @endsection
 
 @section('content')
@@ -124,7 +124,7 @@
     </div>
 </div>
 
-@vite(['resources/css/inventory-form.css', 'resources/js/inventory-form.js'])
+<link rel="stylesheet" href="/build/assets/inventory-form-C96KQb5D.css"><script src="/build/assets/inventory-form-i_clXXmw.js" defer></script>
 <script>
     let updateFormToSubmit = null;
 

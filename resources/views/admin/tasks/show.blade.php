@@ -5,7 +5,7 @@
 @section('page-title', 'Work Assignment Details')
 
 @section('styles')
-@vite(['resources/css/billing.css'])
+<link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css">
 @endsection
 
 @section('content')

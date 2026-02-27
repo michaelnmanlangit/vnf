@@ -8,7 +8,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
-    @vite(['resources/css/admin.css', 'resources/js/admin.js'])
+    <link rel="stylesheet" href="/build/assets/admin-CoWPeOez.css">
+    <script src="/build/assets/admin-DLbE0-9j.js" defer></script>
     @yield('styles')
 </head>
 <body>

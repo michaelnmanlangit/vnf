@@ -7,7 +7,7 @@
     $r = auth()->user()->role === 'admin' ? 'admin.inventory' : 'inventory';
 @endphp
 @section('styles')
-@vite(['resources/css/inventory.css', 'resources/css/billing.css', 'resources/js/inventory.js'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css"><script src="/build/assets/inventory-CWWqNO4T.js" defer></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endsection
 @section('content')
@@ -263,7 +263,7 @@
     </div>
 </div>
 
-@vite(['resources/css/inventory.css', 'resources/js/inventory.js'])
+<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><script src="/build/assets/inventory-CWWqNO4T.js" defer></script>
 <script>
     let deleteFormToSubmit = null;
 

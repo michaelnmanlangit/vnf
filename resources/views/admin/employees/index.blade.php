@@ -4,7 +4,7 @@
 
 @section('page-title', 'Employee Management')
 @section('styles')
-@vite(['resources/css/employees.css', 'resources/js/employees.js'])
+<link rel="stylesheet" href="/build/assets/employees-B_IfWkp5.css"><script src="/build/assets/employees-CDxtRMBS.js" defer></script>
 @endsection
 @section('content')
 @if(session('success'))
@@ -291,7 +291,7 @@
     </div>
 </div>
 
-@vite(['resources/css/employees.css', 'resources/js/employees.js'])
+<link rel="stylesheet" href="/build/assets/employees-B_IfWkp5.css"><script src="/build/assets/employees-CDxtRMBS.js" defer></script>
 <script>
     let deleteFormToSubmit = null;
 

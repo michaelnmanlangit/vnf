@@ -5,7 +5,7 @@
 @section('page-title', 'Edit Employee')
 
 @section('styles')
-@vite(['resources/css/employees-form.css', 'resources/js/employees-form.js'])
+<link rel="stylesheet" href="/build/assets/employees-form-BzD5O2VJ.css"><script src="/build/assets/employees-form-BxA1CLbF.js" defer></script>
 @endsection
 
 @section('content')
@@ -223,7 +223,7 @@
     </div>
 </div>
 
-@vite(['resources/css/employees-form.css', 'resources/js/employees-form.js'])
+<link rel="stylesheet" href="/build/assets/employees-form-BzD5O2VJ.css"><script src="/build/assets/employees-form-BxA1CLbF.js" defer></script>
 <script>
     // Image preview function
     document.getElementById('imageInput').addEventListener('change', function(event) {

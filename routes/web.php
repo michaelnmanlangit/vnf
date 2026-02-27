@@ -7,6 +7,7 @@ use App\Http\Controllers\DeliveryDashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\DeliveryController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\StorageAssignmentController;
@@ -86,6 +87,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/reports/inventory',   [ReportsController::class, 'inventory'])->name('admin.reports.inventory');
     Route::get('/admin/reports/temperature', [ReportsController::class, 'temperature'])->name('admin.reports.temperature');
     Route::get('/admin/reports/financial',   [ReportsController::class, 'financial'])->name('admin.reports.financial');
+
+    // Delivery & GPS Tracking routes
+    Route::prefix('admin/deliveries')->name('admin.deliveries.')->group(function () {
+        Route::get('/',           [DeliveryController::class, 'index'])->name('index');
+        Route::get('/{delivery}', [DeliveryController::class, 'show'])->name('show');
+        Route::get('/{delivery}/location', [DeliveryController::class, 'location'])->name('location');
+        Route::patch('/{delivery}/cancel',   [DeliveryController::class, 'cancel'])->name('cancel');
+        Route::patch('/{delivery}/reassign', [DeliveryController::class, 'reassign'])->name('reassign');
+    });
 
     // Temperature Monitoring routes
     Route::prefix('admin/temperature')->name('admin.temperature.')->group(function () {
@@ -167,5 +177,8 @@ Route::middleware(['auth', 'role:temperature_staff'])->group(function () {
 
 // Delivery personnel routes
 Route::middleware(['auth', 'role:delivery_personnel'])->group(function () {
-    Route::get('/delivery/dashboard', [DeliveryDashboardController::class, 'index'])->name('delivery.dashboard');
+    Route::get('/delivery/dashboard',              [DeliveryDashboardController::class, 'index'])->name('delivery.dashboard');
+    Route::post('/delivery/{delivery}/start',      [DeliveryDashboardController::class, 'start'])->name('delivery.start');
+    Route::post('/delivery/{delivery}/complete',   [DeliveryDashboardController::class, 'complete'])->name('delivery.complete');
+    Route::post('/delivery/location',              [DeliveryDashboardController::class, 'updateLocation'])->name('delivery.location');
 });

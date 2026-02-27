@@ -50,7 +50,7 @@
                     </svg>
                     Inventory Management
                 </a>
-                <a href="#" class="menu-item">
+                <a href="{{ route('admin.deliveries.index') }}" class="menu-item {{ request()->routeIs('admin.deliveries.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="1" y="3" width="15" height="13"></rect>
                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>

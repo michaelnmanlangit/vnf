@@ -13,8 +13,6 @@
 /.zed
 /auth.json
 /node_modules
-package.json
-package-lock.json
 # /public/build
 /public/hot
 /public/storage

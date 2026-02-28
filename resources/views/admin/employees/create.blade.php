@@ -26,6 +26,7 @@
                 </div>
                 <input type="file" id="imageInput" name="image" accept="image/*" class="image-input">
                 <label for="imageInput" class="upload-label">Choose Image</label>
+                <span id="imageError" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;"></span>
                 <p class="upload-hint">JPG, PNG, or GIF (Max 2MB)</p>
             </div>
 
@@ -177,8 +178,16 @@
     document.getElementById('imageInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         const preview = document.getElementById('imagePreview');
-        
+        const errorEl = document.getElementById('imageError');
+
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                errorEl.textContent = 'Image must not exceed 2MB.';
+                errorEl.style.display = 'block';
+                event.target.value = '';
+                return;
+            }
+            errorEl.style.display = 'none';
             const reader = new FileReader();
             
             reader.onload = function(e) {

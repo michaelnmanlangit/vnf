@@ -49,7 +49,7 @@ class TaskAssignmentController extends Controller
             ->get();
 
         // Get active employees for relocation modal
-        $employees = Employee::whereIn('department', ['production', 'administration', 'delivery', 'warehouse'])
+        $employees = Employee::whereIn('department', ['production', 'warehouse'])
             ->where('employment_status', 'active')
             ->with('assignedStorageUnit')
             ->orderBy('first_name')
@@ -66,7 +66,7 @@ class TaskAssignmentController extends Controller
      */
     public function create()
     {
-        $employees = Employee::whereIn('department', ['production', 'administration'])
+        $employees = Employee::whereIn('department', ['production', 'warehouse'])
             ->where('employment_status', 'active')
             ->with('assignedStorageUnit')
             ->orderBy('first_name')
@@ -122,7 +122,7 @@ class TaskAssignmentController extends Controller
      */
     public function edit(TaskAssignment $task)
     {
-        $employees = Employee::whereIn('department', ['production', 'administration'])
+        $employees = Employee::whereIn('department', ['production', 'warehouse'])
             ->where('employment_status', 'active')
             ->with('assignedStorageUnit')
             ->orderBy('first_name')

@@ -125,6 +125,7 @@ class EmployeeController extends Controller
         $accountDetails = null;
         
         if (in_array($validated['department'], ['warehouse', 'delivery'])) {
+            $role = $validated['department'];
             $defaultPassword = $this->generatePassword($validated['first_name'], $validated['last_name'], $employee->id);
             
             // Check if user account already exists

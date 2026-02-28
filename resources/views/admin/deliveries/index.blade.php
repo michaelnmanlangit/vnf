@@ -11,6 +11,79 @@
     .status-badge.delivered   { background:#d5f5e3; color:#1e8449; }
     .status-badge.pending     { background:#fef9e7; color:#b7950b; }
     .status-badge.cancelled   { background:#fde8e8; color:#c0392b; }
+
+    /* ── Filter dropdown fix ── */
+    .multi-select-wrapper { position: relative; }
+    .multi-select-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        left: auto;
+        min-width: 220px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+        z-index: 999;
+        padding: .75rem 0 .5rem;
+    }
+    .multi-select-dropdown.active { display: block; }
+    .filter-section { padding: 0 1rem .5rem; }
+    .section-title {
+        font-size: .68rem;
+        font-weight: 700;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin-bottom: .5rem;
+    }
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        padding: .38rem .25rem;
+        font-size: .875rem;
+        color: #2c3e50;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: background .12s;
+    }
+    .filter-option:hover { background: #f0f4ff; }
+    .filter-option input[type="radio"] { accent-color: #1a73e8; width: 15px; height: 15px; }
+    .filter-actions {
+        display: flex;
+        gap: .5rem;
+        padding: .6rem 1rem 0;
+        border-top: 1px solid #f0f2f5;
+        margin-top: .4rem;
+    }
+    .filter-apply {
+        flex: 1;
+        padding: .45rem;
+        background: #1a73e8;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: .83rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .15s;
+    }
+    .filter-apply:hover { background: #1558c0; }
+    .filter-reset {
+        flex: 1;
+        padding: .45rem;
+        background: #f0f2f5;
+        color: #2c3e50;
+        border-radius: 7px;
+        font-size: .83rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: background .15s;
+    }
+    .filter-reset:hover { background: #e2e6ea; }
 </style>
 @endsection
 

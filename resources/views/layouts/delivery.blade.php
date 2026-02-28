@@ -8,8 +8,70 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
-    <link rel="stylesheet" href="/build/assets/delivery-96pmIQKG.css">
-    <script src="/build/assets/delivery-DCGM-j4R.js" defer></script>
+    <link rel="stylesheet" href="/build/assets/delivery-CZbfaTb7.css">
+    <script src="/build/assets/delivery-CWGeEeD9.js" defer></script>
+    <style>
+
+    /* ── Responsive nav — mirrors admin CSS behaviour ── */
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #2c3e50;
+        padding: .5rem;
+        margin-right: 1rem;
+    }
+    .menu-toggle svg { width: 24px; height: 24px; }
+
+    @media (max-width: 1024px) {
+        .sidebar       { width: 220px; }
+        .main-content  { margin-left: 220px; width: calc(100% - 220px); max-width: calc(100vw - 220px); }
+        .top-navbar    { padding: .75rem 1.5rem; }
+    }
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+            z-index: 999;
+            margin-top: 60px;
+        }
+        .sidebar.active { max-height: 100vh; overflow-y: auto; }
+        .main-content   { margin-left: 0; width: 100%; max-width: 100vw; }
+        .top-navbar     { padding: .75rem 1rem; gap: .5rem; }
+        .menu-toggle    { display: block !important; }
+        .navbar-left    { min-width: auto; flex: 1; }
+        .navbar-left h1 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .navbar-right   { flex-wrap: wrap; gap: .5rem; flex-shrink: 0; }
+        .user-info      { display: none; }
+        .sidebar-menu   { padding: .5rem 0; }
+        .menu-item      { padding: .7rem 1.25rem; font-size: .95rem; }
+        .sidebar-header { padding: 1rem 1.25rem; }
+        .content-area   { padding: 1.5rem 1rem !important; }
+    }
+    @media (max-width: 640px) {
+        .top-navbar     { padding: .5rem .75rem; }
+        .navbar-left h1 { font-size: .95rem; }
+        .menu-item      { padding: .6rem 1rem; font-size: .9rem; }
+        .btn-logout     { padding: .4rem 1rem; font-size: .85rem; }
+        .sidebar-header h2 { font-size: 1.1rem; }
+    }
+    @media (max-width: 480px) {
+        .top-navbar     { padding: .5rem; }
+        .navbar-left h1 { font-size: .85rem; }
+        .menu-item      { padding: .5rem .75rem; font-size: .85rem; }
+        .btn-logout     { padding: .35rem .75rem; font-size: .8rem; }
+        .content-area   { padding: 1rem .75rem !important; }
+    }
+
+    /* ── Logout modal active state ── */
+    .modal-overlay.active { display: flex; }
+    </style>
     @yield('styles')
 </head>
 <body>
@@ -32,6 +94,13 @@
                     </svg>
                     Dashboard
                 </a>
+                <a href="{{ route('profile.show') }}" class="menu-item {{ request()->routeIs('profile.show', 'profile.edit') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    My Profile
+                </a>
             </div>
 
 
@@ -40,6 +109,13 @@
 
     <div class="main-content">
         <nav class="top-navbar">
+            <button type="button" class="menu-toggle" id="menuToggle" style="display:none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
             <div class="navbar-left">
                 <h1>@yield('page-title', 'Dashboard')</h1>
             </div>
@@ -100,8 +176,29 @@
     <form method="POST" action="{{ route('logout') }}" id="logout-form-delivery" style="display: none;">
         @csrf
     </form>
-    </div>
 
+    <script>
+    (function () {
+        var toggle  = document.getElementById('menuToggle');
+        var sidebar = document.querySelector('.sidebar');
+        if (!toggle || !sidebar) return;
+        toggle.addEventListener('click', function () {
+            sidebar.classList.toggle('active');
+        });
+        // Close sidebar when a nav link is tapped on mobile
+        document.querySelectorAll('.menu-item').forEach(function (el) {
+            el.addEventListener('click', function () {
+                if (window.innerWidth <= 768) sidebar.classList.remove('active');
+            });
+        });
+        // Close sidebar on outside click
+        document.addEventListener('click', function (e) {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    })();
+    </script>
     @yield('scripts')
 </body>
 </html>

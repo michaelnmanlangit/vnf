@@ -49,7 +49,20 @@ class DeliveryController extends Controller
     public function show(Delivery $delivery)
     {
         $delivery->load(['invoice.items.inventory', 'customer', 'driver', 'latestLocation']);
-        return view('admin.deliveries.show', compact('delivery'));
+
+        // Get drivers NOT currently assigned to another active delivery
+        $busyDriverIds = Delivery::whereIn('status', ['pending', 'in_transit'])
+            ->where('id', '!=', $delivery->id)
+            ->whereNotNull('assigned_user_id')
+            ->pluck('assigned_user_id')
+            ->toArray();
+
+        $availableDrivers = User::where('role', 'delivery_personnel')
+            ->whereNotIn('id', $busyDriverIds)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.deliveries.show', compact('delivery', 'availableDrivers'));
     }
 
     /**
@@ -73,6 +86,25 @@ class DeliveryController extends Controller
     }
 
     /**
+     * API: return a lightweight refresh payload for admin AJAX polling.
+     */
+    public function refresh(Delivery $delivery)
+    {
+        $delivery->load(['driver', 'latestLocation']);
+
+        return response()->json([
+            'status'           => $delivery->status,
+            'status_label'     => $delivery->status_label,
+            'driver_name'      => $delivery->driver?->name ?? 'Unassigned',
+            'assigned_user_id' => $delivery->assigned_user_id,
+            'has_location'     => (bool) $delivery->latestLocation,
+            'latitude'         => $delivery->latestLocation?->latitude,
+            'longitude'        => $delivery->latestLocation?->longitude,
+            'last_updated'     => $delivery->latestLocation?->created_at->diffForHumans(),
+        ]);
+    }
+
+    /**
      * Admin can manually cancel a delivery.
      */
     public function cancel(Delivery $delivery)
@@ -92,6 +124,16 @@ class DeliveryController extends Controller
         $request->validate(['user_id' => 'required|exists:users,id']);
 
         $delivery->update(['assigned_user_id' => $request->user_id]);
+
+        $driver = User::find($request->user_id);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'     => true,
+                'driver_name' => $driver?->name,
+                'message'     => 'Driver assigned successfully.',
+            ]);
+        }
 
         return back()->with('success', 'Driver reassigned successfully.');
     }

@@ -5,11 +5,6 @@ namespace App\Services;
 use App\Models\TaskAssignment;
 use App\Models\User;
 use App\Models\Inventory;
-use App\Models\Invoice;
-use App\Models\Delivery;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class AutoTaskAssignmentService
 {
@@ -85,76 +80,10 @@ class AutoTaskAssignmentService
     }
     
     /**
-     * Automatically assign delivery task when invoice is paid
-     * 
-     * @param Invoice $invoice
-     * @return TaskAssignment|null
+     * Delivery auto-assignment removed.
+     * When an invoice is paid, an unassigned Delivery is created by InvoiceObserver.
+     * Admin assigns the driver manually from the deliveries page.
      */
-    public function assignDeliveryForPaidInvoice(Invoice $invoice)
-    {
-        // Only assign if invoice is paid
-        if ($invoice->status !== 'paid') {
-            return null;
-        }
-
-        // Check if a Delivery record already exists for this invoice
-        $existingDelivery = Delivery::where('invoice_id', $invoice->id)->first();
-        if ($existingDelivery) {
-            return $existingDelivery;
-        }
-
-        // Find available delivery personnel (fewest active deliveries first)
-        $deliveryPersonnel = User::where('role', 'delivery_personnel')
-            ->withCount(['taskAssignments as pending_deliveries' => function ($query) {
-                $query->where('task_type', 'delivery')
-                    ->whereIn('status', ['pending', 'in_progress']);
-            }])
-            ->orderBy('pending_deliveries', 'asc')
-            ->first();
-
-        if (!$deliveryPersonnel) {
-            Log::warning("AutoTaskAssignment: No delivery personnel available for Invoice #{$invoice->invoice_number} (ID: {$invoice->id}). Delivery created without a driver.");
-        }
-
-        $customer = $invoice->customer;
-        $customerAddress = $customer ? $customer->address : 'Address not specified';
-        $customerName    = $customer ? ($customer->business_name ?? $customer->name) : 'Customer';
-
-        // Always create the Delivery record so it appears in GPS Tracking
-        $delivery = Delivery::create([
-            'invoice_id'       => $invoice->id,
-            'customer_id'      => $invoice->customer_id,
-            'assigned_user_id' => $deliveryPersonnel?->id, // null if no driver found
-            'status'           => 'pending',
-            'notes'            => $deliveryPersonnel
-                ? "Auto-assigned to {$deliveryPersonnel->name} upon invoice payment."
-                : "Auto-created upon payment. No driver available — assign manually.",
-        ]);
-
-        // Also create a TaskAssignment if a driver was found
-        if ($deliveryPersonnel) {
-            // Check if task already exists
-            $existingTask = TaskAssignment::where('task_type', 'delivery')
-                ->where('title', 'LIKE', "%{$invoice->invoice_number}%")
-                ->first();
-
-            if (!$existingTask) {
-                TaskAssignment::create([
-                    'user_id'     => $deliveryPersonnel->id,
-                    'assigned_by' => auth()->id() ?? 1,
-                    'task_type'   => 'delivery',
-                    'title'       => "Deliver Invoice #{$invoice->invoice_number}",
-                    'description' => "Deliver products to {$customerName}.\nAddress: {$customerAddress}\nTotal Amount: ₱" . number_format($invoice->total_amount, 2) . "\nStatus: Paid",
-                    'priority'    => $invoice->total_amount > 10000 ? 'high' : 'medium',
-                    'status'      => 'pending',
-                    'due_date'    => $invoice->due_date ?? today()->addDays(3),
-                    'notes'       => "Auto-assigned upon invoice payment. Invoice ID: {$invoice->id}",
-                ]);
-            }
-        }
-
-        return $delivery;
-    }
     
     /**
      * Get statistics on current task assignments

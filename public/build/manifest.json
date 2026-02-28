@@ -18,7 +18,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-BbTTazls.css",
+    "file": "assets/app-DFSToUB7.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -36,7 +36,7 @@
     ]
   },
   "resources/css/delivery.css": {
-    "file": "assets/delivery-96pmIQKG.css",
+    "file": "assets/delivery-CZbfaTb7.css",
     "src": "resources/css/delivery.css",
     "isEntry": true,
     "name": "delivery",
@@ -108,7 +108,7 @@
     "isEntry": true
   },
   "resources/js/delivery.js": {
-    "file": "assets/delivery-DCGM-j4R.js",
+    "file": "assets/delivery-CWGeEeD9.js",
     "name": "delivery",
     "src": "resources/js/delivery.js",
     "isEntry": true

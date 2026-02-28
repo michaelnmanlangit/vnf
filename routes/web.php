@@ -93,6 +93,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/',           [DeliveryController::class, 'index'])->name('index');
         Route::get('/{delivery}', [DeliveryController::class, 'show'])->name('show');
         Route::get('/{delivery}/location', [DeliveryController::class, 'location'])->name('location');
+        Route::get('/{delivery}/refresh',  [DeliveryController::class, 'refresh'])->name('refresh');
         Route::patch('/{delivery}/cancel',   [DeliveryController::class, 'cancel'])->name('cancel');
         Route::patch('/{delivery}/reassign', [DeliveryController::class, 'reassign'])->name('reassign');
     });

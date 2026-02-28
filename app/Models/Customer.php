@@ -12,6 +12,8 @@ class Customer extends Model
         'email',
         'phone',
         'address',
+        'latitude',
+        'longitude',
         'customer_type',
         'status',
         'notes'
@@ -19,7 +21,9 @@ class Customer extends Model
 
     protected $casts = [
         'customer_type' => 'string',
-        'status' => 'string'
+        'status' => 'string',
+        'latitude'  => 'float',
+        'longitude' => 'float',
     ];
 
     // Relationships

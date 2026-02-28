@@ -6,6 +6,7 @@
 @section('styles')
 <link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css"><link rel="stylesheet" href="/build/assets/employees-form-BzD5O2VJ.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 @endsection
 
 @section('content')
@@ -87,7 +88,7 @@
             @if(request('search') || request('status'))
                 <a href="{{ route('admin.billing.customers') }}" class="clear-filters">Clear All</a>
             @endif
-            <button type="button" class="add-invoice-btn" onclick="document.getElementById('customerModal').classList.add('active')">
+            <button type="button" class="add-invoice-btn" onclick="openAddCustomerModal()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -241,20 +242,32 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group" style="grid-column:1/-1;">
                         <label>Address <span class="required">*</span></label>
-                        <textarea name="address" rows="3" required></textarea>
+                        <textarea name="address" id="add_address_field" rows="2" required placeholder="Type address or click the map to pin location"></textarea>
+                        <button type="button" onclick="searchAddressOnMap('add')" style="display:block;margin-top:.5rem;padding:.65rem 1.1rem;background:var(--secondary-color);color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .3s;width:100%;letter-spacing:.2px;" onmouseover="this.style.background='#2980b9';this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(52,152,219,0.35)'" onmouseout="this.style.background='var(--secondary-color)';this.style.transform='';this.style.boxShadow=''">
+                            Search &amp; Pin on Map
+                        </button>
+                        <div id="add-address-map" style="height:200px;border-radius:8px;margin-top:.5rem;border:1px solid var(--border-color);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.07);"></div>
+                        <p style="font-size:.78rem;color:var(--text-light);margin:.4rem 0 0;display:flex;align-items:flex-start;gap:.35rem;line-height:1.4;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            Click on the map to drop a delivery pin, or type the address above then click "Search &amp; Pin on Map".
+                        </p>
+                        <input type="hidden" name="latitude" id="add_latitude">
+                        <input type="hidden" name="longitude" id="add_longitude">
                     </div>
+                </div>
 
-                    <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group" style="grid-column:1/-1;">
                         <label>Notes</label>
-                        <textarea name="notes" rows="3"></textarea>
+                        <textarea name="notes" rows="2"></textarea>
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-submit" id="addCustomerButton">Add Customer</button>
+                <button type="submit" class="btn-submit">Save Customer</button>
                 <button type="button" class="btn-cancel" onclick="document.getElementById('customerModal').classList.remove('active')">Cancel</button>
             </div>
         </form>
@@ -323,14 +336,26 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group" style="grid-column:1/-1;">
                         <label>Address <span class="required">*</span></label>
-                        <textarea name="address" id="edit_address" rows="3" required></textarea>
+                        <textarea name="address" id="edit_address" rows="2" required placeholder="Type address or click the map to pin location"></textarea>
+                        <button type="button" onclick="searchAddressOnMap('edit')" style="display:block;margin-top:.5rem;padding:.65rem 1.1rem;background:var(--secondary-color);color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .3s;width:100%;letter-spacing:.2px;" onmouseover="this.style.background='#2980b9';this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(52,152,219,0.35)'" onmouseout="this.style.background='var(--secondary-color)';this.style.transform='';this.style.boxShadow=''">
+                            Search &amp; Pin on Map
+                        </button>
+                        <div id="edit-address-map" style="height:200px;border-radius:8px;margin-top:.5rem;border:1px solid var(--border-color);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.07);"></div>
+                        <p style="font-size:.78rem;color:var(--text-light);margin:.4rem 0 0;display:flex;align-items:flex-start;gap:.35rem;line-height:1.4;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            Click on the map to drop a delivery pin, or type the address above then click "Search &amp; Pin on Map".
+                        </p>
+                        <input type="hidden" name="latitude" id="edit_latitude">
+                        <input type="hidden" name="longitude" id="edit_longitude">
                     </div>
+                </div>
 
-                    <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group" style="grid-column:1/-1;">
                         <label>Notes</label>
-                        <textarea name="notes" id="edit_notes" rows="3"></textarea>
+                        <textarea name="notes" id="edit_notes" rows="2"></textarea>
                     </div>
                 </div>
             </div>
@@ -376,6 +401,8 @@ function editCustomer(id) {
     document.getElementById('edit_status').value = customer.status;
     document.getElementById('edit_address').value = customer.address;
     document.getElementById('edit_notes').value = customer.notes || '';
+    document.getElementById('edit_latitude').value  = customer.latitude  || '';
+    document.getElementById('edit_longitude').value = customer.longitude || '';
 
     // Store initial form state
     const editForm = document.getElementById('editCustomerForm');
@@ -399,6 +426,7 @@ function editCustomer(id) {
     });
 
     document.getElementById('editCustomerModal').classList.add('active');
+    setTimeout(() => initPickerMap('edit'), 150);
 }
 
 function checkCustomerFormChanges() {
@@ -529,8 +557,6 @@ document.addEventListener('click', function(e) {
         editCustomerModal.classList.remove('active');
     }
 });
-
-// Enhanced form change detection like employee form
 document.addEventListener('DOMContentLoaded', function() {
     // Add customer form change detection
     const addCustomerForm = document.querySelector('#customerModal .customer-form');
@@ -557,5 +583,125 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-});</script>
+});
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ─── Map Pickers ─────────────────────────────────────────────────────────────
+const GEO_KEY       = '328a40dae9644da6a37cd0a608800fa2';
+const PICKER_CENTER = [14.1077, 121.1411]; // Santo Tomas, Batangas
+
+let addPickerMap = null, addPickerMarker = null;
+let editPickerMap = null, editPickerMarker = null;
+
+function openAddCustomerModal() {
+    document.getElementById('customerModal').classList.add('active');
+    setTimeout(() => initPickerMap('add'), 150);
+}
+
+function initPickerMap(prefix) {
+    const isAdd = prefix === 'add';
+    const mapEl = document.getElementById(prefix + '-address-map');
+
+    if (isAdd && addPickerMap) {
+        setTimeout(() => addPickerMap.invalidateSize(), 50);
+        return;
+    }
+    if (!isAdd && editPickerMap) {
+        const lat = parseFloat(document.getElementById('edit_latitude').value);
+        const lng = parseFloat(document.getElementById('edit_longitude').value);
+        if (lat && lng) {
+            if (editPickerMarker) editPickerMap.removeLayer(editPickerMarker);
+            editPickerMarker = L.marker([lat, lng]).addTo(editPickerMap);
+            editPickerMap.setView([lat, lng], 15);
+        } else {
+            editPickerMap.setView(PICKER_CENTER, 13);
+        }
+        setTimeout(() => editPickerMap.invalidateSize(), 50);
+        return;
+    }
+
+    const lat = !isAdd ? parseFloat(document.getElementById('edit_latitude').value) : null;
+    const lng = !isAdd ? parseFloat(document.getElementById('edit_longitude').value) : null;
+    const center = (lat && lng) ? [lat, lng] : PICKER_CENTER;
+    const zoom   = (lat && lng) ? 15 : 13;
+
+    const map = L.map(mapEl, { attributionControl: false }).setView(center, zoom);
+    L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${GEO_KEY}`, { maxZoom: 20 }).addTo(map);
+
+    if (isAdd) {
+        addPickerMap = map;
+        map.on('click', e => setPickerPin('add', e.latlng.lat, e.latlng.lng, true));
+    } else {
+        editPickerMap = map;
+        if (lat && lng) {
+            editPickerMarker = L.marker([lat, lng]).addTo(map);
+        }
+        map.on('click', e => setPickerPin('edit', e.latlng.lat, e.latlng.lng, true));
+    }
+    setTimeout(() => map.invalidateSize(), 100);
+}
+
+function setPickerPin(prefix, lat, lng, reverseGeo) {
+    const isAdd = prefix === 'add';
+    const map   = isAdd ? addPickerMap : editPickerMap;
+
+    if (isAdd) {
+        if (addPickerMarker) addPickerMap.removeLayer(addPickerMarker);
+        addPickerMarker = L.marker([lat, lng]).addTo(addPickerMap);
+        document.getElementById('add_latitude').value  = lat;
+        document.getElementById('add_longitude').value = lng;
+    } else {
+        if (editPickerMarker) editPickerMap.removeLayer(editPickerMarker);
+        editPickerMarker = L.marker([lat, lng]).addTo(editPickerMap);
+        document.getElementById('edit_latitude').value  = lat;
+        document.getElementById('edit_longitude').value = lng;
+        checkCustomerFormChanges();
+    }
+    map.panTo([lat, lng]);
+
+    if (reverseGeo) {
+        fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${GEO_KEY}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.features?.length > 0) {
+                    const p = data.features[0].properties;
+                    // Build address from street components only — no POI/landmark names
+                    const parts = [];
+                    if (p.housenumber && p.street)      parts.push(p.housenumber + ' ' + p.street);
+                    else if (p.street)                  parts.push(p.street);
+                    if (p.suburb && p.suburb !== p.city) parts.push(p.suburb);
+                    if (p.city || p.town || p.village)  parts.push(p.city || p.town || p.village);
+                    if (p.state)                        parts.push(p.state);
+                    const addr = parts.length > 0 ? parts.join(', ') : p.formatted;
+                    const fieldId = isAdd ? 'add_address_field' : 'edit_address';
+                    const field   = document.getElementById(fieldId);
+                    if (field) {
+                        field.value = addr;
+                        if (!isAdd) checkCustomerFormChanges();
+                    }
+                }
+            }).catch(() => {});
+    }
+}
+
+function searchAddressOnMap(prefix) {
+    const fieldId = prefix === 'add' ? 'add_address_field' : 'edit_address';
+    const query   = document.getElementById(fieldId)?.value?.trim();
+    if (!query) { alert('Please enter an address first.'); return; }
+
+    fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${GEO_KEY}&filter=countrycode:ph&bias=proximity:121.1411,14.1077`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.features?.length > 0) {
+                const [lon, lat] = data.features[0].geometry.coordinates;
+                setPickerPin(prefix, lat, lon, false);
+                const m = prefix === 'add' ? addPickerMap : editPickerMap;
+                m.setView([lat, lon], 16);
+            } else {
+                alert('Address not found on map. Try clicking on the map to pin manually.');
+            }
+        }).catch(() => alert('Search failed. Please try clicking directly on the map.'));
+}
+</script>
 @endsection

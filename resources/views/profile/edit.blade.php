@@ -1,4 +1,11 @@
-@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.warehouse')
+@php
+    $layout = match(auth()->user()->role) {
+        'admin'               => 'layouts.admin',
+        'delivery_personnel'  => 'layouts.delivery',
+        default               => 'layouts.warehouse',
+    };
+@endphp
+@extends($layout)
 
 @section('title', 'Edit Profile')
 @section('page-title', 'Edit Profile')

@@ -3,26 +3,31 @@
 namespace App\Observers;
 
 use App\Models\Invoice;
-use App\Services\AutoTaskAssignmentService;
+use App\Models\Delivery;
 
 class InvoiceObserver
 {
-    protected $autoTaskService;
-
-    public function __construct(AutoTaskAssignmentService $autoTaskService)
-    {
-        $this->autoTaskService = $autoTaskService;
-    }
-
     /**
      * Handle the Invoice "updated" event.
-     * Automatically create delivery task when invoice is marked as paid
+     * Create an unassigned Delivery record when invoice is marked as paid.
+     * Admin will assign the driver manually.
      */
     public function updated(Invoice $invoice)
     {
-        // Check if status was changed to 'paid'
         if ($invoice->isDirty('status') && $invoice->status === 'paid') {
-            $this->autoTaskService->assignDeliveryForPaidInvoice($invoice);
+            $existing = Delivery::where('invoice_id', $invoice->id)->first();
+            if (!$existing) {
+                Delivery::create([
+                    'invoice_id'       => $invoice->id,
+                    'customer_id'      => $invoice->customer_id,
+                    'assigned_user_id' => null,
+                    'status'           => 'pending',
+                    'notes'            => $invoice->notes ?? null,
+                ]);
+            } else {
+                // Update notes on existing delivery to reflect the invoice notes
+                $existing->update(['notes' => $invoice->notes ?? null]);
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
-function showLogoutModal() {
+window.showLogoutModal = function() {
     document.getElementById('logoutModal').classList.add('active');
-}
+};
 
-function hideLogoutModal() {
+window.hideLogoutModal = function() {
     document.getElementById('logoutModal').classList.remove('active');
-}
+};
 
 // Close modal when clicking outside
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoutModal) {
         logoutModal.addEventListener('click', function(e) {
             if (e.target === this) {
-                hideLogoutModal();
+                window.hideLogoutModal();
             }
         });
     }

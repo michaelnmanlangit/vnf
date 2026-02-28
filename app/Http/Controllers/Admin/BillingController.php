@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\Delivery;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Payment;
 use App\Models\Inventory;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -291,6 +289,8 @@ class BillingController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:50',
             'address' => 'required|string',
+            'latitude'  => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,other',
             'status' => 'required|in:active,inactive',
             'notes' => 'nullable|string',
@@ -314,6 +314,8 @@ class BillingController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:50',
             'address' => 'required|string',
+            'latitude'  => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,other',
             'status' => 'required|in:active,inactive',
             'notes' => 'nullable|string',
@@ -374,42 +376,15 @@ class BillingController extends Controller
 
         // Update invoice status
         $totalPaid = $invoice->payments()->sum('amount');
-        $justFullyPaid = false;
         if ($totalPaid >= $invoice->total_amount) {
-            if ($invoice->status !== 'paid') {
-                $justFullyPaid = true;
-            }
             $invoice->update(['status' => 'paid']);
         } elseif ($totalPaid > 0) {
             $invoice->update(['status' => 'partially_paid']);
         }
 
-        // Auto-create delivery when invoice is fully paid for the first time
-        if ($justFullyPaid) {
-            // Find an available driver (no active in_transit delivery right now)
-            $busyDriverIds = Delivery::where('status', 'in_transit')
-                ->pluck('assigned_user_id')
-                ->toArray();
-
-            $availableDriver = User::where('role', 'delivery_personnel')
-                ->whereNotIn('id', $busyDriverIds)
-                ->first();
-
-            Delivery::create([
-                'invoice_id'       => $invoice->id,
-                'customer_id'      => $invoice->customer_id,
-                'assigned_user_id' => $availableDriver?->id,
-                'status'           => 'pending',
-                'notes'            => 'Auto-created on full payment of invoice ' . $invoice->invoice_number,
-            ]);
-        }
-
         $successMsg = 'Payment recorded successfully!';
         if ($change > 0) {
-            $successMsg .= ' Change: ₱' . number_format($change, 2);
-        }
-        if ($justFullyPaid) {
-            $successMsg .= ' Delivery has been automatically scheduled.';
+            $successMsg .= ' Change: &#8369;' . number_format($change, 2);
         }
 
         return back()->with('success', $successMsg);

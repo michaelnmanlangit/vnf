@@ -15,13 +15,13 @@ class DeliveryDashboardController extends Controller
     {
         $userId = auth()->id();
 
-        $activeDelivery = Delivery::with(['invoice', 'customer'])
+        $activeDelivery = Delivery::with(['invoice.items', 'customer'])
             ->where('assigned_user_id', $userId)
             ->whereIn('status', ['pending', 'in_transit'])
             ->orderByRaw("FIELD(status,'in_transit','pending')")
             ->first();
 
-        $pastDeliveries = Delivery::with(['invoice', 'customer'])
+        $pastDeliveries = Delivery::with(['invoice.items', 'customer'])
             ->where('assigned_user_id', $userId)
             ->where('status', 'delivered')
             ->orderBy('delivered_at', 'desc')

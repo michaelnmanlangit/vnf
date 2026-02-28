@@ -330,7 +330,7 @@
             justify-content: center;
             margin-bottom: 1.25rem;
             transform: scale(.88);
-            transform-origin: left center;
+            transform-origin: center;
         }
 
         /* ── Toast ───────────────────────────────────────── */
@@ -381,7 +381,7 @@
             .brand-panel   { display: none; }
             .form-panel    { border-radius: 16px; padding: 2rem 2rem 1.5rem; display: flex; flex-direction: column; }
             .form-heading  { margin-bottom: 1.5rem; }
-            .recaptcha-wrap { transform: scale(.82); transform-origin: left center; }
+            .recaptcha-wrap { transform: scale(.82); transform-origin: center; }
 
             /* show mobile header */
             .mobile-top {
@@ -429,7 +429,7 @@
             .input-icon         { width: 16px; height: 16px; left: 12px; }
             .checkbox-group label { font-size: .8rem; }
             .btn-login          { font-size: .82rem; padding: .78rem; }
-            .recaptcha-wrap     { transform: scale(.74); transform-origin: left center; }
+            .recaptcha-wrap     { transform: scale(.74); transform-origin: center; }
             .mobile-top         { padding: 1.75rem 1rem 1.25rem; }
             .mobile-top img     { width: 46px; height: 46px; }
             .mobile-top span    { font-size: .85rem; }
@@ -449,7 +449,7 @@
             .checkbox-group     { margin-bottom: .9rem; }
             .checkbox-group label { font-size: .75rem; }
             .btn-login          { font-size: .78rem; padding: .7rem; border-radius: 9px; }
-            .recaptcha-wrap     { transform: scale(.65); transform-origin: left center; margin-bottom: -8px; }
+            .recaptcha-wrap     { transform: scale(.65); transform-origin: center; margin-bottom: -8px; }
             .mobile-top         { padding: 1.4rem 1rem 1rem; gap: .4rem; }
             .mobile-top img     { width: 40px; height: 40px; border-radius: 11px; }
             .mobile-top span    { font-size: .8rem; }

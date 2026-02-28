@@ -121,7 +121,7 @@
             </div>
             <div class="navbar-right">
                 <div class="user-info">
-                    <span><strong>{{ auth()->user()->employee?->first()?->position ?? 'Staff' }} {{ auth()->user()->name }}</strong></span>
+                    <span><strong>{{ ['delivery_personnel' => 'Driver'][auth()->user()->role] ?? ucfirst(str_replace('_', ' ', auth()->user()->role)) }}</strong> {{ auth()->user()->name }}</span>
                 </div>
                 <div class="navbar-actions">
                     <button type="button" class="btn-logout" onclick="showLogoutModal()">

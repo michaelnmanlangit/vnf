@@ -75,7 +75,7 @@
             </div>
             <div class="navbar-right">
                 <div class="user-info">
-                    <span><strong>{{ auth()->user()->employee?->first()?->position ?? 'Staff' }}</strong> {{ auth()->user()->name }}</span>
+                    <span><strong>{{ ['inventory_staff' => 'Inventory Officer', 'temperature_staff' => 'Temperature Staff', 'payment_staff' => 'Payment Staff', 'storage_supervisor' => 'Storage Supervisor'][auth()->user()->role] ?? ucfirst(str_replace('_', ' ', auth()->user()->role)) }}</strong> {{ auth()->user()->name }}</span>
                 </div>
                 <div class="navbar-actions">
                     <button type="button" class="btn-logout" onclick="showLogoutModal()">

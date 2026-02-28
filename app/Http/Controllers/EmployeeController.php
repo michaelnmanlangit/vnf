@@ -58,7 +58,7 @@ class EmployeeController extends Controller
         }
 
         $employees = $query->paginate(20);
-        $departments = ['production', 'warehouse', 'delivery', 'administration'];
+        $departments = ['production', 'warehouse', 'delivery'];
         $statuses = ['active', 'inactive', 'on_leave'];
 
         // Calculate statistics

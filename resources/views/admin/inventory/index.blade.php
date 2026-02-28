@@ -263,7 +263,6 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><script src="/build/assets/inventory-eb_1lA51.js" defer></script>
 <script>
     let deleteFormToSubmit = null;
 

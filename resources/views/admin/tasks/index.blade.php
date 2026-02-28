@@ -305,19 +305,9 @@
                                 <span>Warehouse</span>
                             </label>
                             <label class="filter-option">
-                                <input type="radio" name="employee_type" value="delivery" 
-                                       {{ request('employee_type') == 'delivery' ? 'checked' : '' }}>
-                                <span>Delivery</span>
-                            </label>
-                            <label class="filter-option">
                                 <input type="radio" name="employee_type" value="production" 
                                        {{ request('employee_type') == 'production' ? 'checked' : '' }}>
                                 <span>Production</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="radio" name="employee_type" value="administration" 
-                                       {{ request('employee_type') == 'administration' ? 'checked' : '' }}>
-                                <span>Administration</span>
                             </label>
                         </div>
 

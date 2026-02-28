@@ -16,17 +16,6 @@
         <h2>Edit Profile</h2>
     </div>
 
-    @if($errors->any())
-        <div class="alert alert-error">
-            <h4>Please fix the following errors:</h4>
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="profile-card">
         <form method="POST" action="{{ route('profile.update') }}" class="profile-form" enctype="multipart/form-data">
             @csrf
@@ -54,7 +43,7 @@
                 <span id="imageError" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;"></span>
                 <p class="upload-hint">JPG, PNG, or GIF (Max 2MB)</p>
                 @error('profile_image')
-                    <span class="form-error">{{ $message }}</span>
+                    <span class="form-error">Uploaded image exceeds 2MB. Please choose a smaller file.</span>
                 @enderror
             </div>
 

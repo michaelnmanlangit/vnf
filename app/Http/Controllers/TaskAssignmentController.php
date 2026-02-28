@@ -17,7 +17,7 @@ class TaskAssignmentController extends Controller
     public function index(Request $request)
     {
         $query = Employee::with(['assignedStorageUnit', 'taskAssignments'])
-            ->whereIn('department', ['production', 'administration', 'delivery', 'warehouse'])
+            ->whereIn('department', ['production', 'warehouse'])
             ->where('employment_status', 'active');
 
         // Filter by employee type/department

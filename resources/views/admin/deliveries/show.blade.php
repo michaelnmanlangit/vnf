@@ -198,14 +198,14 @@
                 <span class="info-label">Invoice</span>
                 <span class="info-value">
                     <a href="{{ route('admin.billing.show', $delivery->invoice_id) }}" style="color:#1a73e8;text-decoration:none;">
-                        {{ $delivery->invoice->invoice_number ?? 'â€”' }}
+                        {{ $delivery->invoice->invoice_number ?? '—' }}
                     </a>
                 </span>
             </div>
 
             <div class="info-row">
                 <span class="info-label">Customer</span>
-                <span class="info-value">{{ $delivery->customer->business_name ?? 'â€”' }}</span>
+                <span class="info-value">{{ $delivery->customer->business_name ?? '—' }}</span>
                 @if($delivery->customer?->address)
                     <span class="info-sub">{{ $delivery->customer->address }}</span>
                 @endif
@@ -366,7 +366,7 @@ function pollLocation() {
             document.getElementById('last-update').textContent = 'Updated ' + data.updated;
             if (data.status === 'delivered') {
                 clearInterval(pollInterval);
-                document.getElementById('last-update').textContent = 'âœ… Delivered';
+                document.getElementById('last-update').textContent = 'Delivered';
             }
         }).catch(() => {});
 }
@@ -383,7 +383,7 @@ function assignDriver() {
     if (!userId) { toast('Please select a driver.', 'error'); return; }
 
     btn.disabled = true;
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-dasharray="30" stroke-dashoffset="10"/></svg> Assigningâ€¦`;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-dasharray="30" stroke-dashoffset="10"/></svg> Assigning...`;
 
     fetch(`/admin/deliveries/${DELIVERY_ID}/reassign`, {
         method : 'PATCH',

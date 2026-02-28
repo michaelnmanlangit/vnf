@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -47,16 +46,12 @@ class ProfileController extends Controller
             $user->password = Hash::make($validated['password']);
         }
 
-        // Handle profile image upload (stored in storage but not in database)
+        // Store image as base64 in DB — works on ephemeral filesystems (DO, Heroku)
         if ($request->hasFile('profile_image')) {
-            // Delete old image if exists
-            $profileImagePath = 'profiles/user_' . $user->id . '.jpg';
-            if (Storage::disk('public')->exists($profileImagePath)) {
-                Storage::disk('public')->delete($profileImagePath);
-            }
-
-            // Store new image with user ID filename
-            $request->file('profile_image')->storeAs('profiles', 'user_' . $user->id . '.jpg', 'public');
+            $image = $request->file('profile_image');
+            $mime  = $image->getMimeType();
+            $data  = base64_encode(file_get_contents($image->getRealPath()));
+            $user->profile_image = 'data:' . $mime . ';base64,' . $data;
         }
 
         $user->save();

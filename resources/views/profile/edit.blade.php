@@ -34,12 +34,8 @@
 
             <div class="image-upload-section">
                 <div class="image-preview" id="imagePreview">
-                    @php
-                        $profileImagePath = 'storage/profiles/user_' . $user->id . '.jpg';
-                        $imageExists = file_exists(public_path($profileImagePath));
-                    @endphp
-                    @if($imageExists)
-                        <img src="{{ asset($profileImagePath) }}" alt="Profile">
+                    @if($user->profile_image)
+                        <img src="{{ $user->profile_image }}" alt="Profile">
                     @else
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

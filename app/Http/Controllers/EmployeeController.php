@@ -112,11 +112,10 @@ class EmployeeController extends Controller
             $validated['return_date'] = null;
         }
 
-        // Handle image upload
+        // Handle image upload — store as base64 in DB for ephemeral filesystem compatibility
         if ($request->hasFile('image')) {
-            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images/employees'), $imageName);
-            $validated['image'] = 'images/employees/' . $imageName;
+            $file = $request->file('image');
+            $validated['image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         $employee = Employee::create($validated);
@@ -194,15 +193,10 @@ class EmployeeController extends Controller
             $validated['return_date'] = null;
         }
 
-        // Handle image upload
+        // Handle image upload — store as base64 in DB for ephemeral filesystem compatibility
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($employee->image && file_exists(public_path($employee->image))) {
-                unlink(public_path($employee->image));
-            }
-            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images/employees'), $imageName);
-            $validated['image'] = 'images/employees/' . $imageName;
+            $file = $request->file('image');
+            $validated['image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         $oldDepartment = $employee->department;

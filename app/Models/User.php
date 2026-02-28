@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'role',
         'assigned_storage_location_id',
+        'profile_image',
     ];
 
     /**

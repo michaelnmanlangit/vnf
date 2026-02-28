@@ -19,8 +19,8 @@
             
             <div class="image-upload-section">
                 <div class="image-preview" id="imagePreview">
-                    @if($employee->image && file_exists(public_path($employee->image)))
-                        <img src="{{ asset($employee->image) }}" alt="{{ $employee->full_name }}">
+                    @if($employee->image)
+                        <img src="{{ $employee->image }}" alt="{{ $employee->full_name }}">
                     @else
                         <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

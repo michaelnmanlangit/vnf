@@ -25,12 +25,8 @@
 
     <div class="profile-card">
         <div class="profile-avatar-section">
-            @php
-                $profileImagePath = 'storage/profiles/user_' . $user->id . '.jpg';
-                $imageExists = file_exists(public_path($profileImagePath));
-            @endphp
-            @if($imageExists)
-                <img src="{{ asset($profileImagePath) }}" alt="{{ $user->name }}" class="profile-avatar">
+            @if($user->profile_image)
+                <img src="{{ $user->profile_image }}" alt="{{ $user->name }}" class="profile-avatar">
             @else
                 <div class="profile-avatar-placeholder">
                     <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

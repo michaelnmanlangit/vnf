@@ -9,6 +9,14 @@
 @section('styles')
 <link rel="stylesheet" href="/build/assets/inventory-Wqoz_iPC.css"><link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css"><script src="/build/assets/inventory-eb_1lA51.js" defer></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.status-stats .status-cards{grid-template-columns:repeat(5,1fr);}
+@@media(max-width:1200px){.status-stats .status-cards{grid-template-columns:repeat(3,1fr);}}
+@@media(max-width:768px){.status-stats .status-cards{grid-template-columns:repeat(2,1fr);}}
+.inventory-table thead th { white-space: nowrap; padding-left: 10px; padding-right: 10px; font-size: 0.82rem; }
+.inventory-table tbody td { padding-left: 10px; padding-right: 10px; font-size: 0.875rem; }
+.inventory-table { table-layout: auto; width: 100%; }
+</style>
 @endsection
 @section('content')
 @if(session('success'))
@@ -159,12 +167,6 @@
             <table class="inventory-table" data-route="{{ route($r . '.index') }}">
                 <thead>
                     <tr>
-                        <th class="sortable" data-column="id">
-                            ID
-                            <svg class="sort-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 5v14M19 12l-7 7-7-7"></path>
-                            </svg>
-                        </th>
                         <th class="sortable" data-column="product_name">
                             Product Name
                             <svg class="sort-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -183,6 +185,7 @@
                                 <path d="M12 5v14M19 12l-7 7-7-7"></path>
                             </svg>
                         </th>
+                        <th>Price / Unit</th>
                         <th class="sortable" data-column="status">
                             Status
                             <svg class="sort-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -195,10 +198,10 @@
                 <tbody>
                     @foreach($inventory as $item)
                     <tr class="inventory-row">
-                        <td class="inventory-id">{{ str_pad($item->id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td class="inventory-name">{{ $item->product_name }}</td>
                         <td>{{ ucfirst($item->category) }}</td>
                         <td>{{ number_format($item->quantity, 0) }} {{ $item->unit }}</td>
+                        <td>{!! $item->price ? '&#8369;' . number_format($item->price, 2) : '&mdash;' !!}</td>
                         <td>
                             <span class="status-badge status-{{ str_replace('_', '-', $item->status) }}">
                                 {{ ucfirst(str_replace('_', ' ', $item->status)) }}

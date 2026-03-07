@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'V&F Ice Plant') - Admin Panel</title>
+    <title>@yield('title', 'V&F Ice Plant and Cold Storage Inc.') - Admin Panel</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
     <link rel="stylesheet" href="/build/assets/admin-CoWPeOez.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="/build/assets/admin-DLbE0-9j.js" defer></script>
     @yield('styles')
 </head>
@@ -60,13 +62,17 @@
                     Delivery Monitoring
                 </a>
                 <a href="{{ route('admin.employees.index') }}" class="menu-item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                    <i class="fas fa-users menu-icon" style="font-size:1rem;width:20px;text-align:center;"></i>
                     Employee Management
+                </a>
+                <a href="{{ route('admin.billing.customers') }}" class="menu-item {{ request()->routeIs('admin.billing.customers*') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                        <circle cx="11" cy="9" r="2"></circle>
+                        <path d="M7 15c0-2 1.8-3 4-3s4 1 4 3"></path>
+                    </svg>
+                    Customer Management
                 </a>
                 <a href="{{ route('admin.tasks.index') }}" class="menu-item {{ request()->routeIs('admin.tasks.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -79,7 +85,11 @@
 
             <div class="menu-section">
                 <div class="menu-section-title">Financial</div>
-                <a href="{{ route('admin.billing.index') }}" class="menu-item {{ request()->routeIs('admin.billing.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.payroll.index') }}" class="menu-item {{ request()->routeIs('admin.payroll.*') ? 'active' : '' }}">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                    Payroll
+                </a>
+                <a href="{{ route('admin.billing.index') }}" class="menu-item {{ request()->routeIs('admin.billing.*') && !request()->routeIs('admin.billing.customers*') ? 'active' : '' }}">
                     <span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;">₱</span>
                     Billing & Invoice
                 </a>
@@ -212,6 +222,17 @@
             }
         });
     })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr('.fp-date', {
+            altInput: true,
+            altFormat: 'M/d/Y',
+            dateFormat: 'Y-m-d',
+            allowInput: true,
+        });
+    });
     </script>
 </body>
 </html>

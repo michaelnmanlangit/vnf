@@ -10,7 +10,6 @@ class Invoice extends Model
         'invoice_number',
         'customer_id',
         'invoice_date',
-        'due_date',
         'subtotal',
         'tax',
         'total_amount',
@@ -20,7 +19,6 @@ class Invoice extends Model
 
     protected $casts = [
         'invoice_date' => 'date',
-        'due_date' => 'date',
         'subtotal' => 'decimal:2',
         'tax' => 'decimal:2',
         'total_amount' => 'decimal:2',
@@ -41,6 +39,16 @@ class Invoice extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class);
+    }
+
+    public function order()
+    {
+        return $this->hasOne(Order::class);
     }
 
     // Helper methods

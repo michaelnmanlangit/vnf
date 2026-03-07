@@ -14,6 +14,8 @@ use App\Http\Controllers\StorageAssignmentController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\TemperatureMonitoringController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicAttendanceController;
+use App\Http\Controllers\Admin\PayrollController;
 
 // Public routes
 Route::get('/', function () {
@@ -25,11 +27,20 @@ Route::get('/', function () {
             'temperature_staff' => redirect('/warehouse/temperature'),
             'payment_staff' => redirect('/admin/billing'),
             'delivery_personnel' => redirect('/delivery/dashboard'),
+            'customer' => redirect('/customer/shop'),
             default => redirect('/login'),
         };
     }
-    return redirect('/login');
-});
+    $products = \App\Models\Inventory::whereIn('status', ['in_stock','low_stock','expiring_soon'])
+        ->where('quantity', '>', 0)
+        ->orderBy('product_name')
+        ->get();
+    return view('landing', compact('products'));
+})->name('landing');
+
+// Public attendance portal (no auth required)
+Route::get('/attendance', [PublicAttendanceController::class, 'index'])->name('attendance');
+Route::post('/attendance/clock', [PublicAttendanceController::class, 'clock'])->name('attendance.clock');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -48,6 +59,9 @@ Route::middleware(['auth'])->group(function () {
 // Admin-only routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // Payroll
+    Route::get('/admin/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
+    Route::get('/admin/payroll/{employee}', [PayrollController::class, 'employeeDetail'])->name('admin.payroll.detail');
     Route::resource('/admin/employees', EmployeeController::class)->names([
         'index' => 'admin.employees.index',
         'create' => 'admin.employees.create',
@@ -147,7 +161,6 @@ Route::middleware(['auth', 'role:admin,payment_staff'])->group(function () {
         Route::put('/{id}', [BillingController::class, 'update'])->name('update');
         Route::delete('/{id}', [BillingController::class, 'destroy'])->name('destroy');
         Route::get('/customers/list', [BillingController::class, 'customers'])->name('customers');
-        Route::post('/customers', [BillingController::class, 'storeCustomer'])->name('customer.store');
         Route::put('/customer/{id}', [BillingController::class, 'updateCustomer'])->name('customer.update');
         Route::delete('/customer/{id}', [BillingController::class, 'deleteCustomer'])->name('customer.delete');
         Route::post('/{id}/payment', [BillingController::class, 'storePayment'])->name('payment.store');
@@ -181,5 +194,50 @@ Route::middleware(['auth', 'role:delivery_personnel'])->group(function () {
     Route::get('/delivery/dashboard',              [DeliveryDashboardController::class, 'index'])->name('delivery.dashboard');
     Route::post('/delivery/{delivery}/start',      [DeliveryDashboardController::class, 'start'])->name('delivery.start');
     Route::post('/delivery/{delivery}/complete',   [DeliveryDashboardController::class, 'complete'])->name('delivery.complete');
+    Route::post('/delivery/{delivery}/collect-cod',[DeliveryDashboardController::class, 'collectCod'])->name('delivery.collect_cod');
     Route::post('/delivery/location',              [DeliveryDashboardController::class, 'updateLocation'])->name('delivery.location');
+});
+
+// Customer routes
+use App\Http\Controllers\Customer\CustomerAuthController;
+use App\Http\Controllers\Customer\CustomerProfileController;
+use App\Http\Controllers\Customer\CustomerShopController;
+use App\Http\Controllers\Customer\OTPController;
+
+// Customer registration (POST only - form is in main login page)
+Route::post('/customer/register', [CustomerAuthController::class, 'register'])->name('customer.register.store')->middleware('guest');
+
+// OTP Verification routes (accessible to guests with session)
+Route::middleware('guest')->prefix('customer/otp')->name('customer.otp.')->group(function () {
+    Route::get('/verify', [OTPController::class, 'showVerificationForm'])->name('verify.form');
+    Route::post('/verify', [OTPController::class, 'verify'])->name('verify');
+    Route::post('/resend', [OTPController::class, 'resend'])->name('resend');
+    Route::get('/status', [OTPController::class, 'status'])->name('status');
+});
+
+// Authenticated customer routes
+Route::middleware(['auth', 'role:customer', 'profile.complete'])->prefix('customer')->name('customer.')->group(function () {
+    // Dashboard redirects to shop
+    Route::get('/dashboard', function() {
+        return redirect()->route('customer.shop');
+    })->name('dashboard');
+    
+    Route::get('/profile', [CustomerProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/complete', [CustomerProfileController::class, 'complete'])->name('profile.complete');
+    Route::post('/profile/store', [CustomerProfileController::class, 'store'])->name('profile.store');
+    Route::get('/profile/edit', [CustomerProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [CustomerProfileController::class, 'update'])->name('profile.update');
+    
+    // Shopping
+    Route::get('/shop', [CustomerShopController::class, 'shop'])->name('shop');
+    Route::get('/product/{id}', [CustomerShopController::class, 'product'])->name('product');
+    Route::post('/cart/add', [CustomerShopController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CustomerShopController::class, 'cart'])->name('cart');
+    Route::put('/cart/update', [CustomerShopController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/remove/{id}', [CustomerShopController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/checkout', [CustomerShopController::class, 'checkout'])->name('checkout');
+    Route::post('/order', [CustomerShopController::class, 'placeOrder'])->name('order.place');
+    Route::get('/orders', [CustomerShopController::class, 'orders'])->name('orders');
+    Route::get('/order/{id}', [CustomerShopController::class, 'orderDetail'])->name('order.detail');
+    Route::get('/delivery/{id}/location', [CustomerShopController::class, 'deliveryLocation'])->name('delivery.location');
 });

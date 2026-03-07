@@ -29,8 +29,7 @@ class DeliveryController extends Controller
             });
         }
 
-        $deliveries = $query->orderByRaw("FIELD(status,'in_transit','pending','delivered','cancelled')")
-                            ->orderBy('created_at', 'desc')
+        $deliveries = $query->orderBy('created_at', 'desc')
                             ->paginate(15);
 
         $stats = [

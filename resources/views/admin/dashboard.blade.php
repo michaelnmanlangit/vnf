@@ -89,7 +89,7 @@
                         <tr>
                             <th>Storage Unit</th>
                             <th>Temperature</th>
-                            <th>Date</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,7 +97,7 @@
                         <tr>
                             <td>{{ $alert->storageUnit->name ?? 'N/A' }}</td>
                             <td><span class="badge badge-danger">{{ number_format($alert->temperature, 1) }}°C</span></td>
-                            <td>{{ $alert->recorded_at->format('M d, Y') }}</td>
+                            <td>{{ $alert->notes ?? '—' }}</td>
                         </tr>
                         @endforeach
                     </tbody>

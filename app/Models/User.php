@@ -58,6 +58,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the customer record associated with this user.
+     */
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'user_id');
+    }
+
+    /**
+     * Get the customer profile associated with this user.
+     */
+    public function customerProfile()
+    {
+        return $this->hasOne(CustomerProfile::class, 'user_id');
+    }
+
+    /**
+     * Check if user is a customer.
+     */
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
+    /**
      * Get the user's position from their employee record.
      */
     public function getPositionAttribute()
@@ -119,5 +143,13 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Get the orders associated with this customer.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
     }
 }

@@ -237,6 +237,9 @@ html, body     { overflow: hidden; }
         'in_transit' => ['bg'=>'#e3f2fd','color'=>'#1565c0','label'=>'In Transit'],
         default      => ['bg'=>'#f4f5f7','color'=>'#7f8c8d','label'=>ucfirst($status)],
     };
+    $order    = $activeDelivery->invoice->order ?? null;
+    $isCOD    = $order && $order->payment_method === 'cash' && ($activeDelivery->invoice->status ?? '') !== 'paid';
+    $invoiceTotal = $activeDelivery->invoice->total_amount ?? 0;
 @endphp
 
 {{-- Fullscreen map --}}
@@ -253,7 +256,12 @@ html, body     { overflow: hidden; }
 <div class="map-panel" id="mapPanel">
     <div class="map-panel-head">
         <span class="map-customer">{{ $activeDelivery->customer->business_name ?? 'Unknown Customer' }}</span>
-        <span class="map-badge" style="background:{{ $badge['bg'] }};color:{{ $badge['color'] }};">{{ $badge['label'] }}</span>
+        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;">
+            @if($isCOD)
+            <span class="map-badge" style="background:#fff3e0;color:#e65100;font-weight:700;letter-spacing:.03em;">COD</span>
+            @endif
+            <span class="map-badge" style="background:{{ $badge['bg'] }};color:{{ $badge['color'] }};">{{ $badge['label'] }}</span>
+        </div>
     </div>
     <div class="map-invoice">Invoice: {{ $activeDelivery->invoice->invoice_number ?? '—' }}</div>
     <div class="map-address">
@@ -302,6 +310,27 @@ html, body     { overflow: hidden; }
         </button>
     </form>
     @elseif($status === 'in_transit')
+    @if($isCOD)
+    {{-- COD: show cash collection form --}}
+    <div style="background:#fff8f0;border:1px solid #ffcc80;border-radius:9px;padding:.7rem .8rem;margin-bottom:.55rem;">
+        <div style="font-size:.78rem;font-weight:600;color:#e65100;margin-bottom:.45rem;">
+            💰 Cash on Delivery &mdash; collect ₱{{ number_format($invoiceTotal, 2) }}
+        </div>
+        <form method="POST" action="{{ route('delivery.collect_cod', $activeDelivery->id) }}" onsubmit="return confirmCOD(this)">
+            @csrf
+            <label style="font-size:.75rem;color:#555;display:block;margin-bottom:.3rem;">Amount Received from Customer (₱)</label>
+            <input type="number" name="amount_collected" step="0.01" min="{{ $invoiceTotal }}"
+                   value="{{ $invoiceTotal }}"
+                   style="width:100%;padding:.45rem .6rem;border:1px solid #ffb74d;border-radius:6px;font-size:.9rem;margin-bottom:.5rem;box-sizing:border-box;"
+                   required>
+            <div id="cod-change-display" style="font-size:.78rem;color:#444;margin-bottom:.5rem;min-height:1.2em;"></div>
+            <button type="submit" class="map-btn map-btn-done" style="background:#e65100;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:.35rem;"><path d="M20 6L9 17l-5-5"/></svg>
+                Collect &amp; Mark Delivered
+            </button>
+        </form>
+    </div>
+    @else
     <form method="POST" action="{{ route('delivery.complete', $activeDelivery->id) }}" onsubmit="return confirm('Mark this delivery as completed?')">
         @csrf
         <button type="submit" class="map-btn map-btn-done">
@@ -309,6 +338,7 @@ html, body     { overflow: hidden; }
             Mark as Delivered
         </button>
     </form>
+    @endif
     @endif
 </div>
 
@@ -601,6 +631,38 @@ function toggleItems(el) {
         ? el.textContent.replace('▼','▶').replace('Hide','Show')
         : el.textContent.replace('▶','▼').replace('Show','Hide');
 }
+function confirmCOD(form) {
+    const inp     = form.querySelector('[name="amount_collected"]');
+    const total   = parseFloat(inp.min) || 0;
+    const tendered = parseFloat(inp.value) || 0;
+    if (tendered < total) {
+        alert('Amount received cannot be less than the invoice total (₱' + total.toFixed(2) + ').');
+        return false;
+    }
+    const change = (tendered - total).toFixed(2);
+    return confirm('Collect ₱' + tendered.toFixed(2) + ' and return ₱' + change + ' change?\nMark this delivery as completed?');
+}
+document.addEventListener('DOMContentLoaded', function () {
+    const inp = document.querySelector('[name="amount_collected"]');
+    const display = document.getElementById('cod-change-display');
+    if (!inp || !display) return;
+    function updateChange() {
+        const total   = parseFloat(inp.min) || 0;
+        const tendered = parseFloat(inp.value) || 0;
+        if (tendered >= total) {
+            const change = (tendered - total).toFixed(2);
+            display.textContent = 'Change: ₱' + change;
+            display.style.color = '#2e7d32';
+        } else if (tendered > 0) {
+            display.textContent = 'Short by ₱' + (total - tendered).toFixed(2);
+            display.style.color = '#c62828';
+        } else {
+            display.textContent = '';
+        }
+    }
+    inp.addEventListener('input', updateChange);
+    updateChange();
+});
 </script>
 
 @endsection

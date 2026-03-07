@@ -319,7 +319,37 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(65,105,225,.45);
         }
-        .btn-login:active {
+        /* ── Customer signup styles ─────────────────────── */
+        .signup-divider {
+            margin: 1.5rem 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .signup-text {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin: 0;
+        }
+
+        .signup-link {
+            color: var(--brand);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: var(--brand-dark);
+            text-decoration: underline;
+        }
+
+        #signupForm {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }        .btn-login:active {
             transform: translateY(0);
             box-shadow: 0 3px 8px rgba(65,105,225,.3);
         }
@@ -491,70 +521,147 @@
                 <span>V&amp;F Ice Plant and Cold Storage Inc.</span>
             </div>
 
-            <div class="form-heading">
-                <h2>Login</h2>
-                <p>Welcome back! Please sign in to your account.</p>
+            <!-- Login Section -->
+            <div id="loginSection">
+                <div class="form-heading">
+                    <h2>Login</h2>
+                    <p>Welcome back! Please sign in to your account.</p>
+                </div>
+
+                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                    @csrf
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                value="{{ old('email') }}"
+                                required
+                                autofocus
+                                placeholder="you@example.com"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap password-group">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                required
+                                placeholder="••••••••"
+                                style="padding-right:45px;"
+                            >
+                            <button type="button" class="password-toggle" id="togglePassword">
+                                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+
+                    <div class="recaptcha-wrap">
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                    </div>
+
+                    <button type="submit" class="btn-login">Sign In</button>
+                </form>
+
+                <!-- Customer Signup Section -->
+                <div class="signup-divider">
+                    <p class="signup-text">
+                        New customer? <a href="#" id="showSignupForm" class="signup-link">Create new account</a>
+                    </p>
+                </div>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" id="loginForm">
-                @csrf
-
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <div class="input-wrap">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-control"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
-                            placeholder="you@example.com"
-                        >
-                    </div>
+            <!-- Customer Registration Form (Hidden by default) -->
+            <div id="signupForm" style="display: none;">
+                <div class="form-heading">
+                    <h2>Sign Up</h2>
+                    <p>Create your customer account to get started.</p>
                 </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrap password-group">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0110 0v4"/>
-                        </svg>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="form-control"
-                            required
-                            placeholder="••••••••"
-                            style="padding-right:45px;"
-                        >
-                        <button type="button" class="password-toggle" id="togglePassword">
-                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
+                
+                <form method="POST" action="{{ route('customer.register.store') }}" id="customerSignupForm">
+                    @csrf
+                    
+                    <div class="form-group">
+                        <label for="customer_name">Full Name</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
                             </svg>
-                        </button>
+                            <input type="text" id="customer_name" name="name" class="form-control" required placeholder="Your full name" value="{{ old('name') }}">
+                        </div>
                     </div>
-                </div>
 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">Remember me</label>
-                </div>
+                    <div class="form-group">
+                        <label for="customer_email">Email Address</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            <input type="email" id="customer_email" name="email" class="form-control" required placeholder="your@business-email.com" value="{{ old('email') }}">
+                        </div>
+                    </div>
 
-                <div class="recaptcha-wrap">
-                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="customer_password">Password</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input type="password" id="customer_password" name="password" class="form-control" required placeholder="Create strong password">
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn-login">Sign In</button>
-            </form>
+                    <div class="form-group">
+                        <label for="customer_password_confirmation">Confirm Password</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input type="password" id="customer_password_confirmation" name="password_confirmation" class="form-control" required placeholder="Confirm password">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        SIGN UP
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="signup-divider">
+                    <p class="signup-text">
+                        Already have an account? <a href="#" id="showLoginForm" class="signup-link">Login</a>
+                    </p>
+                </div>
+            </div>
 
             <!-- mobile only bottom -->
             <div class="mobile-bottom">&copy; {{ date('Y') }} V&amp;F Ice Plant and Cold Storage Inc.</div>
@@ -580,34 +687,86 @@
             }
         });
 
-        // Form validation - check reCAPTCHA before submission
-        let isSubmitting = false;
-        const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', function(e) {
-            // Prevent multiple submissions
-            if (isSubmitting) {
-                e.preventDefault();
-                return false;
-            }
+        // Customer signup form toggle
+        const showSignupBtn = document.getElementById('showSignupForm');
+        const showLoginBtn = document.getElementById('showLoginForm');
+        const signupForm = document.getElementById('signupForm');
+        const loginSection = document.getElementById('loginSection');
 
-            const recaptchaResponse = grecaptcha.getResponse();
-            
-            if (!recaptchaResponse || recaptchaResponse.length === 0) {
+        if (showSignupBtn) {
+            showSignupBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                showToast('warning', 'Verification Required', 'Please complete the reCAPTCHA verification before signing in.', 6000);
+                // Hide login section
+                loginSection.style.display = 'none';
+                // Show signup form
+                signupForm.style.display = 'block';
+            });
+        }
+
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Hide signup form
+                signupForm.style.display = 'none';
+                // Show login section
+                loginSection.style.display = 'block';
                 
-                // Scroll to reCAPTCHA if needed
-                const recaptchaElement = document.querySelector('.g-recaptcha');
-                if (recaptchaElement) {
-                    recaptchaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Clear signup form
+                document.getElementById('customerSignupForm').reset();
+            });
+        }
+
+        // Customer signup form validation
+        const customerSignupForm = document.getElementById('customerSignupForm');
+        if (customerSignupForm) {
+            customerSignupForm.addEventListener('submit', function(e) {
+                const password = document.getElementById('customer_password').value;
+                const passwordConfirm = document.getElementById('customer_password_confirmation').value;
+                
+                if (password !== passwordConfirm) {
+                    e.preventDefault();
+                    showToast('error', 'Password Mismatch', 'Passwords do not match. Please try again.', 5000);
+                    return false;
                 }
                 
-                return false;
-            }
+                if (password.length < 8) {
+                    e.preventDefault();
+                    showToast('error', 'Weak Password', 'Password must be at least 8 characters long.', 5000);
+                    return false;
+                }
+            });
+        }
 
-            // Mark as submitting to prevent duplicate submissions
-            isSubmitting = true;
-        });
+        // Form validation - check reCAPTCHA before submission
+        let isSubmitting = false;
+        const loginFormElement = document.getElementById('loginForm');
+        if (loginFormElement) {
+            loginFormElement.addEventListener('submit', function(e) {
+                // Prevent multiple submissions
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                const recaptchaResponse = grecaptcha.getResponse();
+                
+                if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                    e.preventDefault();
+                    showToast('warning', 'Verification Required', 'Please complete the reCAPTCHA verification before signing in.', 6000);
+                    
+                    // Scroll to reCAPTCHA if needed
+                    const recaptchaElement = document.querySelector('.g-recaptcha');
+                    if (recaptchaElement) {
+                        recaptchaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    return false;
+                }
+
+                // Mark as submitting to prevent duplicate submissions
+                isSubmitting = true;
+            });
+        }
 
         // Toast notification system
         function showToast(type, title, message, duration = 5000) {

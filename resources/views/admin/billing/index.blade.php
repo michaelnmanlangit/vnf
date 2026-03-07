@@ -6,6 +6,11 @@
 @section('styles')
 <link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.status-stats .status-cards{grid-template-columns:repeat(5,1fr);}
+@@media(max-width:1200px){.status-stats .status-cards{grid-template-columns:repeat(3,1fr);}}
+@@media(max-width:768px){.status-stats .status-cards{grid-template-columns:repeat(2,1fr);}}
+</style>
 @endsection
 
 @section('content')
@@ -168,15 +173,6 @@
                 @if(request('search') || request('status'))
                     <a href="{{ route('admin.billing.index') }}" class="clear-filters">Clear All</a>
                 @endif
-                <a href="{{ route('admin.billing.customers') }}" class="manage-customers-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    Customers
-                </a>
                 <a href="{{ route('admin.billing.create') }}" class="add-invoice-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -201,7 +197,6 @@
                         </svg>
                     </th>
                     <th>Invoice Date</th>
-                    <th>Due Date</th>
                     <th>Amount</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -215,7 +210,6 @@
                         </td>
                         <td>{{ $invoice->customer->business_name }}</td>
                         <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
-                        <td>{{ $invoice->due_date->format('M d, Y') }}</td>
                         <td>₱{{ number_format($invoice->total_amount, 2) }}</td>
                         <td>
                             <span class="status-badge {{ $invoice->status }}">

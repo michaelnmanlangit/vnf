@@ -38,11 +38,6 @@
                         <label>Invoice Date <span class="required">*</span></label>
                         <input type="date" name="invoice_date" value="{{ old('invoice_date', date('Y-m-d')) }}" required class="form-control">
                     </div>
-
-                    <div class="form-group">
-                        <label>Due Date <span class="required">*</span></label>
-                        <input type="date" name="due_date" value="{{ old('due_date') }}" required class="form-control">
-                    </div>
                 </div>
             </div>
 
@@ -140,7 +135,7 @@ function addItem() {
     inventoryItems.forEach(item => {
         const statusText = item.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
         const statusIndicator = item.status === 'low_stock' ? ' ⚠️' : item.status === 'expiring_soon' ? ' ⏰' : '';
-        inventoryOptions += `<option value="${item.id}" data-unit="${item.unit}" data-name="${item.product_name}">${item.product_name} (${item.quantity} ${item.unit} available) - ${statusText}${statusIndicator}</option>`;
+        inventoryOptions += `<option value="${item.id}" data-unit="${item.unit}" data-name="${item.product_name}" data-price="${item.price || 0}">${item.product_name} (${item.quantity} ${item.unit} available) - ${statusText}${statusIndicator}</option>`;
     });
     
     row.innerHTML = `
@@ -157,7 +152,7 @@ function addItem() {
             <input type="text" name="items[${itemCount}][unit]" required class="form-control" readonly id="unit-${itemCount}" placeholder="Unit" value="">
         </td>
         <td>
-            <input type="number" name="items[${itemCount}][unit_price]" required class="form-control item-price" step="0.01" min="0" value="0" oninput="calculateItemTotal(${itemCount})">
+            <input type="number" name="items[${itemCount}][unit_price]" required class="form-control item-price" step="0.01" min="0" value="0" readonly id="price-${itemCount}" style="background:#f8f9fa;cursor:not-allowed;">
         </td>
         <td>
             <strong class="item-total" id="item-total-${itemCount}">₱0.00</strong>
@@ -184,17 +179,23 @@ function selectProduct(itemIndex, selectElement) {
         const unit = selectedOption.getAttribute('data-unit');
         if (unit) {
             const unitField = document.getElementById(`unit-${itemIndex}`);
-            if (unitField) {
-                unitField.value = unit;
-            }
+            if (unitField) unitField.value = unit;
+        }
+
+        // Auto-fill unit price from inventory price
+        const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+        const priceField = document.querySelector(`#item-${itemIndex} .item-price`);
+        if (priceField) {
+            priceField.value = price.toFixed(2);
+            calculateItemTotal(itemIndex);
         }
     } else {
         // Clear fields if no product selected
         document.getElementById(`inventory-id-${itemIndex}`).value = '';
         const unitField = document.getElementById(`unit-${itemIndex}`);
-        if (unitField) {
-            unitField.value = '';
-        }
+        if (unitField) unitField.value = '';
+        const priceField = document.querySelector(`#item-${itemIndex} .item-price`);
+        if (priceField) { priceField.value = '0'; calculateItemTotal(itemIndex); }
     }
 }
 function removeItem(id) {

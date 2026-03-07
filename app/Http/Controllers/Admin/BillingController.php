@@ -6,32 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class BillingController extends Controller
 {
-    /**
-     * Constructor - Auto-check for overdue invoices
-     */
-    public function __construct()
-    {
-        // Check for overdue invoices on every billing controller access
-        $this->checkOverdueInvoices();
-    }
-
-    /**
-     * Check and update overdue invoices
-     */
-    private function checkOverdueInvoices()
-    {
-        Invoice::where('status', '!=', 'paid')
-            ->where('status', '!=', 'cancelled')
-            ->where('due_date', '<', now())
-            ->update(['status' => 'overdue']);
-    }
 
     // ============ INVOICES ============
     /**
@@ -39,7 +23,12 @@ class BillingController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Invoice::with('customer');
+        $query = Invoice::with(['customer', 'order']);
+
+        // Filter by customer
+        if ($request->filled('customer_id')) {
+            $query->where('customer_id', $request->customer_id);
+        }
 
         // Search
         if ($request->has('search')) {
@@ -61,7 +50,7 @@ class BillingController extends Controller
         $sortColumn = $request->get('sort_column', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
         
-        $allowedColumns = ['customer', 'invoice_date', 'due_date', 'total_amount', 'status', 'created_at'];
+        $allowedColumns = ['customer', 'invoice_date', 'total_amount', 'status', 'created_at'];
         
         if (in_array($sortColumn, $allowedColumns)) {
             if ($sortColumn === 'customer') {
@@ -94,7 +83,7 @@ class BillingController extends Controller
      */
     public function create()
     {
-        $customers = Customer::where('status', 'active')->orderBy('business_name')->get();
+        $customers = Customer::whereNotNull('user_id')->where('status', 'active')->orderBy('business_name')->get();
         $inventory = Inventory::whereIn('status', ['in_stock', 'low_stock', 'expiring_soon'])
                             ->where('quantity', '>', 0)
                             ->orderBy('product_name')
@@ -113,17 +102,16 @@ class BillingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'invoice_number' => 'required|unique:invoices',
-            'invoice_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:invoice_date',
-            'notes' => 'nullable|string',
-            'items' => 'required|array|min:1',
-            'items.*.product_name' => 'required',
-            'items.*.quantity' => 'required|numeric|min:0.01',
-            'items.*.unit' => 'required|string',
-            'items.*.unit_price' => 'required|numeric|min:0',
-            'items.*.inventory_id' => 'required|exists:inventory,id',
+            'customer_id'       => ['required', Rule::exists('customers', 'id')->whereNotNull('user_id')],
+            'invoice_number'    => 'required|unique:invoices',
+            'invoice_date'      => 'required|date',
+            'notes'             => 'nullable|string',
+            'items'             => 'required|array|min:1',
+            'items.*.product_name'  => 'required',
+            'items.*.quantity'      => 'required|numeric|min:0.01',
+            'items.*.unit'          => 'required|string',
+            'items.*.unit_price'    => 'required|numeric|min:0',
+            'items.*.inventory_id'  => 'required|exists:inventory,id',
         ]);
 
         DB::beginTransaction();
@@ -139,15 +127,14 @@ class BillingController extends Controller
 
             // Create invoice
             $invoice = Invoice::create([
-                'invoice_number' => $validated['invoice_number'],
-                'customer_id' => $validated['customer_id'],
-                'invoice_date' => $validated['invoice_date'],
-                'due_date' => $validated['due_date'],
-                'subtotal' => $subtotal,
-                'tax' => $tax,
-                'total_amount' => $total,
-                'status' => 'pending',
-                'notes' => $validated['notes'] ?? null,
+                'invoice_number'     => $validated['invoice_number'],
+                'customer_id'        => $validated['customer_id'],
+                'invoice_date'       => $validated['invoice_date'],
+                'subtotal'           => $subtotal,
+                'tax'                => $tax,
+                'total_amount'       => $total,
+                'status'             => 'pending',
+                'notes'              => $validated['notes'] ?? null,
             ]);
 
             // Create invoice items and update inventory
@@ -177,6 +164,36 @@ class BillingController extends Controller
                 }
             }
 
+            // Create corresponding Order so the invoice appears in the customer portal
+            $customer = Customer::find($validated['customer_id']);
+            $order = Order::create([
+                'order_number'       => 'ORD-' . $invoice->invoice_number,
+                'invoice_id'         => $invoice->id,
+                'customer_id'        => $customer->user_id,
+                'subtotal'           => $subtotal,
+                'delivery_fee'       => 0,
+                'total'              => $total,
+                'status'             => 'pending',
+                'payment_status'     => 'unpaid',
+                'delivery_address'   => $customer->address ?? 'N/A',
+                'delivery_latitude'  => $customer->latitude,
+                'delivery_longitude' => $customer->longitude,
+                'confirmed_at'       => now(),
+            ]);
+
+            foreach ($request->items as $item) {
+                $inv = Inventory::find($item['inventory_id']);
+                OrderItem::create([
+                    'order_id'       => $order->id,
+                    'inventory_id'   => $item['inventory_id'],
+                    'product_name'   => $inv->product_name,
+                    'quantity'       => $item['quantity'],
+                    'unit'           => $item['unit'],
+                    'price_per_unit' => $item['unit_price'],
+                    'subtotal'       => $item['quantity'] * $item['unit_price'],
+                ]);
+            }
+
             DB::commit();
             return redirect()->route('admin.billing.show', $invoice->id)
                 ->with('success', 'Invoice created successfully!');
@@ -191,7 +208,7 @@ class BillingController extends Controller
      */
     public function show($id)
     {
-        $invoice = Invoice::with(['customer', 'items', 'payments'])->findOrFail($id);
+        $invoice = Invoice::with(['customer', 'items', 'payments', 'order'])->findOrFail($id);
         return view('admin.billing.show', compact('invoice'));
     }
 
@@ -201,7 +218,7 @@ class BillingController extends Controller
     public function edit($id)
     {
         $invoice = Invoice::with(['items', 'payments'])->findOrFail($id);
-        $customers = Customer::where('status', 'active')->orderBy('business_name')->get();
+        $customers = Customer::whereNotNull('user_id')->where('status', 'active')->orderBy('business_name')->get();
         $inventory = Inventory::orderBy('product_name')->get();
 
         return view('admin.billing.edit', compact('invoice', 'customers', 'inventory'));
@@ -217,7 +234,6 @@ class BillingController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:invoice_date',
             'status' => 'required|in:pending,paid,partially_paid,overdue,cancelled',
             'notes' => 'nullable|string',
         ]);
@@ -246,7 +262,7 @@ class BillingController extends Controller
      */
     public function customers(Request $request)
     {
-        $query = Customer::query();
+        $query = Customer::query()->whereNotNull('user_id');
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -353,7 +369,7 @@ class BillingController extends Controller
             'payment_reference' => 'nullable|string|max:255',
             'amount' => 'required|numeric|min:0.01',
             'payment_date' => 'required|date',
-            'payment_method' => 'required|in:cash,bank_transfer,check,online_payment,other',
+            'payment_method' => 'required|in:cash,gcash,paymaya',
             'notes' => 'nullable|string',
         ]);
 

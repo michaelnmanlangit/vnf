@@ -12,6 +12,7 @@ class Inventory extends Model
         'product_name',
         'category',
         'quantity',
+        'price',
         'unit',
         'storage_location',
         'temperature_requirement',
@@ -20,6 +21,7 @@ class Inventory extends Model
         'supplier',
         'status',
         'notes',
+        'product_image',
     ];
 
     protected $casts = [
@@ -27,6 +29,7 @@ class Inventory extends Model
         'expiration_date' => 'date',
         'temperature_requirement' => 'float',
         'quantity' => 'float',
+        'price' => 'float',
     ];
 
     public function getStatusBadgeAttribute()

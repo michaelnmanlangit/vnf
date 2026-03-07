@@ -71,10 +71,7 @@
                         <span>Date:</span>
                         <strong>{{ $invoice->invoice_date->format('d/m/Y') }}</strong>
                     </div>
-                    <div class="meta-row">
-                        <span>Due Date:</span>
-                        <strong>{{ $invoice->due_date->format('d/m/Y') }}</strong>
-                    </div>
+
                 </div>
             </div>
 
@@ -183,10 +180,8 @@
                     <select name="payment_method" id="payment_method" required>
                         <option value="">Select Method</option>
                         <option value="cash" selected>Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="check">Check</option>
-                        <option value="online_payment">Online Payment</option>
-                        <option value="other">Other</option>
+                        <option value="gcash">GCash</option>
+                        <option value="paymaya">PayMaya</option>
                     </select>
                 </div>
 

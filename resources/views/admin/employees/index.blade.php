@@ -25,10 +25,7 @@
         <div class="dept-cards">
             <div class="dept-card dept-total">
                 <div class="dept-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="4"></circle>
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
-                    </svg>
+                    <i class="fas fa-users" style="font-size:1.5rem;"></i>
                 </div>
                 <div class="dept-content">
                     <span class="dept-name">Total</span>

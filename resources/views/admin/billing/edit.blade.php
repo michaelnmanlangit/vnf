@@ -39,11 +39,6 @@
                         <label>Invoice Date <span class="required">*</span></label>
                         <input type="date" name="invoice_date" value="{{ $invoice->invoice_date->format('Y-m-d') }}" required class="form-control">
                     </div>
-
-                    <div class="form-group">
-                        <label>Due Date <span class="required">*</span></label>
-                        <input type="date" name="due_date" value="{{ $invoice->due_date->format('Y-m-d') }}" required class="form-control">
-                    </div>
                 </div>
 
                 <div class="form-group">

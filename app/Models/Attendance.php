@@ -19,6 +19,7 @@ class Attendance extends Model
         'time_in',
         'time_out',
         'notes',
+        'hours_worked',
     ];
 
     protected $casts = [

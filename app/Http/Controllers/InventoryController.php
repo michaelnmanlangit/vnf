@@ -84,13 +84,20 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'category' => 'required|in:ice,meat,seafood,vegetables,fruits,beverages,dairy',
             'quantity' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'unit' => 'required|in:kg,liter,pieces,boxes',
             'storage_location' => 'required|in:Unit A,Unit B,Unit C,Unit D,Unit E',
             'expiration_date' => 'required|date|after_or_equal:today',
             'date_received' => 'required|date|before_or_equal:today',
             'supplier' => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
+            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('product_image')) {
+            $validated['product_image'] = $request->file('product_image')->store('inventory', 'public');
+        }
 
         // Set default temperature requirement based on category
         $validated['temperature_requirement'] = $this->getDefaultTemperatureForCategory($validated['category']);
@@ -124,13 +131,29 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'category' => 'required|in:ice,meat,seafood,vegetables,fruits,beverages,dairy',
             'quantity' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'unit' => 'required|in:kg,liter,pieces,boxes',
             'storage_location' => 'required|in:Unit A,Unit B,Unit C,Unit D,Unit E',
             'expiration_date' => 'required|date',
             'date_received' => 'required|date',
             'supplier' => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
+            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
+
+        // Handle image removal flag
+        if ($request->input('remove_image') == '1' && $inventory->product_image) {
+            \Storage::disk('public')->delete($inventory->product_image);
+            $validated['product_image'] = null;
+        }
+
+        // Handle image upload — delete old image if replaced
+        if ($request->hasFile('product_image')) {
+            if ($inventory->product_image) {
+                \Storage::disk('public')->delete($inventory->product_image);
+            }
+            $validated['product_image'] = $request->file('product_image')->store('inventory', 'public');
+        }
 
         // Set default temperature requirement based on category
         $validated['temperature_requirement'] = $this->getDefaultTemperatureForCategory($validated['category']);

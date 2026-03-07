@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $fillable = [
+        'user_id',
         'business_name',
         'contact_person',
         'email',
@@ -27,8 +28,23 @@ class Customer extends Model
     ];
 
     // Relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(CustomerProfile::class, 'user_id', 'user_id');
+    }
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id', 'user_id');
     }
 }

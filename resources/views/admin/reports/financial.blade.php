@@ -53,9 +53,9 @@
 
 {{-- Date Filter --}}
 <form method="GET" action="{{ route('admin.reports.financial') }}" class="report-filter">
-    <label>From</label>
+    <label>Period Start</label>
     <input type="date" name="date_from" value="{{ $dateFrom }}">
-    <label>To</label>
+    <label>Period End</label>
     <input type="date" name="date_to" value="{{ $dateTo }}">
     <button type="submit" class="btn-rpt btn-rpt-apply"><i class="fas fa-filter"></i> Apply</button>
     <a href="{{ route('admin.reports.financial') }}" class="btn-rpt btn-rpt-reset"><i class="fas fa-undo"></i> Reset</a>

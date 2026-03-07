@@ -985,7 +985,7 @@
                         <div class="icon"><i class="fa-solid fa-envelope"></i></div>
                         <div class="info">
                             <div class="label">Email</div>
-                            <p>info@vnfcoldstorage.com</p>
+                            <p><a href="mailto:vnfstotomas@gmail.com" style="color:inherit;">vnfstotomas@gmail.com</a></p>
                         </div>
                     </div>
 
@@ -1015,11 +1015,11 @@
             <div class="col-lg-8 reveal-right">
                 <div class="map-wrap h-100">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3884.5012310456123!2d121.0327!3d14.0982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd62d5e1d5d4b1%3A0x5c5a6a6e5d5e5f5f!2sSan%20Roque%2C%20City%20of%20Santo%20Tomas%2C%20Batangas!5e0!3m2!1sen!2sph!4v1709000000000!5m2!1sen!2sph"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3868.4!2d121.1491564!3d14.099026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd055ad697d8d9%3A0x33315dba792757fe!2sV%20%26%20F%20Ice%20Plant%20%26%20Cold%20Storage%20Inc.!5e0!3m2!1sen!2sph!4v1741000000000!5m2!1sen!2sph"
                         allowfullscreen=""
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
-                        title="V&F Ice Plant Location – San Roque, Santo Tomas, Batangas">
+                        title="V&F Ice Plant & Cold Storage Inc. Location">
                     </iframe>
                 </div>
             </div>

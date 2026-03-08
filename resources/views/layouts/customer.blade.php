@@ -18,7 +18,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #1e3ba8 0%, #2f50c4 55%, #4169E1 100%);
             min-height: 100vh;
             line-height: 1.6;
             color: #333;
@@ -151,7 +151,7 @@
                 right: -100%;
                 height: 100vh;
                 width: 280px;
-                background: rgba(44, 62, 80, 0.98);
+                background: rgba(30, 59, 168, 0.98);
                 backdrop-filter: blur(10px);
                 flex-direction: column;
                 gap: 0;
@@ -303,5 +303,115 @@
     </script>
 
     @yield('scripts')
+
+    {{-- Firebase Push Notifications (customers only) --}}
+    @auth
+    @if(auth()->user()->role === 'customer')
+    <div id="fcm-toast" style="display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;max-width:340px;background:#1e3ba8;color:#fff;padding:1rem 1.25rem;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);font-size:.95rem;line-height:1.5;cursor:pointer;" onclick="this.style.display='none'">
+        <strong id="fcm-toast-title" style="display:block;margin-bottom:.2rem;font-size:1rem;"></strong>
+        <span id="fcm-toast-body"></span>
+    </div>
+
+    @if(config('services.firebase.api_key'))
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+    <script>
+    (async function () {
+        if (!('serviceWorker' in navigator)) {
+            console.warn('FCM: serviceWorker not supported');
+            return;
+        }
+        if (!('Notification' in window)) {
+            console.warn('FCM: Notifications not supported');
+            return;
+        }
+
+        const firebaseConfig = {
+            apiKey:            "{{ config('services.firebase.api_key') }}",
+            authDomain:        "{{ config('services.firebase.auth_domain') }}",
+            projectId:         "{{ config('services.firebase.project_id') }}",
+            storageBucket:     "{{ config('services.firebase.storage_bucket') }}",
+            messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
+            appId:             "{{ config('services.firebase.app_id') }}",
+        };
+
+        console.log('FCM: starting — projectId:', firebaseConfig.projectId);
+
+        try {
+            // Handle duplicate init across page navigations
+            const firebaseApp = firebase.apps.length
+                ? firebase.app()
+                : firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging(firebaseApp);
+            console.log('FCM: messaging instance ready');
+
+            // Register & wait for service worker to become active
+            const swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/', updateViaCache: 'none' });
+            console.log('FCM: SW registered, state:', swReg.active ? swReg.active.state : 'no active worker yet');
+
+            // Wait for the SW to become active (handles first-install case)
+            if (swReg.installing) {
+                await new Promise((resolve) => {
+                    swReg.installing.addEventListener('statechange', function handler(e) {
+                        if (e.target.state === 'activated') {
+                            e.target.removeEventListener('statechange', handler);
+                            resolve();
+                        }
+                    });
+                });
+                console.log('FCM: SW now activated');
+            }
+
+            // Request notification permission
+            const permission = await Notification.requestPermission();
+            console.log('FCM: permission =', permission);
+            if (permission !== 'granted') return;
+
+            const token = await messaging.getToken({
+                vapidKey: "{{ config('services.firebase.vapid_key') }}",
+                serviceWorkerRegistration: swReg,
+            });
+
+            console.log('FCM: token =', token ? token.substring(0, 20) + '…' : 'null/empty');
+
+            if (token) {
+                const res = await fetch('{{ route("customer.fcm.token.save") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ token }),
+                });
+                console.log('FCM: save response status:', res.status);
+            } else {
+                console.warn('FCM: no token returned — check VAPID key and SW');
+            }
+
+            // Show in-app toast when app is open (foreground)
+            messaging.onMessage(function (payload) {
+                console.log('FCM: foreground message', payload);
+                // Payload is data-only — read from payload.data
+                var title = (payload.data && payload.data.title) || 'V&F Ice Plant';
+                var body  = (payload.data && payload.data.body)  || '';
+                showFcmToast(title, body);
+            });
+
+        } catch (err) {
+            console.error('FCM error:', err.code || '', err.message || err);
+        }
+
+        function showFcmToast(title, body) {
+            const toast = document.getElementById('fcm-toast');
+            document.getElementById('fcm-toast-title').textContent = title;
+            document.getElementById('fcm-toast-body').textContent  = body;
+            toast.style.display = 'block';
+            setTimeout(function () { toast.style.display = 'none'; }, 7000);
+        }
+    })();
+    </script>
+    @endif
+    @endif
+    @endauth
 </body>
 </html>

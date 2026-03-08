@@ -17,13 +17,13 @@
     }
 
     .orders-header h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 2rem;
         margin-bottom: 0.5rem;
     }
 
     .orders-header p {
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .orders-list {
@@ -34,7 +34,7 @@
     }
 
     .order-card {
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 15px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
@@ -42,7 +42,7 @@
     }
 
     .order-card:hover {
-        border-color: #3498db;
+        border-color: #4169E1;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
@@ -52,17 +52,17 @@
         align-items: center;
         margin-bottom: 1rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid #ecf0f1;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .order-number {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.2rem;
         font-weight: 600;
     }
 
     .order-date {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.9rem;
     }
 
@@ -128,7 +128,7 @@
 
     .order-item {
         padding: 0.5rem 0;
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.95rem;
     }
 
@@ -139,14 +139,14 @@
     }
 
     .order-total {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.3rem;
         font-weight: 700;
     }
 
     .btn-view-order {
         padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         border: none;
         border-radius: 10px;
         color: white;
@@ -159,13 +159,13 @@
 
     .btn-view-order:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
     }
 
     .empty-orders {
         text-align: center;
         padding: 3rem;
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .empty-orders i {
@@ -183,20 +183,20 @@
 
     .pagination a, .pagination span {
         padding: 0.75rem 1rem;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 8px;
-        color: #2c3e50;
+        color: #1a202c;
         text-decoration: none;
         transition: all 0.3s ease;
     }
 
     .pagination a:hover {
-        border-color: #3498db;
-        color: #3498db;
+        border-color: #4169E1;
+        color: #4169E1;
     }
 
     .pagination .active {
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         color: white;
         border-color: transparent;
     }

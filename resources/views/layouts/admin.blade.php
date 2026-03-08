@@ -42,7 +42,7 @@
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path>
                     </svg>
-                    Temperature Monitoring
+                    Temperature
                 </a>
                 <a href="{{ route('admin.inventory.index') }}" class="menu-item {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -50,7 +50,7 @@
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                         <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
-                    Inventory Management
+                    Inventory
                 </a>
                 <a href="{{ route('admin.deliveries.index') }}" class="menu-item {{ request()->routeIs('admin.deliveries.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -59,11 +59,11 @@
                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
                     </svg>
-                    Delivery Monitoring
+                    Delivery
                 </a>
                 <a href="{{ route('admin.employees.index') }}" class="menu-item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
                     <i class="fas fa-users menu-icon" style="font-size:1rem;width:20px;text-align:center;"></i>
-                    Employee Management
+                    Employee
                 </a>
                 <a href="{{ route('admin.billing.customers') }}" class="menu-item {{ request()->routeIs('admin.billing.customers*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -72,14 +72,14 @@
                         <circle cx="11" cy="9" r="2"></circle>
                         <path d="M7 15c0-2 1.8-3 4-3s4 1 4 3"></path>
                     </svg>
-                    Customer Management
+                    Customer
                 </a>
                 <a href="{{ route('admin.tasks.index') }}" class="menu-item {{ request()->routeIs('admin.tasks.*') ? 'active' : '' }}">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 11l3 3L22 4"></path>
                         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                     </svg>
-                    Work Assignments
+                    Assignment
                 </a>
             </div>
 

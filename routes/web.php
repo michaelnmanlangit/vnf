@@ -240,4 +240,5 @@ Route::middleware(['auth', 'role:customer', 'profile.complete'])->prefix('custom
     Route::get('/orders', [CustomerShopController::class, 'orders'])->name('orders');
     Route::get('/order/{id}', [CustomerShopController::class, 'orderDetail'])->name('order.detail');
     Route::get('/delivery/{id}/location', [CustomerShopController::class, 'deliveryLocation'])->name('delivery.location');
+    Route::post('/fcm-token', [CustomerShopController::class, 'saveFcmToken'])->name('fcm.token.save');
 });

@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
-@section('title', 'Work Assignments')
+@section('title', 'Work Assignment')
 
-@section('page-title', 'Work Assignments')
+@section('page-title', 'Work Assignment')
 
 @section('styles')
 <link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css">

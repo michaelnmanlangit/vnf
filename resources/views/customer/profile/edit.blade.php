@@ -18,17 +18,17 @@
     .profile-header {
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid #ecf0f1;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .profile-header h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.5rem;
         margin-bottom: 0.3rem;
     }
 
     .profile-header p {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.9rem;
     }
 
@@ -46,7 +46,7 @@
     .form-group label {
         display: block;
         font-weight: 500;
-        color: #2c3e50;
+        color: #1a202c;
         margin-bottom: 0.4rem;
         font-size: 0.9rem;
     }
@@ -64,13 +64,13 @@
         font-size: 0.9rem;
         font-family: 'Poppins', sans-serif;
         transition: all 0.2s ease;
-        color: #2c3e50;
+        color: #1a202c;
     }
 
     .form-control:focus, .form-select:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        border-color: #4169E1;
+        box-shadow: 0 0 0 2px rgba(65, 105, 225, 0.1);
     }
 
     #map {
@@ -94,7 +94,7 @@
         right: 0.75rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .btn-group {
@@ -118,13 +118,13 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         color: white;
     }
 
     .btn-primary:hover:not(:disabled) {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
     }
 
     .btn-primary:disabled {
@@ -136,12 +136,12 @@
     .btn-cancel {
         background: white;
         border: 2px solid #ddd;
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .btn-cancel:hover {
-        border-color: #3498db;
-        color: #3498db;
+        border-color: #4169E1;
+        color: #4169E1;
     }
 
     .alert {
@@ -314,6 +314,8 @@
         marker = L.marker(latlng).addTo(map);
         document.getElementById('latitude').value = latlng.lat.toFixed(8);
         document.getElementById('longitude').value = latlng.lng.toFixed(8);
+        // Programmatic value changes don't fire 'change' events, so trigger manually
+        if (typeof checkForChanges === 'function') checkForChanges();
     }
 
     function reverseGeocodeOptimized(latlng) {
@@ -355,11 +357,11 @@
 
     // Set initial marker if coordinates exist
     if (latValue && lngValue) {
-        console.log('Setting initial marker at:', existingLat, existingLng);
         const latlng = L.latLng(existingLat, existingLng);
-        updateMarker(latlng);
-    } else {
-        console.log('No coordinates found, using default location');
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(latlng).addTo(map);
+        document.getElementById('latitude').value = latlng.lat.toFixed(8);
+        document.getElementById('longitude').value = latlng.lng.toFixed(8);
     }
 
     // Track form changes to enable/disable save button
@@ -374,7 +376,7 @@
         longitude: document.getElementById('longitude')
     };
 
-    // Store initial values
+    // Store initial values AFTER the map has set the formatted coordinates
     const initialValues = {
         name: formFields.name.value,
         company_name: formFields.company_name.value,

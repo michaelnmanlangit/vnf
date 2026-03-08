@@ -304,7 +304,13 @@
                     <div class="cm-name">{{ session('employee_name') }}</div>
                     <div class="cm-date">{{ session('date') }}</div>
 
-                    @if(session('action') === 'out' || session('action') === 'done')
+                    @if(session('action') === 'in')
+                        <div class="cm-info-rows">
+                            <div class="cm-hrs">
+                                <i class="fa-solid fa-right-to-bracket"></i>Time In: <strong>{{ session('time') }}</strong>
+                            </div>
+                        </div>
+                    @elseif(session('action') === 'out' || session('action') === 'done')
                         <div class="cm-info-rows">
                             <div class="cm-hrs">
                                 <i class="fa-solid fa-right-to-bracket"></i>Time In: <strong>{{ session('time_in') }}</strong>

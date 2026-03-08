@@ -20,6 +20,7 @@ package-lock.json
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/app/firebase-credentials.json
 /vendor
 Homestead.json
 Homestead.yaml

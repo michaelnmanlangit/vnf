@@ -302,7 +302,7 @@ html, body     { overflow: hidden; }
     @endif
 
     @if($status === 'pending')
-    <form method="POST" action="{{ route('delivery.start', $activeDelivery->id) }}">
+    <form method="POST" action="{{ route('delivery.start', $activeDelivery->id) }}" onsubmit="this.querySelector('button[type=submit]').disabled=true;">
         @csrf
         <button type="submit" class="map-btn map-btn-start">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:.35rem;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -331,7 +331,7 @@ html, body     { overflow: hidden; }
         </form>
     </div>
     @else
-    <form method="POST" action="{{ route('delivery.complete', $activeDelivery->id) }}" onsubmit="return confirm('Mark this delivery as completed?')">
+    <form method="POST" action="{{ route('delivery.complete', $activeDelivery->id) }}" onsubmit="if(!confirm('Mark this delivery as completed?')){return false;} this.querySelector('button[type=submit]').disabled=true;">
         @csrf
         <button type="submit" class="map-btn map-btn-done">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:.35rem;"><path d="M20 6L9 17l-5-5"/></svg>
@@ -388,7 +388,7 @@ html, body     { overflow: hidden; }
               <line x1="19" y1="10" x2="19" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
             </svg>
           </div>`,
-        iconSize:[38,28], iconAnchor:[19,28],
+        iconSize:[38,28], iconAnchor:[19,28], popupAnchor:[0,-30],
     });
 
     /* Destination red icon */
@@ -640,7 +640,13 @@ function confirmCOD(form) {
         return false;
     }
     const change = (tendered - total).toFixed(2);
-    return confirm('Collect ₱' + tendered.toFixed(2) + ' and return ₱' + change + ' change?\nMark this delivery as completed?');
+    if (!confirm('Collect ₱' + tendered.toFixed(2) + ' and return ₱' + change + ' change?\nMark this delivery as completed?')) {
+        return false;
+    }
+    // Prevent double-submit
+    const btn = form.querySelector('button[type=submit]');
+    if (btn) btn.disabled = true;
+    return true;
 }
 document.addEventListener('DOMContentLoaded', function () {
     const inp = document.querySelector('[name="amount_collected"]');

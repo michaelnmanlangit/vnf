@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #1e3ba8 0%, #2f50c4 55%, #4169E1 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -45,32 +45,32 @@
         }
 
         .logo-section h1 {
-            color: #2c3e50;
+            color: #1a202c;
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
         }
 
         .logo-section p {
-            color: #7f8c8d;
+            color: #64748b;
             font-size: 0.95rem;
         }
 
         .otp-info {
-            background: #e8f4fd;
-            border-left: 4px solid #3498db;
+            background: #eef1fc;
+            border-left: 4px solid #4169E1;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 2rem;
         }
 
         .otp-info p {
-            color: #2c3e50;
+            color: #1a202c;
             font-size: 0.9rem;
             line-height: 1.5;
         }
 
         .otp-info strong {
-            color: #3498db;
+            color: #4169E1;
         }
 
         .form-group {
@@ -80,7 +80,7 @@
         .form-group label {
             display: block;
             font-weight: 500;
-            color: #2c3e50;
+            color: #1a202c;
             margin-bottom: 0.5rem;
         }
 
@@ -100,13 +100,13 @@
             border-radius: 10px;
             transition: all 0.3s ease;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1a202c;
         }
 
         .otp-input:focus {
-            border-color: #3498db;
+            border-color: #4169E1;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
         }
 
         .btn {
@@ -122,13 +122,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            background: linear-gradient(135deg, #1e3ba8, #4169E1);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
         }
 
         .btn-primary:disabled {
@@ -141,19 +141,19 @@
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1.5rem;
-            border-top: 1px solid #ecf0f1;
+            border-top: 1px solid #e2e8f0;
         }
 
         .resend-section p {
-            color: #7f8c8d;
+            color: #64748b;
             font-size: 0.9rem;
             margin-bottom: 0.75rem;
         }
 
         .btn-resend {
             background: none;
-            border: 2px solid #3498db;
-            color: #3498db;
+            border: 2px solid #4169E1;
+            color: #4169E1;
             padding: 0.75rem 1.5rem;
             border-radius: 10px;
             font-weight: 600;
@@ -163,7 +163,7 @@
         }
 
         .btn-resend:hover {
-            background: #3498db;
+            background: #4169E1;
             color: white;
         }
 

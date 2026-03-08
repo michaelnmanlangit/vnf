@@ -5,6 +5,14 @@
 @section('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
+    .dtruck-wrap {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+        animation: truckBob .9s ease-in-out infinite alternate;
+    }
+    @keyframes truckBob {
+        from { transform: translateY(0); }
+        to   { transform: translateY(-3px); }
+    }
     .order-detail-container {
         max-width: 1000px;
         margin: 2rem auto;
@@ -44,7 +52,7 @@
     }
 
     .order-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 2rem;
         font-weight: 600;
     }
@@ -93,7 +101,7 @@
         gap: 1.5rem;
         margin-top: 1.5rem;
         padding-top: 1.5rem;
-        border-top: 2px solid #ecf0f1;
+        border-top: 2px solid #e2e8f0;
     }
 
     .meta-item {
@@ -103,13 +111,13 @@
     }
 
     .meta-label {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.9rem;
         font-weight: 500;
     }
 
     .meta-value {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 600;
         font-size: 1.1rem;
     }
@@ -128,7 +136,7 @@
     }
 
     .section-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
@@ -138,7 +146,7 @@
         display: flex;
         gap: 1.5rem;
         padding: 1.5rem;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 15px;
         margin-bottom: 1rem;
     }
@@ -156,14 +164,14 @@
     }
 
     .item-name {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 600;
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
     }
 
     .item-qty {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.95rem;
     }
 
@@ -185,16 +193,16 @@
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .summary-row.total {
-        border-top: 2px solid #ecf0f1;
+        border-top: 2px solid #e2e8f0;
         margin-top: 1rem;
         padding-top: 1rem;
         font-size: 1.4rem;
         font-weight: 700;
-        color: #2c3e50;
+        color: #1a202c;
     }
 
     .delivery-section {
@@ -224,7 +232,7 @@
     .map-title  { 
         font-size: 1rem; 
         font-weight: 700; 
-        color: #2c3e50; 
+        color: #1a202c; 
         display: flex; 
         align-items: center; 
         gap: 0.5rem; 
@@ -232,7 +240,7 @@
     
     #last-update { 
         font-size: 0.875rem; 
-        color: #7f8c8d; 
+        color: #64748b; 
     }
     
     .pulse-dot { 
@@ -250,7 +258,7 @@
     }
 
     .delivery-status {
-        background: #e8f4fd;
+        background: #eef1fc;
         padding: 1rem 1.25rem;
         border-radius: 10px;
         margin-bottom: 1.5rem;
@@ -260,12 +268,12 @@
     }
 
     .delivery-status h4 {
-        color: #2c3e50;
+        color: #1a202c;
         margin-bottom: 0.5rem;
     }
 
     .delivery-status p {
-        color: #7f8c8d;
+        color: #64748b;
         margin: 0;
     }
 
@@ -277,12 +285,12 @@
     }
 
     .delivery-address h4 {
-        color: #2c3e50;
+        color: #1a202c;
         margin-bottom: 0.75rem;
     }
 
     .delivery-address p {
-        color: #7f8c8d;
+        color: #64748b;
         line-height: 1.6;
         margin: 0;
     }
@@ -495,12 +503,23 @@ L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey
 
 // Truck icon for delivery vehicle
 const truckIcon = L.divIcon({
-    html: `<div style="background:#3498db;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.25);">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg></div>`,
-    className: '', iconSize: [38, 38], iconAnchor: [19, 19],
+    className: '',
+    html: `<div class="dtruck-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="28" viewBox="0 0 38 28">
+          <rect x="1" y="7" width="24" height="15" rx="2" fill="#1565c0" stroke="#fff" stroke-width="1.2"/>
+          <rect x="25" y="11" width="11" height="11" rx="2" fill="#1976d2" stroke="#fff" stroke-width="1.2"/>
+          <rect x="26.5" y="12.5" width="5.5" height="4" rx="1" fill="#bbdefb" opacity=".9"/>
+          <polygon points="25,11 32,7 32,11" fill="#1565c0" stroke="#fff" stroke-width=".8"/>
+          <circle cx="8" cy="24" r="3.2" fill="#263238" stroke="#fff" stroke-width="1"/>
+          <circle cx="8" cy="24" r="1.3" fill="#90a4ae"/>
+          <circle cx="29" cy="24" r="3.2" fill="#263238" stroke="#fff" stroke-width="1"/>
+          <circle cx="29" cy="24" r="1.3" fill="#90a4ae"/>
+          <line x1="7" y1="10" x2="7" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+          <line x1="13" y1="10" x2="13" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+          <line x1="19" y1="10" x2="19" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+        </svg>
+      </div>`,
+    iconSize: [38, 28], iconAnchor: [19, 28], popupAnchor: [0, -30],
 });
 
 let marker = null;
@@ -510,19 +529,20 @@ marker.bindPopup('<b>{{ $delivery->driver?->name ?? "Driver" }}</b><br>Last know
 @endif
 
 // Destination marker (customer location)
-@if(Auth::user()->customer_profile?->latitude && Auth::user()->customer_profile?->longitude)
+@if($customer?->latitude && $customer?->longitude)
 const destIcon = L.divIcon({
     html: `<div style="position:relative;width:28px;height:38px;">
         <div style="background:#e53e3e;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);"></div>
         <div style="position:absolute;top:7px;left:7px;width:10px;height:10px;background:#fff;border-radius:50%;transform:none;"></div>
     </div>`,
-    className: '', iconSize: [28, 38], iconAnchor: [14, 38],
+    className: '', iconSize: [28, 38], iconAnchor: [14, 38], popupAnchor: [0, -40],
 });
-const destLat = {{ Auth::user()->customer_profile->latitude }};
-const destLng = {{ Auth::user()->customer_profile->longitude }};
+const destLat = {{ $customer->latitude }};
+const destLng = {{ $customer->longitude }};
 const destMarker = L.marker([destLat, destLng], { icon: destIcon })
     .addTo(map)
-    .bindPopup('<b>📍 Your Location</b><br><b>{{ addslashes(Auth::user()->customer_profile->business_name ?? "") }}</b><br>{{ addslashes(Auth::user()->customer_profile->address ?? "") }}');
+    .bindPopup('<b>📍 Delivery Destination</b><br><b>{{ addslashes($customer->business_name ?? "") }}</b><br>{{ addslashes($customer->address ?? "") }}')
+    .openPopup();
 
 @if($delivery->latestLocation)
 // Fit map to show both truck and destination

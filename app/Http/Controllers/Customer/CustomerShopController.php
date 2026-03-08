@@ -239,9 +239,10 @@ class CustomerShopController extends Controller
         }, 0);
 
         $deliveryFee = 0;
-        $total = $subtotal;
+        $tax = $subtotal * 0.12;
+        $total = $subtotal + $tax;
 
-        return view('customer.checkout', compact('cart', 'customer', 'subtotal', 'deliveryFee', 'total'));
+        return view('customer.checkout', compact('cart', 'customer', 'subtotal', 'deliveryFee', 'tax', 'total'));
     }
 
     /**
@@ -461,5 +462,17 @@ class CustomerShopController extends Controller
             'updated' => $delivery->latestLocation->created_at->diffForHumans(),
             'status' => $delivery->status,
         ]);
+    }
+
+    /**
+     * Save or update the customer's FCM token for push notifications.
+     */
+    public function saveFcmToken(Request $request)
+    {
+        $request->validate(['token' => 'required|string']);
+
+        Auth::user()->update(['fcm_token' => $request->token]);
+
+        return response()->json(['success' => true]);
     }
 }

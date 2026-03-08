@@ -21,17 +21,17 @@
     .form-header {
         margin-bottom: 2rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #ecf0f1;
+        border-bottom: 2px solid #e2e8f0;
     }
 
     .form-header h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 2rem;
         margin-bottom: 0.5rem;
     }
 
     .form-header p {
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .form-section {
@@ -39,7 +39,7 @@
     }
 
     .section-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.3rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
@@ -51,7 +51,7 @@
     .section-icon {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -66,7 +66,7 @@
     .form-group label {
         display: block;
         font-weight: 500;
-        color: #2c3e50;
+        color: #1a202c;
         margin-bottom: 0.5rem;
     }
 
@@ -78,18 +78,18 @@
     .form-control {
         width: 100%;
         padding: 0.875rem 1rem;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 10px;
         font-size: 1rem;
         font-family: 'Poppins', sans-serif;
         transition: all 0.3s ease;
-        color: #2c3e50;
+        color: #1a202c;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        border-color: #4169E1;
+        box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
     }
 
     .payment-methods {
@@ -115,7 +115,7 @@
         gap: 0.5rem;
         padding: 1.25rem;
         height: 100px;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -123,9 +123,9 @@
     }
 
     .payment-option input:checked + .payment-label {
-        border-color: #3498db;
-        background: #e8f4fd;
-        color: #3498db;
+        border-color: #4169E1;
+        background: #eef1fc;
+        color: #4169E1;
     }
 
     .payment-label i {
@@ -143,12 +143,12 @@
     }
 
     .summary-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #ecf0f1;
+        border-bottom: 2px solid #e2e8f0;
     }
 
     .order-items {
@@ -161,7 +161,7 @@
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid #ecf0f1;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .item-info {
@@ -169,13 +169,13 @@
     }
 
     .item-name {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 500;
         font-size: 0.95rem;
     }
 
     .item-qty {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.85rem;
     }
 
@@ -188,16 +188,16 @@
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .summary-row.total {
-        border-top: 2px solid #ecf0f1;
+        border-top: 2px solid #e2e8f0;
         margin-top: 1rem;
         padding-top: 1rem;
         font-size: 1.3rem;
         font-weight: 700;
-        color: #2c3e50;
+        color: #1a202c;
     }
 
     .btn-place-order {
@@ -236,7 +236,7 @@
         padding: 1.5rem;
         margin-top: 1.5rem;
         text-align: center;
-        border: 2px solid #3498db;
+        border: 2px solid #4169E1;
     }
 
     .qr-code-section.active {
@@ -244,7 +244,7 @@
     }
 
     .qr-code-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 600;
         margin-bottom: 1rem;
         font-size: 1.1rem;
@@ -267,7 +267,7 @@
     }
 
     .qr-instructions {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.9rem;
         margin-bottom: 1rem;
         line-height: 1.6;
@@ -430,6 +430,11 @@
         <div class="summary-row">
             <span>Subtotal:</span>
             <span>₱{{ number_format($subtotal, 2) }}</span>
+        </div>
+
+        <div class="summary-row">
+            <span>VAT (12%):</span>
+            <span>₱{{ number_format($tax, 2) }}</span>
         </div>
 
         <div class="summary-row total">

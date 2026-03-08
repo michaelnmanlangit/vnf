@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Delivery;
 use App\Models\DeliveryLocation;
 use App\Models\Payment;
+use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,18 +43,36 @@ class DeliveryDashboardController extends Controller
             abort(403);
         }
 
-        if ($delivery->status === 'pending') {
-            $delivery->update([
+        DB::transaction(function () use ($delivery) {
+            // Re-fetch with a write lock to prevent race conditions from double-submit
+            $locked = Delivery::lockForUpdate()->find($delivery->id);
+
+            if ($locked->status !== 'pending') {
+                return; // Already started by a concurrent request, skip
+            }
+
+            $locked->update([
                 'status'     => 'in_transit',
                 'started_at' => now(),
             ]);
 
             // Sync linked Order status so customer portal tracks progress
-            $order = $delivery->invoice?->order;
+            $order = $locked->invoice?->order;
             if ($order) {
                 $order->update(['status' => 'out_for_delivery']);
+
+                // Push notification to customer (only once — lock guarantees this)
+                $customer = $order->customer;
+                if ($customer) {
+                    (new FirebaseNotificationService)->notifyOrderStatus(
+                        $customer,
+                        '🚚 Your order is on the way!',
+                        'Your order ' . $order->order_number . ' has been picked up and is heading to you.',
+                        ['order_id' => (string) $order->id, 'status' => 'out_for_delivery']
+                    );
+                }
             }
-        }
+        });
 
         return back()->with('success', 'Delivery started! Your location is now being tracked.');
     }
@@ -67,21 +86,39 @@ class DeliveryDashboardController extends Controller
             abort(403);
         }
 
-        if ($delivery->status === 'in_transit') {
-            $delivery->update([
+        DB::transaction(function () use ($delivery) {
+            // Re-fetch with a write lock to prevent race conditions from double-submit
+            $locked = Delivery::lockForUpdate()->find($delivery->id);
+
+            if ($locked->status !== 'in_transit') {
+                return; // Already completed by a concurrent request, skip
+            }
+
+            $locked->update([
                 'status'       => 'delivered',
                 'delivered_at' => now(),
             ]);
 
             // Sync linked Order status so customer portal shows delivered
-            $order = $delivery->invoice?->order;
+            $order = $locked->invoice?->order;
             if ($order) {
                 $order->update([
                     'status'       => 'delivered',
                     'delivered_at' => now(),
                 ]);
+
+                // Push notification to customer (only once — lock guarantees this)
+                $customer = $order->customer;
+                if ($customer) {
+                    (new FirebaseNotificationService)->notifyOrderStatus(
+                        $customer,
+                        '✅ Order Delivered!',
+                        'Your order ' . $order->order_number . ' has been delivered. Thank you!',
+                        ['order_id' => (string) $order->id, 'status' => 'delivered']
+                    );
+                }
             }
-        }
+        });
 
         return redirect()->route('delivery.dashboard')->with('success', 'Delivery marked as completed!');
     }
@@ -101,6 +138,14 @@ class DeliveryDashboardController extends Controller
 
         DB::beginTransaction();
         try {
+            // Re-fetch with a write lock to prevent race conditions from double-submit
+            $delivery = Delivery::lockForUpdate()->find($delivery->id);
+
+            if ($delivery->status === 'delivered') {
+                DB::commit();
+                return redirect()->route('delivery.dashboard')->with('success', 'Delivery already completed.');
+            }
+
             $invoice = $delivery->invoice;
             $order   = $invoice?->order;
 
@@ -126,6 +171,17 @@ class DeliveryDashboardController extends Controller
                     'status'         => 'delivered',
                     'delivered_at'   => now(),
                 ]);
+
+                // Push notification to customer
+                $customer = $order->customer;
+                if ($customer) {
+                    (new FirebaseNotificationService)->notifyOrderStatus(
+                        $customer,
+                        '✅ Order Delivered!',
+                        'Your order ' . $order->order_number . ' has been delivered. Thank you!',
+                        ['order_id' => (string) $order->id, 'status' => 'delivered']
+                    );
+                }
             }
 
             // Mark delivery as delivered

@@ -19,17 +19,17 @@
         align-items: center;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid #ecf0f1;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .profile-header h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.5rem;
     }
 
     .btn-edit {
         padding: 0.6rem 1.2rem;
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         border: none;
         border-radius: 8px;
         color: white;
@@ -43,7 +43,7 @@
 
     .btn-edit:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
     }
 
     .profile-section {
@@ -51,7 +51,7 @@
     }
 
     .section-title {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.1rem;
         font-weight: 600;
         margin-bottom: 1rem;
@@ -77,7 +77,7 @@
     }
 
     .info-label {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.8rem;
         font-weight: 500;
         margin-bottom: 0.3rem;
@@ -86,7 +86,7 @@
     }
 
     .info-value {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 600;
         font-size: 1rem;
     }

@@ -19,13 +19,13 @@
     }
 
     .welcome-text h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 2rem;
         margin-bottom: 0.5rem;
     }
 
     .welcome-text p {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 1rem;
     }
 
@@ -37,7 +37,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         color: white;
         padding: 0.75rem 1.5rem;
         border-radius: 50px;
@@ -48,7 +48,7 @@
 
     .cart-count:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
     }
 
     .cart-badge {
@@ -73,7 +73,7 @@
     }
 
     .section-header h2 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.8rem;
     }
 
@@ -85,10 +85,10 @@
 
     .category-btn {
         padding: 0.5rem 1.25rem;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         background: white;
         border-radius: 25px;
-        color: #7f8c8d;
+        color: #64748b;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -97,7 +97,7 @@
     }
 
     .category-btn:hover, .category-btn.active {
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         color: white;
         border-color: transparent;
         outline: none;
@@ -116,7 +116,7 @@
 
     .product-card {
         background: white;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 15px;
         overflow: hidden;
         transition: all 0.3s ease;
@@ -127,7 +127,7 @@
     .product-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        border-color: #3498db;
+        border-color: #4169E1;
     }
 
     .product-image-container {
@@ -168,8 +168,8 @@
 
     .product-category {
         display: inline-block;
-        background: #e8f4fd;
-        color: #3498db;
+        background: #eef1fc;
+        color: #4169E1;
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-size: 0.75rem;
@@ -181,7 +181,7 @@
     }
 
     .product-name {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.1rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
@@ -202,12 +202,12 @@
     }
 
     .product-unit {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.85rem;
     }
 
     .product-stock {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.85rem;
     }
 
@@ -227,10 +227,10 @@
     .qty-btn {
         width: 35px;
         height: 35px;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         background: white;
         border-radius: 8px;
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.2rem;
         font-weight: 600;
         cursor: pointer;
@@ -241,25 +241,25 @@
     }
 
     .qty-btn:hover {
-        border-color: #3498db;
-        color: #3498db;
+        border-color: #4169E1;
+        color: #4169E1;
     }
 
     .qty-input {
         width: 50px;
         height: 35px;
-        border: 2px solid #ecf0f1;
+        border: 2px solid #e2e8f0;
         border-radius: 8px;
         text-align: center;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1a202c;
         font-family: 'Poppins', sans-serif;
     }
 
     .add-to-cart-btn {
         flex: 1;
         padding: 0.75rem;
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         border: none;
         border-radius: 8px;
         color: white;
@@ -271,7 +271,7 @@
 
     .add-to-cart-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
     }
 
     .add-to-cart-btn:disabled {
@@ -326,7 +326,7 @@
     }
 
     .toast-message {
-        color: #2c3e50;
+        color: #1a202c;
         font-weight: 500;
     }
 

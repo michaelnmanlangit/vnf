@@ -21,13 +21,13 @@
     }
 
     .profile-header h1 {
-        color: #2c3e50;
+        color: #1a202c;
         font-size: 1.5rem;
         margin-bottom: 0.3rem;
     }
 
     .profile-header p {
-        color: #7f8c8d;
+        color: #64748b;
         font-size: 0.9rem;
     }
 
@@ -45,7 +45,7 @@
     .form-group label {
         display: block;
         font-weight: 500;
-        color: #2c3e50;
+        color: #1a202c;
         margin-bottom: 0.4rem;
         font-size: 0.9rem;
     }
@@ -63,13 +63,13 @@
         font-size: 0.9rem;
         font-family: 'Poppins', sans-serif;
         transition: all 0.2s ease;
-        color: #2c3e50;
+        color: #1a202c;
     }
 
     .form-control:focus, .form-select:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        border-color: #4169E1;
+        box-shadow: 0 0 0 2px rgba(65, 105, 225, 0.1);
     }
 
     #map {
@@ -108,7 +108,7 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #3498db, #2c3e50);
+        background: linear-gradient(135deg, #1e3ba8, #4169E1);
         color: white;
         width: 100%;
         margin-top: 0.5rem;
@@ -116,7 +116,7 @@
 
     .btn-primary:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
     }
 
     .alert {
@@ -182,7 +182,7 @@
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" name="name" 
                    value="{{ auth()->user()->name }}" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
-            <small style="color: #7f8c8d; font-size: 0.8rem;">Name from your account</small>
+            <small style="color: #64748b; font-size: 0.8rem;">Name from your account</small>
         </div>
 
         <div class="form-row">

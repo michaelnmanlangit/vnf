@@ -7,6 +7,14 @@
 <link rel="stylesheet" href="/build/assets/billing-mM0IVGZh.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
+    .dtruck-wrap {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+        animation: truckBob .9s ease-in-out infinite alternate;
+    }
+    @keyframes truckBob {
+        from { transform: translateY(0); }
+        to   { transform: translateY(-3px); }
+    }
     /* â”€â”€ Layout â”€â”€ */
     .track-grid {
         display: grid;
@@ -312,12 +320,23 @@ L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey
 }).addTo(map);
 
 const truckIcon = L.divIcon({
-    html: `<div style="background:#1a73e8;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.25);">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg></div>`,
-    className: '', iconSize: [38, 38], iconAnchor: [19, 19],
+    className: '',
+    html: `<div class="dtruck-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="28" viewBox="0 0 38 28">
+          <rect x="1" y="7" width="24" height="15" rx="2" fill="#1565c0" stroke="#fff" stroke-width="1.2"/>
+          <rect x="25" y="11" width="11" height="11" rx="2" fill="#1976d2" stroke="#fff" stroke-width="1.2"/>
+          <rect x="26.5" y="12.5" width="5.5" height="4" rx="1" fill="#bbdefb" opacity=".9"/>
+          <polygon points="25,11 32,7 32,11" fill="#1565c0" stroke="#fff" stroke-width=".8"/>
+          <circle cx="8" cy="24" r="3.2" fill="#263238" stroke="#fff" stroke-width="1"/>
+          <circle cx="8" cy="24" r="1.3" fill="#90a4ae"/>
+          <circle cx="29" cy="24" r="3.2" fill="#263238" stroke="#fff" stroke-width="1"/>
+          <circle cx="29" cy="24" r="1.3" fill="#90a4ae"/>
+          <line x1="7" y1="10" x2="7" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+          <line x1="13" y1="10" x2="13" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+          <line x1="19" y1="10" x2="19" y2="20" stroke="#90caf9" stroke-width=".9" opacity=".7"/>
+        </svg>
+      </div>`,
+    iconSize: [38, 28], iconAnchor: [19, 28], popupAnchor: [0, -30],
 });
 
 let marker = null;

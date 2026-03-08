@@ -12,7 +12,7 @@
 <div class="billing-container">
     <!-- Header Navigation -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <a href="{{ route('admin.tasks.index') }}" class="manage-customers-btn" style="background: #6c757d;">Back to Work Assignments</a>
+        <a href="{{ route('admin.tasks.index') }}" class="manage-customers-btn" style="background: #6c757d;">Back to Work Assignment</a>
         
         <div style="display: flex; gap: 0.75rem;">
             <a href="{{ route('admin.tasks.edit', $task) }}" class="btn-submit" style="background: #f39c12;">Edit</a>

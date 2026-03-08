@@ -1,5 +1,5 @@
-// Firebase Cloud Messaging Service Worker for background notifications
-// This file MUST be at the root of the site (/firebase-messaging-sw.js)
+// Firebase Cloud Messaging Service Worker
+// Served dynamically by Laravel — Firebase config is injected from .env, never hardcoded in git.
 // v3 — status-specific tags, notifications stack instead of replacing
 
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
@@ -7,20 +7,19 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-com
 
 if (!firebase.apps.length) {
     firebase.initializeApp({
-        apiKey:            'AIzaSyBFamccFovToRjeYRCkXuHOTcdsvogFYiE',
-        authDomain:        'project-vnf.firebaseapp.com',
-        projectId:         'project-vnf',
-        storageBucket:     'project-vnf.firebasestorage.app',
-        messagingSenderId: '341085169489',
-        appId:             '1:341085169489:web:25a41d4e076f614decd570',
+        apiKey:            '{{ config('services.firebase.api_key') }}',
+        authDomain:        '{{ config('services.firebase.auth_domain') }}',
+        projectId:         '{{ config('services.firebase.project_id') }}',
+        storageBucket:     '{{ config('services.firebase.storage_bucket') }}',
+        messagingSenderId: '{{ config('services.firebase.messaging_sender_id') }}',
+        appId:             '{{ config('services.firebase.app_id') }}',
     });
 }
 
 const messaging = firebase.messaging();
 
-// Handle background messages here and show exactly ONE notification.
-// We use a data-only FCM payload so Chrome's push infrastructure never
-// auto-displays anything — this handler is the single source of truth.
+// Handle background messages and show exactly ONE notification.
+// Data-only payload means Chrome never auto-displays anything.
 messaging.onBackgroundMessage(function (payload) {
     const data  = payload.data || {};
     const title = data.title || 'V&F Ice Plant';

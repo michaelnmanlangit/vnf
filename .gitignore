@@ -21,6 +21,7 @@ package-lock.json
 /storage/*.key
 /storage/pail
 /storage/app/firebase-credentials.json
+/public/firebase-messaging-sw.js
 /vendor
 Homestead.json
 Homestead.yaml

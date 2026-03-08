@@ -18,6 +18,16 @@ use App\Http\Controllers\PublicAttendanceController;
 use App\Http\Controllers\Admin\PayrollController;
 
 // Public routes
+
+// Serve Firebase Service Worker with config injected from .env
+// This keeps all API keys out of git — the static file is gitignored
+Route::get('/firebase-messaging-sw.js', function () {
+    return response(view('firebase-messaging-sw'), 200, [
+        'Content-Type'  => 'application/javascript; charset=utf-8',
+        'Cache-Control' => 'no-store, no-cache',
+    ]);
+});
+
 Route::get('/', function () {
     if (auth()->check()) {
         return match (auth()->user()->role) {

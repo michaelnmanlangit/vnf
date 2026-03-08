@@ -1045,9 +1045,9 @@
                     and temperature-controlled logistics in Santo Tomas, Batangas.
                 </p>
                 <div class="mt-3">
-                    <a class="social-link" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a class="social-link" href="https://www.facebook.com/VnFBatIcePlantandColdStorage" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                     <a class="social-link" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a class="social-link" href="#" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                    <a class="social-link" href="mailto:vnfstotomas@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
                 </div>
             </div>
 

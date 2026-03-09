@@ -101,7 +101,7 @@
             <div class="product-image-panel">
                 <div class="product-img-preview-wrap">
                     @if($inventory->product_image)
-                    <img id="imgPreviewEl" src="{{ asset('storage/' . $inventory->product_image) }}" alt="Product image">
+                    <img id="imgPreviewEl" src="{{ $inventory->product_image }}" alt="Product image">
                     @else
                     <div class="product-img-placeholder" id="imgPlaceholder">
                         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

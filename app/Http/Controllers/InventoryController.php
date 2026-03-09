@@ -94,9 +94,10 @@ class InventoryController extends Controller
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        // Handle image upload
+        // Handle image upload — store as base64 in DB for ephemeral filesystem compatibility
         if ($request->hasFile('product_image')) {
-            $validated['product_image'] = $request->file('product_image')->store('inventory', 'public');
+            $file = $request->file('product_image');
+            $validated['product_image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         // Set default temperature requirement based on category
@@ -142,17 +143,14 @@ class InventoryController extends Controller
         ]);
 
         // Handle image removal flag
-        if ($request->input('remove_image') == '1' && $inventory->product_image) {
-            \Storage::disk('public')->delete($inventory->product_image);
+        if ($request->input('remove_image') == '1') {
             $validated['product_image'] = null;
         }
 
-        // Handle image upload — delete old image if replaced
+        // Handle image upload — store as base64 in DB for ephemeral filesystem compatibility
         if ($request->hasFile('product_image')) {
-            if ($inventory->product_image) {
-                \Storage::disk('public')->delete($inventory->product_image);
-            }
-            $validated['product_image'] = $request->file('product_image')->store('inventory', 'public');
+            $file = $request->file('product_image');
+            $validated['product_image'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         // Set default temperature requirement based on category

@@ -866,7 +866,7 @@
                     <div class="pc-body">
                         <span class="pc-category">{{ $product->category ?? 'Product' }}</span>
                         <div class="pc-name">{{ $product->product_name }}</div>
-                        <div class="pc-price">₱{{ number_format($product->price_per_unit ?? 0, 2) }}</div>
+                        <div class="pc-price">₱{{ number_format($product->price ?? 0, 2) }}</div>
                         <div class="pc-stock">Stock: {{ number_format($product->quantity, 0) }} {{ $product->unit }}</div>
                     </div>
                     <a href="{{ route('login') }}" class="pc-btn"><i class="fa-solid fa-cart-shopping"></i> Order Now</a>

@@ -75,7 +75,7 @@ class CustomerShopController extends Controller
                 'price_raw' => $product->price,
                 'unit' => $product->unit,
                 'quantity' => $product->quantity,
-                'image' => $product->product_image ?? asset('images/default-product.png'),
+                'image' => $product->product_image,
                 'status' => $product->status,
             ],
         ]);
@@ -114,7 +114,7 @@ class CustomerShopController extends Controller
                 'price' => $product->price,
                 'quantity' => $validated['quantity'],
                 'unit' => $product->unit,
-                'image' => $product->product_image,
+                'image' => null,
             ];
         }
 
@@ -142,6 +142,15 @@ class CustomerShopController extends Controller
     {
         $cart = Session::get('cart', []);
         $customer = Customer::where('user_id', Auth::id())->first();
+
+        // Fetch images fresh from DB — avoids storing large base64 strings in session
+        if (!empty($cart)) {
+            $images = \App\Models\Inventory::whereIn('id', array_keys($cart))->pluck('product_image', 'id');
+            foreach ($cart as $id => &$item) {
+                $item['image'] = $images[$id] ?? null;
+            }
+            unset($item);
+        }
 
         $subtotal = array_reduce($cart, function ($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);

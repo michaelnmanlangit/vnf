@@ -222,16 +222,14 @@
             <select class="form-select" id="business_type" name="business_type" required>
                 <option value="">Select type</option>
                 @php
-                    $currentType = old('business_type', $customer->customer_type ?? $customer->profile->business_type ?? '');
-                    // Convert to lowercase for comparison
-                    $currentTypeLower = strtolower($currentType);
+                    $currentType = strtolower(old('business_type', $customer->customer_type ?? $customer->profile->business_type ?? ''));
                 @endphp
-                <option value="Restaurant" {{ strtolower($currentType) === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
-                <option value="Hotel" {{ strtolower($currentType) === 'hotel' ? 'selected' : '' }}>Hotel</option>
-                <option value="Retail" {{ strtolower($currentType) === 'retail' ? 'selected' : '' }}>Retail</option>
-                <option value="Wholesale" {{ strtolower($currentType) === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
-                <option value="Catering" {{ strtolower($currentType) === 'catering' ? 'selected' : '' }}>Catering</option>
-                <option value="Other" {{ strtolower($currentType) === 'other' ? 'selected' : '' }}>Other</option>
+                <option value="restaurant" {{ $currentType === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
+                <option value="hotel" {{ $currentType === 'hotel' ? 'selected' : '' }}>Hotel</option>
+                <option value="retail" {{ $currentType === 'retail' ? 'selected' : '' }}>Retail</option>
+                <option value="wholesale" {{ $currentType === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
+                <option value="catering" {{ $currentType === 'catering' ? 'selected' : '' }}>Catering</option>
+                <option value="other" {{ $currentType === 'other' ? 'selected' : '' }}>Other</option>
             </select>
         </div>
 

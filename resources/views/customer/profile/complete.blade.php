@@ -203,12 +203,12 @@
             <label for="business_type" class="required">Business Type</label>
             <select class="form-select" id="business_type" name="business_type" required>
                 <option value="">Select type</option>
-                <option value="Restaurant" {{ strtolower(old('business_type')) === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
-                <option value="Hotel" {{ strtolower(old('business_type')) === 'hotel' ? 'selected' : '' }}>Hotel</option>
-                <option value="Retail" {{ strtolower(old('business_type')) === 'retail' ? 'selected' : '' }}>Retail</option>
-                <option value="Wholesale" {{ strtolower(old('business_type')) === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
-                <option value="Catering" {{ strtolower(old('business_type')) === 'catering' ? 'selected' : '' }}>Catering</option>
-                <option value="Other" {{ strtolower(old('business_type')) === 'other' ? 'selected' : '' }}>Other</option>
+                <option value="restaurant" {{ old('business_type') === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
+                <option value="hotel" {{ old('business_type') === 'hotel' ? 'selected' : '' }}>Hotel</option>
+                <option value="retail" {{ old('business_type') === 'retail' ? 'selected' : '' }}>Retail</option>
+                <option value="wholesale" {{ old('business_type') === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
+                <option value="catering" {{ old('business_type') === 'catering' ? 'selected' : '' }}>Catering</option>
+                <option value="other" {{ old('business_type') === 'other' ? 'selected' : '' }}>Other</option>
             </select>
         </div>
 

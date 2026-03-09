@@ -50,6 +50,13 @@ class CustomerProfileController extends Controller
                 throw new \Exception('Customer record not found.');
             }
 
+            // Auto-geocode address if lat/lng not provided via map click
+            if (empty($validated['latitude']) || empty($validated['longitude'])) {
+                $coords = $this->geocodeAddress($validated['address']);
+                $validated['latitude']  = $coords['lat'];
+                $validated['longitude'] = $coords['lng'];
+            }
+
             // Update customer info (use existing user name as contact person)
             $customer->update([
                 'business_name' => $validated['company_name'],
@@ -57,6 +64,8 @@ class CustomerProfileController extends Controller
                 'phone' => $validated['contact_number'],
                 'address' => $validated['address'],
                 'customer_type' => $validated['business_type'],
+                'latitude' => $validated['latitude'],
+                'longitude' => $validated['longitude'],
             ]);
 
             // Create or update customer profile
@@ -140,6 +149,13 @@ class CustomerProfileController extends Controller
             
             $customer = Customer::where('user_id', $user->id)->first();
 
+            // Auto-geocode address if lat/lng not provided via map click
+            if (empty($validated['latitude']) || empty($validated['longitude'])) {
+                $coords = $this->geocodeAddress($validated['address']);
+                $validated['latitude']  = $coords['lat'];
+                $validated['longitude'] = $coords['lng'];
+            }
+
             // Update customer info
             $customer->update([
                 'business_name' => $validated['company_name'],
@@ -173,5 +189,34 @@ class CustomerProfileController extends Controller
             DB::rollBack();
             return back()->withInput()->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Geocode an address string to lat/lng using Nominatim.
+     * Returns ['lat' => null, 'lng' => null] if geocoding fails.
+     */
+    private function geocodeAddress(string $address): array
+    {
+        try {
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'User-Agent' => 'VNF-ColdStorage/1.0',
+            ])->timeout(5)->get('https://nominatim.openstreetmap.org/search', [
+                'q'      => $address,
+                'format' => 'json',
+                'limit'  => 1,
+            ]);
+
+            $results = $response->json();
+            if (!empty($results[0])) {
+                return [
+                    'lat' => (float) $results[0]['lat'],
+                    'lng' => (float) $results[0]['lon'],
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Geocoding failed: ' . $e->getMessage());
+        }
+
+        return ['lat' => null, 'lng' => null];
     }
 }

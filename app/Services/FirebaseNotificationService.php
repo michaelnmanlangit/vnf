@@ -54,13 +54,63 @@ class FirebaseNotificationService
                 return null;
             }
 
-            return $response->json('access_token');
-        });
+            $token = $response->json('access_token');
+
+            // Do NOT cache null — let it retry on next request
+            if (!$token) {
+                return null;
+            }
+
+            return $token;
+        }) ?: $this->getFreshAccessToken();
     }
 
     private function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    /**
+     * Bypass cache and get a fresh token. Used as fallback when cached token is null/stale.
+     */
+    private function getFreshAccessToken(): ?string
+    {
+        Cache::forget('firebase_v1_access_token');
+        $credentialsPath = storage_path('app/firebase-credentials.json');
+        if (!file_exists($credentialsPath)) return null;
+
+        $creds = json_decode(file_get_contents($credentialsPath), true);
+        if (!$creds || !isset($creds['private_key'], $creds['client_email'])) return null;
+
+        $now     = time();
+        $header  = $this->base64UrlEncode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+        $payload = $this->base64UrlEncode(json_encode([
+            'iss'   => $creds['client_email'],
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+            'aud'   => 'https://oauth2.googleapis.com/token',
+            'iat'   => $now,
+            'exp'   => $now + 3600,
+        ]));
+        $signingInput = "{$header}.{$payload}";
+        $privateKey   = openssl_pkey_get_private($creds['private_key']);
+        openssl_sign($signingInput, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        $jwt = "{$signingInput}." . $this->base64UrlEncode($signature);
+
+        $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion'  => $jwt,
+        ]);
+
+        if ($response->failed()) {
+            Log::error('FCM: fresh token exchange failed', ['body' => $response->body()]);
+            return null;
+        }
+
+        $token = $response->json('access_token');
+        if ($token) {
+            Cache::put('firebase_v1_access_token', $token, 3480);
+        }
+        return $token;
     }
 
     /**

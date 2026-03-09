@@ -859,7 +859,7 @@
                 @forelse($products as $product)
                 <div class="product-card-lp">
                     @if($product->product_image)
-                        <img src="{{ asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="pc-img">
+                        <img src="{{ str_starts_with($product->product_image, 'data:') ? $product->product_image : asset('storage/' . $product->product_image) }}" alt="{{ $product->product_name }}" class="pc-img">
                     @else
                         <div class="pc-img-placeholder"><i class="fa-solid fa-box-open"></i></div>
                     @endif

@@ -380,7 +380,7 @@
                 
                 @foreach($order->items as $item)
                     <div class="item-card">
-                        <img src="{{ $item->inventory && $item->inventory->product_image ? asset('storage/' . $item->inventory->product_image) : asset('images/default-product.png') }}" 
+                        <img src="{{ $item->inventory && $item->inventory->product_image ? (str_starts_with($item->inventory->product_image, 'data:') ? $item->inventory->product_image : asset('storage/' . $item->inventory->product_image)) : asset('images/default-product.png') }}" 
                              alt="{{ $item->product_name }}" 
                              class="item-image">
                         

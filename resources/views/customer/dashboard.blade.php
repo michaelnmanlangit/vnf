@@ -392,7 +392,7 @@
             @foreach($categoryProducts as $product)
                 <div class="product-card" data-category="{{ $product->category }}">
                     <div class="product-image-container">
-                        <img src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('images/default-product.png') }}" 
+                        <img src="{{ $product->product_image ? (str_starts_with($product->product_image, 'data:') ? $product->product_image : asset('storage/' . $product->product_image)) : asset('images/default-product.png') }}" 
                              alt="{{ $product->product_name }}" 
                              class="product-image"
                              onerror="this.style.display='none';">

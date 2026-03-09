@@ -250,7 +250,7 @@
         @else
             @foreach($cart as $item)
                 <div class="cart-item" data-product-id="{{ $item['id'] }}">
-                    <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : asset('images/default-product.png') }}" 
+                    <img src="{{ $item['image'] ? (str_starts_with($item['image'], 'data:') ? $item['image'] : asset('storage/' . $item['image'])) : asset('images/default-product.png') }}" 
                          alt="{{ $item['name'] }}" 
                          class="item-image">
                     

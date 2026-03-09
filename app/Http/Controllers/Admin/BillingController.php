@@ -307,7 +307,7 @@ class BillingController extends Controller
             'address' => 'required|string',
             'latitude'  => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,other',
+            'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,hotel,retail,wholesale,catering,other',
             'status' => 'required|in:active,inactive',
             'notes' => 'nullable|string',
         ]);
@@ -332,7 +332,7 @@ class BillingController extends Controller
             'address' => 'required|string',
             'latitude'  => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,other',
+            'customer_type' => 'required|in:wet_market,restaurant,meat_supplier,fishery,grocery,distribution_company,hotel,retail,wholesale,catering,other',
             'status' => 'required|in:active,inactive',
             'notes' => 'nullable|string',
         ]);

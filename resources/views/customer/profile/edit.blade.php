@@ -226,12 +226,12 @@
                     // Convert to lowercase for comparison
                     $currentTypeLower = strtolower($currentType);
                 @endphp
-                <option value="Restaurant" {{ strtolower($currentType) === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
-                <option value="Hotel" {{ strtolower($currentType) === 'hotel' ? 'selected' : '' }}>Hotel</option>
-                <option value="Retail" {{ strtolower($currentType) === 'retail' ? 'selected' : '' }}>Retail</option>
-                <option value="Wholesale" {{ strtolower($currentType) === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
-                <option value="Catering" {{ strtolower($currentType) === 'catering' ? 'selected' : '' }}>Catering</option>
-                <option value="Other" {{ strtolower($currentType) === 'other' ? 'selected' : '' }}>Other</option>
+                <option value="restaurant" {{ strtolower($currentType) === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
+                <option value="hotel" {{ strtolower($currentType) === 'hotel' ? 'selected' : '' }}>Hotel</option>
+                <option value="retail" {{ strtolower($currentType) === 'retail' ? 'selected' : '' }}>Retail</option>
+                <option value="wholesale" {{ strtolower($currentType) === 'wholesale' ? 'selected' : '' }}>Wholesale</option>
+                <option value="catering" {{ strtolower($currentType) === 'catering' ? 'selected' : '' }}>Catering</option>
+                <option value="other" {{ strtolower($currentType) === 'other' ? 'selected' : '' }}>Other</option>
             </select>
         </div>
 

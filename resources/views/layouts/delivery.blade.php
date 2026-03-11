@@ -230,7 +230,7 @@
         <div class="sidebar-header">
             <div style="display:flex;align-items:center;gap:0.75rem;">
                 <img src="{{ asset('logo.png') }}" alt="V&F Logo" style="width:40px;height:40px;flex-shrink:0;">
-                <h2 class="sidebar-logo-text" style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
+                <h2 class="sidebar-logo-text" style="margin:0;font-size:1rem;line-height:1.3;white-space:nowrap;">V&F Ice Plant<br><span style="font-size:0.75rem;font-weight:400;white-space:nowrap;">and Cold Storage Inc.</span></h2>
             </div>
         </div>
         <nav class="sidebar-menu">

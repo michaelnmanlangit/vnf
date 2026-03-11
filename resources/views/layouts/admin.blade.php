@@ -194,6 +194,25 @@
         .toggle-label { font-size: .875rem; }
         .sidebar.collapsed .toggle-label { display: none; }
 
+        /* ── Mobile: let compiled CSS take over fully — release our desktop overrides ── */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100% !important;
+                display: block !important;
+            }
+            .sidebar .sidebar-menu {
+                overflow-y: visible;
+                flex: unset;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+            .sidebar-toggle-footer { display: none; }
+            .sidebar.collapsed { width: 100% !important; }
+        }
+
         /* ── No-flash pre-collapsed state (applied before first paint via html class) ── */
         html.sidebar-pre-collapsed .sidebar {
             width: 64px !important;
@@ -217,7 +236,7 @@
         <div class="sidebar-header">
             <div style="display:flex;align-items:center;gap:0.75rem;">
                 <img src="{{ asset('logo.png') }}" alt="V&F Logo" style="width:40px;height:40px;flex-shrink:0;">
-                <h2 class="sidebar-logo-text" style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
+                <h2 class="sidebar-logo-text" style="margin:0;font-size:1rem;line-height:1.3;white-space:nowrap;">V&F Ice Plant<br><span style="font-size:0.75rem;font-weight:400;white-space:nowrap;">and Cold Storage Inc.</span></h2>
             </div>
         </div>
         <nav class="sidebar-menu">

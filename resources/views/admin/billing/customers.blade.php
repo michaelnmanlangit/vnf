@@ -144,10 +144,8 @@
         
         <!-- Pagination -->
         @if($customers->hasPages())
-            <div class="pagination-wrapper">
-                <div class="pagination">
-                    {{ $customers->appends(request()->query())->links() }}
-                </div>
+            <div class="d-flex justify-content-center">
+                {{ $customers->appends(request()->query())->render('pagination.bootstrap-5') }}
             </div>
         @endif
     </div>

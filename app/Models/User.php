@@ -24,7 +24,6 @@ class User extends Authenticatable
         'role',
         'assigned_storage_location_id',
         'profile_image',
-        'fcm_token',
     ];
 
     /**

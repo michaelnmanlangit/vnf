@@ -119,7 +119,9 @@
 
     <!-- Pagination -->
     @if($inventory->hasPages())
-        {{ $inventory->appends(request()->query())->render('pagination.bootstrap-5') }}
+        <div class="d-flex justify-content-center">
+            {{ $inventory->appends(request()->query())->render('pagination.bootstrap-5') }}
+        </div>
     @endif
 </div>
 

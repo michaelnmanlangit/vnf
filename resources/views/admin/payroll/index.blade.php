@@ -115,11 +115,11 @@
 
         <label>Period Start</label>
 
-        <input type="date" name="from" value="{{ $from }}">
+        <input type="date" name="from" value="{{ $from }}" class="fp-date">
 
         <label>Period End</label>
 
-        <input type="date" name="to" value="{{ $to }}">
+        <input type="date" name="to" value="{{ $to }}" class="fp-date">
 
         <button type="submit" class="btn-rpt btn-rpt-apply">
 

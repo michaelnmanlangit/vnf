@@ -11,6 +11,43 @@
     <link rel="stylesheet" href="/build/assets/delivery-CZbfaTb7.css">
     <script src="/build/assets/delivery-CWGeEeD9.js" defer></script>
     <style>
+        /* ── Sidebar redesign – landing page palette ── */
+        .sidebar {
+            background: linear-gradient(180deg, #1e3ba8 0%, #2f50c4 55%, #4169E1 100%) !important;
+            box-shadow: 4px 0 20px rgba(30,59,168,.35);
+        }
+        .sidebar-header {
+            background: rgba(0,0,0,.18) !important;
+            border-bottom: 1px solid rgba(255,255,255,.12) !important;
+        }
+        .sidebar-header h2 { color: #fff !important; font-weight: 700; }
+        .sidebar-header h2 span { color: rgba(255,255,255,.75) !important; }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 4px; }
+        .menu-section-title { color: rgba(255,255,255,.5) !important; font-size: .68rem; letter-spacing: .08em; }
+        .menu-section + .menu-section { border-top: 1px solid rgba(255,255,255,.1); padding-top: .5rem; margin-top: .25rem; }
+        .menu-item, .menu-dropdown-toggle {
+            color: rgba(255,255,255,.82) !important;
+            border-left: 3px solid transparent !important;
+            transition: background .2s, border-left-color .2s, color .2s, padding-left .2s;
+        }
+        .menu-item:hover, .menu-dropdown-toggle:hover {
+            background: rgba(255,255,255,.13) !important;
+            border-left-color: rgba(255,255,255,.7) !important;
+            color: #fff !important;
+            padding-left: 1.75rem;
+        }
+        .menu-item.active, .menu-dropdown-toggle.active {
+            background: rgba(255,255,255,.2) !important;
+            border-left-color: #fff !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .menu-subitem { color: rgba(255,255,255,.62) !important; border-left: 3px solid transparent !important; }
+        .menu-subitem:hover { background: rgba(255,255,255,.1) !important; color: #fff !important; border-left-color: rgba(255,255,255,.6) !important; padding-left: 3.5rem; }
+        .menu-subitem:hover::before, .menu-subitem.active::before { background: #fff !important; }
+        .menu-subitem.active { background: rgba(255,255,255,.18) !important; border-left-color: #fff !important; color: #fff !important; font-weight: 600; }
 
     /* ── Responsive nav — mirrors admin CSS behaviour ── */
     .menu-toggle {

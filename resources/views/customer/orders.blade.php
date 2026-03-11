@@ -278,8 +278,8 @@
                 </div>
             @endforeach
 
-            <div class="pagination">
-                {{ $orders->links() }}
+            <div class="d-flex justify-content-center">
+                {{ $orders->appends(request()->query())->render('pagination.bootstrap-5') }}
             </div>
         @else
             <div class="empty-orders">

@@ -1,19 +1,19 @@
 @if ($paginator->hasPages())
-<div class="pagination-wrapper">
-    <div class="pagination-info">
+<div class="pagination-wrapper" style="display:flex !important;flex-direction:column !important;align-items:center !important;gap:.75rem;margin-top:2rem;padding:1.25rem 1rem;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);">
+    <div class="pagination-info" style="display:block !important;width:100% !important;text-align:center;font-size:.9rem;font-weight:500;color:#555;margin:0;">
         Showing {{ $paginator->firstItem() }} to {{ $paginator->lastItem() }} of {{ $paginator->total() }} results
     </div>
     
     <nav aria-label="Page navigation">
-        <ul class="pagination-list">
+        <ul class="pagination" style="justify-content:center;">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <li class="pagination-item disabled">
-                    <span class="pagination-link">&laquo; Previous</span>
+                <li class="disabled">
+                    <span>&laquo; Previous</span>
                 </li>
             @else
-                <li class="pagination-item">
-                    <a class="pagination-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
+                <li>
+                    <a href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
                 </li>
             @endif
 
@@ -21,8 +21,8 @@
             @foreach ($elements as $element)
                 {{-- "Three Dots" Separator --}}
                 @if (is_string($element))
-                    <li class="pagination-item disabled">
-                        <span class="pagination-link">{{ $element }}</span>
+                    <li class="disabled">
+                        <span>{{ $element }}</span>
                     </li>
                 @endif
 
@@ -30,12 +30,12 @@
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <li class="pagination-item active">
-                                <span class="pagination-link">{{ $page }}</span>
+                            <li class="active">
+                                <span>{{ $page }}</span>
                             </li>
                         @else
-                            <li class="pagination-item">
-                                <a class="pagination-link" href="{{ $url }}">{{ $page }}</a>
+                            <li>
+                                <a href="{{ $url }}">{{ $page }}</a>
                             </li>
                         @endif
                     @endforeach
@@ -44,12 +44,12 @@
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
-                <li class="pagination-item">
-                    <a class="pagination-link" href="{{ $paginator->nextPageUrl() }}" rel="next">Next &raquo;</a>
+                <li>
+                    <a href="{{ $paginator->nextPageUrl() }}" rel="next">Next &raquo;</a>
                 </li>
             @else
-                <li class="pagination-item disabled">
-                    <span class="pagination-link">Next &raquo;</span>
+                <li class="disabled">
+                    <span>Next &raquo;</span>
                 </li>
             @endif
         </ul>

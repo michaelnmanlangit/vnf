@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Delivery;
 use App\Models\DeliveryLocation;
 use App\Models\Payment;
-use App\Services\FirebaseNotificationService;
+use App\Services\EmailNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,7 +64,7 @@ class DeliveryDashboardController extends Controller
                 // Push notification to customer (only once — lock guarantees this)
                 $customer = $order->customer;
                 if ($customer) {
-                    (new FirebaseNotificationService)->notifyOrderStatus(
+                    (new EmailNotificationService)->notifyOrderStatus(
                         $customer,
                         '🚚 Your order is on the way!',
                         'Your order ' . $order->order_number . ' has been picked up and is heading to you.',
@@ -110,7 +110,7 @@ class DeliveryDashboardController extends Controller
                 // Push notification to customer (only once — lock guarantees this)
                 $customer = $order->customer;
                 if ($customer) {
-                    (new FirebaseNotificationService)->notifyOrderStatus(
+                    (new EmailNotificationService)->notifyOrderStatus(
                         $customer,
                         '✅ Order Delivered!',
                         'Your order ' . $order->order_number . ' has been delivered. Thank you!',
@@ -175,7 +175,7 @@ class DeliveryDashboardController extends Controller
                 // Push notification to customer
                 $customer = $order->customer;
                 if ($customer) {
-                    (new FirebaseNotificationService)->notifyOrderStatus(
+                    (new EmailNotificationService)->notifyOrderStatus(
                         $customer,
                         '✅ Order Delivered!',
                         'Your order ' . $order->order_number . ' has been delivered. Thank you!',

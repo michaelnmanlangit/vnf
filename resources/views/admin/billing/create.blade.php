@@ -36,7 +36,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Invoice Date <span class="required">*</span></label>
-                        <input type="date" name="invoice_date" value="{{ old('invoice_date', date('Y-m-d')) }}" required class="form-control">
+                        <input type="date" name="invoice_date" value="{{ old('invoice_date', date('Y-m-d')) }}" required class="form-control fp-date">
                     </div>
                 </div>
             </div>

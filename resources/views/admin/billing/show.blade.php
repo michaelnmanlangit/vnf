@@ -169,7 +169,7 @@
 
                 <div class="form-group">
                     <label for="payment_date">Payment Date *</label>
-                    <input type="date" name="payment_date" id="payment_date" 
+                    <input type="date" name="payment_date" id="payment_date" class="fp-date"
                            value="{{ date('Y-m-d') }}" required>
                 </div>
             </div>

@@ -53,9 +53,9 @@
 {{-- Date Filter --}}
 <form method="GET" action="{{ route('admin.reports.temperature') }}" class="report-filter">
     <label>Period Start</label>
-    <input type="date" name="date_from" value="{{ $dateFrom }}">
+    <input type="date" name="date_from" value="{{ $dateFrom }}" class="fp-date">
     <label>Period End</label>
-    <input type="date" name="date_to" value="{{ $dateTo }}">
+    <input type="date" name="date_to" value="{{ $dateTo }}" class="fp-date">
     <button type="submit" class="btn-rpt btn-rpt-apply"><i class="fas fa-filter"></i> Apply</button>
     <a href="{{ route('admin.reports.temperature') }}" class="btn-rpt btn-rpt-reset"><i class="fas fa-undo"></i> Reset</a>
 </form>

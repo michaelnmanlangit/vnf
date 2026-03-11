@@ -16,6 +16,7 @@
 .inventory-table thead th { white-space: nowrap; padding-left: 10px; padding-right: 10px; font-size: 0.82rem; }
 .inventory-table tbody td { padding-left: 10px; padding-right: 10px; font-size: 0.875rem; }
 .inventory-table { table-layout: auto; width: 100%; }
+.pagination-info { font-size: .875rem; color: #6c757d; margin-bottom: .5rem; }
 </style>
 @endsection
 @section('content')
@@ -246,7 +247,9 @@
 
     <!-- Pagination -->
     @if($inventory->hasPages())
-        {{ $inventory->appends(request()->query())->render('pagination.bootstrap-5') }}
+        <div class="d-flex justify-content-center">
+            {{ $inventory->appends(request()->query())->render('pagination.bootstrap-5') }}
+        </div>
     @endif
 </div>
 

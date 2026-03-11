@@ -283,8 +283,8 @@
             </tbody>
         </table>
         @if($deliveries->hasPages())
-            <div class="pagination-wrapper">
-                <div class="pagination">{{ $deliveries->withQueryString()->links() }}</div>
+            <div class="d-flex justify-content-center">
+                {{ $deliveries->withQueryString()->render('pagination.bootstrap-5') }}
             </div>
         @endif
     </div>
@@ -448,7 +448,9 @@ document.addEventListener('DOMContentLoaded', function () {
         </tbody>
     </table>
     @if($deliveries->hasPages())
-    <div style="padding:1rem 1.25rem;border-top:1px solid #f0f0f0;">{{ $deliveries->withQueryString()->links() }}</div>
+    <div class="d-flex justify-content-center">
+        {{ $deliveries->withQueryString()->render('pagination.bootstrap-5') }}
+    </div>
     @endif
 </div>
 

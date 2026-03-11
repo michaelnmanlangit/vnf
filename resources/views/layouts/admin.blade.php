@@ -11,6 +11,101 @@
     <link rel="stylesheet" href="/build/assets/admin-CoWPeOez.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* ── Sidebar redesign – landing page palette ── */
+        .sidebar {
+            background: linear-gradient(180deg, #1e3ba8 0%, #2f50c4 55%, #4169E1 100%);
+            box-shadow: 4px 0 20px rgba(30, 59, 168, 0.35);
+        }
+
+        .sidebar-header {
+            background: rgba(0, 0, 0, 0.18);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .sidebar-header h2 {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .sidebar-header h2 span {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 4px; }
+
+        /* Section labels */
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: .68rem;
+            letter-spacing: .08em;
+            padding: .5rem 1.5rem .3rem;
+        }
+
+        /* Divider between sections */
+        .menu-section + .menu-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: .5rem;
+            margin-top: .25rem;
+        }
+
+        /* Base item */
+        .menu-item,
+        .menu-dropdown-toggle {
+            color: rgba(255, 255, 255, 0.82);
+            border-left: 3px solid transparent;
+            border-radius: 0;
+            transition: background .2s, border-left-color .2s, color .2s, padding-left .2s;
+        }
+
+        /* Hover */
+        .menu-item:hover,
+        .menu-dropdown-toggle:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-left-color: rgba(255, 255, 255, 0.7);
+            color: #fff;
+            padding-left: 1.75rem;
+        }
+
+        /* Active */
+        .menu-item.active,
+        .menu-dropdown-toggle.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: #fff;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Sub-items */
+        .menu-subitem {
+            color: rgba(255, 255, 255, 0.62);
+            border-left: 3px solid transparent;
+        }
+
+        .menu-subitem:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-left-color: rgba(255, 255, 255, 0.6);
+            padding-left: 3.5rem;
+        }
+
+        .menu-subitem:hover::before,
+        .menu-subitem.active::before {
+            background: #fff !important;
+        }
+
+        .menu-subitem.active {
+            background: rgba(255, 255, 255, 0.18);
+            border-left-color: #fff;
+            color: #fff;
+            font-weight: 600;
+        }
+
+    </style>
     <script src="/build/assets/admin-DLbE0-9j.js" defer></script>
     @yield('styles')
 </head>
@@ -237,7 +332,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr('.fp-date', {
             altInput: true,
-            altFormat: 'M/d/Y',
+            altFormat: 'm/d/Y',
             dateFormat: 'Y-m-d',
             allowInput: true,
         });

@@ -473,15 +473,4 @@ class CustomerShopController extends Controller
         ]);
     }
 
-    /**
-     * Save or update the customer's FCM token for push notifications.
-     */
-    public function saveFcmToken(Request $request)
-    {
-        $request->validate(['token' => 'required|string']);
-
-        Auth::user()->update(['fcm_token' => $request->token]);
-
-        return response()->json(['success' => true]);
-    }
 }

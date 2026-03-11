@@ -54,9 +54,9 @@
 {{-- Date Filter --}}
 <form method="GET" action="{{ route('admin.reports.financial') }}" class="report-filter">
     <label>Period Start</label>
-    <input type="date" name="date_from" value="{{ $dateFrom }}">
+    <input type="date" name="date_from" value="{{ $dateFrom }}" class="fp-date">
     <label>Period End</label>
-    <input type="date" name="date_to" value="{{ $dateTo }}">
+    <input type="date" name="date_to" value="{{ $dateTo }}" class="fp-date">
     <button type="submit" class="btn-rpt btn-rpt-apply"><i class="fas fa-filter"></i> Apply</button>
     <a href="{{ route('admin.reports.financial') }}" class="btn-rpt btn-rpt-reset"><i class="fas fa-undo"></i> Reset</a>
 </form>
@@ -176,10 +176,10 @@
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Paid', 'Pending', 'Overdue', 'Partial'],
+            labels: ['Paid', 'Pending', 'Partial'],
             datasets: [{
-                data: [{{ $paidCount }}, {{ $pendingCount }}, {{ $overdueCount }}, {{ $partialCount }}],
-                backgroundColor: ['#27ae60', '#f39c12', '#e74c3c', '#9b59b6'],
+                data: [{{ $paidCount }}, {{ $pendingCount }}, {{ $partialCount }}],
+                backgroundColor: ['#27ae60', '#f39c12', '#9b59b6'],
                 borderWidth: 0,
                 hoverOffset: 6
             }]

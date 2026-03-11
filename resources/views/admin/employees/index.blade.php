@@ -268,7 +268,9 @@
 
     <!-- Pagination -->
     @if($employees->hasPages())
-        {{ $employees->appends(request()->query())->render('pagination.bootstrap-5') }}
+        <div class="d-flex justify-content-center">
+            {{ $employees->appends(request()->query())->render('pagination.bootstrap-5') }}
+        </div>
     @endif
 </div>
 

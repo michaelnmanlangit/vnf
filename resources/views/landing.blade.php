@@ -634,7 +634,7 @@
         <div class="row align-items-center g-5">
             <!-- LEFT: Text -->
             <div class="col-lg-7">
-                <div class="hero-badge"><i class="fa-solid fa-location-dot"></i> San Roque, Santo Tomas, Batangas</div>
+                <div class="hero-badge"><i class="fa-solid fa-location-dot"></i> San Roque, City of Santo Tomas, Batangas</div>
                 <h1>
                     V&amp;F Ice Plant<br>
                     <span class="highlight">&amp; Cold Storage</span><br>
@@ -880,23 +880,23 @@
         <div class="row g-4 mt-4">
             <div class="col-md-4 reveal reveal-delay-1">
                 <div class="temp-card">
-                    <div class="temp-num">-18°C</div>
-                    <h6>Deep Freeze</h6>
-                    <p>For long-term frozen storage of meat, poultry, and seafood products.</p>
+                    <div class="temp-num">5</div>
+                    <h6>Storage Units</h6>
+                    <p>Five dedicated cold storage units — A through E — each independently managed and monitored.</p>
                 </div>
             </div>
             <div class="col-md-4 reveal reveal-delay-2">
                 <div class="temp-card">
-                    <div class="temp-num">0°C – 4°C</div>
-                    <h6>Chiller Units</h6>
-                    <p>Ideal for fresh produce, dairy, and products requiring near-zero cooling.</p>
+                    <div class="temp-num">-18°C</div>
+                    <h6>Temperature Logged</h6>
+                    <p>Staff record temperature readings per unit, with digital logs maintained for every cold storage area.</p>
                 </div>
             </div>
             <div class="col-md-4 reveal reveal-delay-3">
                 <div class="temp-card">
-                    <div class="temp-num">24/7</div>
-                    <h6>Continuous Monitoring</h6>
-                    <p>Instant alerts and digital logs for every unit, around the clock.</p>
+                    <div class="temp-num">100%</div>
+                    <h6>Expiry Tracked</h6>
+                    <p>Every item is stored with an expiration date, flagged as expiring soon or expired upon each update.</p>
                 </div>
             </div>
         </div>
@@ -977,7 +977,7 @@
                         <div class="icon"><i class="fa-solid fa-phone"></i></div>
                         <div class="info">
                             <div class="label">Phone</div>
-                            <p>+63 (0) XXX-XXX-XXXX</p>
+                            <p>+63 912 345 6789</p>
                         </div>
                     </div>
 

@@ -81,7 +81,7 @@
                 </div>
                 <div class="form-group">
                     <label>Hire Date <span class="required">*</span></label>
-                    <input type="date" name="hire_date" value="{{ old('hire_date') }}" required>
+                    <input type="date" name="hire_date" value="{{ old('hire_date') }}" required class="fp-date">
                     @error('hire_date')<span class="error">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -119,7 +119,7 @@
             <div class="form-row" id="returnDateRow" style="display: none;">
                 <div class="form-group">
                     <label>Return Date <span class="required" id="returnDateRequired">*</span></label>
-                    <input type="date" name="return_date" id="returnDateInput" value="{{ old('return_date') }}" min="{{ date('Y-m-d') }}">
+                    <input type="date" name="return_date" id="returnDateInput" value="{{ old('return_date') }}" min="{{ date('Y-m-d') }}" class="fp-date">
                     <small style="color: #7f8c8d; font-size: 0.85rem; display: block; margin-top: 0.25rem;">Employee will automatically become active on this date</small>
                     @error('return_date')<span class="error">{{ $message }}</span>@enderror
                 </div>

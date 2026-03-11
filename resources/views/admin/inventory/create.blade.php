@@ -165,7 +165,7 @@
                 </div>
                 <div class="form-group">
                     <label>Date Received <span class="required">*</span></label>
-                    <input type="date" name="date_received" value="{{ old('date_received', today()->toDateString()) }}" required>
+                    <input type="date" name="date_received" value="{{ old('date_received', today()->toDateString()) }}" required class="fp-date">
                     @error('date_received')<span class="error">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -219,7 +219,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Expiration Date <span class="required">*</span></label>
-                    <input type="date" name="expiration_date" value="{{ old('expiration_date') }}" required>
+                    <input type="date" name="expiration_date" value="{{ old('expiration_date') }}" required class="fp-date">
                     @error('expiration_date')<span class="error">{{ $message }}</span>@enderror
                 </div>
                 <div class="form-group">

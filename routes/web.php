@@ -16,7 +16,6 @@ use App\Http\Controllers\TemperatureMonitoringController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAttendanceController;
 use App\Http\Controllers\Admin\PayrollController;
-use App\Http\Controllers\Admin\AttendanceController;
 
 // Public routes
 
@@ -49,9 +48,7 @@ Route::get('/', function () {
     return view('landing', compact('products'));
 })->name('landing');
 
-// Public attendance portal (no auth required)
-Route::get('/attendance', [PublicAttendanceController::class, 'index'])->name('attendance');
-Route::post('/attendance/clock', [PublicAttendanceController::class, 'clock'])->name('attendance.clock');
+// Attendance portal moved to admin only (see admin routes below)
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
@@ -70,10 +67,6 @@ Route::middleware(['auth'])->group(function () {
 // Admin-only routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    // Attendance
-    Route::get('/admin/attendance', [AttendanceController::class, 'index'])->name('admin.attendance.index');
-    Route::post('/admin/attendance/mark', [AttendanceController::class, 'mark'])->name('admin.attendance.mark');
-
     // Payroll
     Route::get('/admin/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
     Route::get('/admin/payroll/{employee}', [PayrollController::class, 'employeeDetail'])->name('admin.payroll.detail');
@@ -126,6 +119,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::patch('/{delivery}/cancel',   [DeliveryController::class, 'cancel'])->name('cancel');
         Route::patch('/{delivery}/reassign', [DeliveryController::class, 'reassign'])->name('reassign');
     });
+
+    // Attendance portal
+    Route::get('/admin/attendance', [PublicAttendanceController::class, 'index'])->name('admin.attendance.index');
+    Route::post('/admin/attendance/clock', [PublicAttendanceController::class, 'clock'])->name('admin.attendance.clock');
 
     // Temperature Monitoring routes
     Route::prefix('admin/temperature')->name('admin.temperature.')->group(function () {

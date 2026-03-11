@@ -1,385 +1,278 @@
 @extends('layouts.admin')
 
-@section('title', 'Attendance Management')
-@section('page-title', 'Attendance')
-
-@section('styles')
-<style>
-    .attendance-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .stat-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 1.1rem 1.25rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,.07);
-        text-align: center;
-    }
-    .stat-card .stat-num {
-        font-size: 2rem;
-        font-weight: 700;
-        line-height: 1;
-        margin-bottom: 4px;
-    }
-    .stat-card .stat-label {
-        font-size: .78rem;
-        font-weight: 600;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-    }
-    .stat-card.total   .stat-num { color: #3b82f6; }
-    .stat-card.present .stat-num { color: #22c55e; }
-    .stat-card.absent  .stat-num { color: #ef4444; }
-    .stat-card.late    .stat-num { color: #f59e0b; }
-    .stat-card.unmarked .stat-num { color: #94a3b8; }
-
-    .filter-bar {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.25rem;
-        flex-wrap: wrap;
-    }
-    .filter-bar input[type="date"] {
-        padding: .5rem .75rem;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: .9rem;
-        font-family: inherit;
-        color: #1a202c;
-        outline: none;
-        transition: border-color .2s;
-    }
-    .filter-bar input[type="date"]:focus { border-color: #4169E1; }
-    .filter-bar .btn-filter {
-        padding: .5rem 1.2rem;
-        background: #4169E1;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: .88rem;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: opacity .2s;
-    }
-    .filter-bar .btn-filter:hover { opacity: .88; }
-    .filter-bar .portal-link {
-        margin-left: auto;
-        display: inline-flex;
-        align-items: center;
-        gap: .4rem;
-        padding: .5rem 1rem;
-        border: 1.5px solid #4169E1;
-        border-radius: 8px;
-        color: #4169E1;
-        font-size: .85rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background .2s, color .2s;
-    }
-    .filter-bar .portal-link:hover { background: #4169E1; color: #fff; }
-
-    .attendance-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: .875rem;
-        background: #fff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 1px 4px rgba(0,0,0,.07);
-    }
-    .attendance-table thead tr {
-        background: #f8fafc;
-        border-bottom: 2px solid #e2e8f0;
-    }
-    .attendance-table th {
-        padding: .75rem 1rem;
-        text-align: left;
-        font-size: .75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .05em;
-        color: #475569;
-    }
-    .attendance-table td {
-        padding: .75rem 1rem;
-        border-bottom: 1px solid #f1f5f9;
-        color: #374151;
-        vertical-align: middle;
-    }
-    .attendance-table tbody tr:last-child td { border-bottom: none; }
-    .attendance-table tbody tr:hover { background: #f8fafc; }
-
-    .emp-info { display: flex; align-items: center; gap: .75rem; }
-    .emp-avatar {
-        width: 34px; height: 34px; border-radius: 50%;
-        object-fit: cover; flex-shrink: 0; border: 2px solid #e2e8f0;
-    }
-    .emp-avatar-placeholder {
-        width: 34px; height: 34px; border-radius: 50%;
-        background: #dbeafe; display: flex; align-items: center;
-        justify-content: center; font-size: .8rem; font-weight: 700;
-        color: #4169E1; flex-shrink: 0;
-    }
-    .emp-name { font-weight: 600; color: #111827; }
-    .emp-pos  { font-size: .75rem; color: #64748b; }
-
-    .status-badge {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: .75rem;
-        font-weight: 600;
-    }
-    .badge-present   { background: #dcfce7; color: #166534; }
-    .badge-absent    { background: #fee2e2; color: #991b1b; }
-    .badge-late      { background: #fef3c7; color: #92400e; }
-    .badge-half_day  { background: #e0e7ff; color: #3730a3; }
-    .badge-on_leave  { background: #f3e8ff; color: #6b21a8; }
-    .badge-unmarked  { background: #f1f5f9; color: #64748b; }
-
-    .btn-mark {
-        padding: 4px 12px;
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: .78rem;
-        font-weight: 600;
-        color: #475569;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background .15s;
-    }
-    .btn-mark:hover { background: #e2e8f0; }
-
-    /* Modal */
-    .modal-overlay {
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,.45);
-        z-index: 1000;
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; visibility: hidden;
-        transition: opacity .2s, visibility .2s;
-    }
-    .modal-overlay.open { opacity: 1; visibility: visible; }
-    .modal {
-        background: #fff;
-        border-radius: 16px;
-        padding: 2rem;
-        width: 100%;
-        max-width: 420px;
-        box-shadow: 0 20px 60px rgba(0,0,0,.2);
-        transform: translateY(12px);
-        transition: transform .2s;
-    }
-    .modal-overlay.open .modal { transform: translateY(0); }
-    .modal h3 { font-size: 1.1rem; font-weight: 700; color: #111827; margin-bottom: 1.25rem; }
-    .modal-grid { display: grid; gap: .9rem; }
-    .modal-grid label { font-size: .8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 4px; }
-    .modal-grid select, .modal-grid input {
-        width: 100%;
-        padding: .5rem .75rem;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: .9rem;
-        font-family: inherit;
-        color: #1a202c;
-        outline: none;
-        transition: border-color .2s;
-    }
-    .modal-grid select:focus, .modal-grid input:focus { border-color: #4169E1; }
-    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
-    .modal-actions { display: flex; gap: .75rem; margin-top: 1.25rem; }
-    .btn-save {
-        flex: 1; padding: .6rem; background: #4169E1; color: #fff;
-        border: none; border-radius: 8px; font-size: .9rem; font-weight: 600;
-        font-family: inherit; cursor: pointer; transition: opacity .2s;
-    }
-    .btn-save:hover { opacity: .88; }
-    .btn-cancel {
-        padding: .6rem 1.2rem; background: #f1f5f9; color: #475569;
-        border: 1px solid #cbd5e1; border-radius: 8px; font-size: .9rem;
-        font-weight: 600; font-family: inherit; cursor: pointer;
-    }
-    .btn-cancel:hover { background: #e2e8f0; }
-</style>
-@endsection
+@section('page-title', 'Attendance Portal')
 
 @section('content')
-<div class="content-wrapper">
+<div class="attendance-wrap">
+    <style>
+        .attendance-wrap {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            min-height: 80vh;
+        }
 
-    {{-- Flash message --}}
-    @if(session('success'))
-        <div style="background:#dcfce7;border:1px solid #bbf7d0;color:#166534;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem;font-size:.88rem;font-weight:600;">
-            {{ session('success') }}
-        </div>
-    @endif
+        .att-card {
+            width: 100%;
+            max-width: 460px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 44px 40px 36px;
+            box-shadow: 0 8px 32px rgba(31,59,168,.12);
+            text-align: center;
+            border: 1px solid #e8eaf0;
+        }
 
-    {{-- Date filter --}}
-    <form method="GET" action="{{ route('admin.attendance.index') }}" class="filter-bar">
-        <label style="font-size:.85rem;font-weight:600;color:#374151;margin:0;">Date</label>
-        <input type="date" name="date" value="{{ $date }}" max="{{ now()->toDateString() }}">
-        <button type="submit" class="btn-filter">View</button>
-        <a href="{{ route('attendance') }}" target="_blank" class="portal-link">
-            <i class="fas fa-external-link-alt"></i> Employee Clock Portal
-        </a>
-    </form>
+        .att-card h1 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+        .att-card .subtitle {
+            font-size: .85rem;
+            color: #64748b;
+            margin-bottom: 28px;
+        }
 
-    {{-- Stats --}}
-    <div class="attendance-stats">
-        <div class="stat-card total">
-            <div class="stat-num">{{ $totalEmployees }}</div>
-            <div class="stat-label">Total</div>
-        </div>
-        <div class="stat-card present">
-            <div class="stat-num">{{ $presentCount }}</div>
-            <div class="stat-label">Present</div>
-        </div>
-        <div class="stat-card absent">
-            <div class="stat-num">{{ $absentCount }}</div>
-            <div class="stat-label">Absent</div>
-        </div>
-        <div class="stat-card late">
-            <div class="stat-num">{{ $lateCount }}</div>
-            <div class="stat-label">Late</div>
-        </div>
-        <div class="stat-card unmarked">
-            <div class="stat-num">{{ $notMarkedCount }}</div>
-            <div class="stat-label">Unmarked</div>
-        </div>
-    </div>
+        /* Alert boxes */
+        .att-alert {
+            border-radius: 12px;
+            padding: 16px 18px;
+            font-size: .88rem;
+            margin-bottom: 22px;
+            text-align: left;
+        }
+        .att-alert-error {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+        }
 
-    {{-- Table --}}
-    <div style="overflow-x:auto;">
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th>Employee</th>
-                    <th>Status</th>
-                    <th>Time In</th>
-                    <th>Time Out</th>
-                    <th>Hours Worked</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($employees as $employee)
-                    @php $att = $employee->attendance->first(); @endphp
-                    <tr>
-                        <td>
-                            <div class="emp-info">
-                                @if($employee->image)
-                                    <img src="{{ $employee->image }}" alt="" class="emp-avatar">
-                                @else
-                                    <div class="emp-avatar-placeholder">
-                                        {{ strtoupper(substr($employee->first_name, 0, 1)) }}{{ strtoupper(substr($employee->last_name, 0, 1)) }}
-                                    </div>
-                                @endif
-                                <div>
-                                    <div class="emp-name">{{ $employee->full_name }}</div>
-                                    <div class="emp-pos">{{ $employee->position }}</div>
-                                </div>
+        /* Form */
+        .att-form-group { text-align: left; margin-bottom: 20px; }
+        .att-form-group label {
+            display: block;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        .att-form-group input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #1a202c;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        .att-form-group input[type="text"]:focus {
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(65,105,225,.15);
+        }
+        .att-form-group input[type="text"]::placeholder { color: #94a3b8; }
+
+        .btn-att-clock {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #4169E1, #1e3ba8);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity .2s, transform .15s;
+            letter-spacing: .01em;
+        }
+        .btn-att-clock:hover { opacity: .92; transform: translateY(-1px); }
+        .btn-att-clock:active { transform: translateY(0); }
+
+        /* ── Clock modal ── */
+        .clock-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,30,90,.55);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInOverlay .3s ease;
+        }
+        @keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
+        .clock-modal {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.2rem 2rem 1.8rem;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 24px 64px rgba(31,59,168,.35);
+            animation: popIn .35s cubic-bezier(.4,0,.2,1);
+            position: relative;
+        }
+        @keyframes popIn { from{transform:scale(.85);opacity:0} to{transform:scale(1);opacity:1} }
+        .cm-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #eef1fc;
+            box-shadow: 0 4px 18px rgba(65,105,225,.2);
+            display: block;
+            margin: 0 auto 1rem;
+        }
+        .cm-avatar-placeholder {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3ba8, #4169E1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 18px rgba(65,105,225,.2);
+            font-size: 2rem;
+            color: #fff;
+        }
+        .cm-badge {
+            display: inline-block;
+            padding: .28rem .9rem;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            margin-bottom: .75rem;
+        }
+        .cm-badge-in   { background:#dcfce7; color:#15803d; }
+        .cm-badge-out  { background:#dbeafe; color:#1d4ed8; }
+        .cm-badge-done { background:#fef9c3; color:#92400e; }
+        .cm-name { font-size: 1.15rem; font-weight: 700; color: #1a202c; margin-bottom: .4rem; }
+        .cm-time { font-size: 1.6rem; font-weight: 800; color: #4169E1; line-height: 1; margin-bottom: .25rem; }
+        .cm-date { font-size: .8rem; color: #94a3b8; margin-bottom: 1.1rem; }
+        .cm-info-rows { width: 100%; display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1rem; }
+        .cm-hrs {
+            font-size: .85rem;
+            color: #374151;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: .45rem .9rem;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        .cm-hrs i { flex-shrink: 0; margin-right: .5rem; }
+        .cm-hrs strong { margin-left: auto; color: #1a202c; }
+        .cm-bar-wrap { height: 4px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: .5rem; }
+        .cm-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3ba8, #4169E1);
+            border-radius: 4px;
+            animation: drainBar 5s linear forwards;
+        }
+        @keyframes drainBar { from{width:100%} to{width:0%} }
+    </style>
+
+    <div class="att-card">
+        <h1>Attendance Portal</h1>
+        <p class="subtitle">Enter an Employee ID to time in or time out.</p>
+
+        {{-- Success modal --}}
+        @if(session('action') && session('employee_name'))
+            <div id="clockModal" class="clock-modal-overlay">
+                <div class="clock-modal">
+                    @if(session('employee_image'))
+                        <img src="{{ session('employee_image') }}" alt="" class="cm-avatar">
+                    @else
+                        <div class="cm-avatar-placeholder"><i class="fa-solid fa-user"></i></div>
+                    @endif
+
+                    <div class="cm-badge @if(session('action')==='in') cm-badge-in @elseif(session('action')==='out') cm-badge-out @else cm-badge-done @endif">
+                        @if(session('action')==='in')
+                            <i class="fa-solid fa-right-to-bracket"></i> Timed In
+                        @elseif(session('action')==='out')
+                            <i class="fa-solid fa-right-from-bracket"></i> Timed Out
+                        @else
+                            Already Timed Out
+                        @endif
+                    </div>
+
+                    <div class="cm-name">{{ session('employee_name') }}</div>
+                    <div class="cm-date">{{ session('date') }}</div>
+
+                    @if(session('action') === 'in')
+                        <div class="cm-info-rows">
+                            <div class="cm-hrs">
+                                <i class="fa-solid fa-right-to-bracket"></i>&nbsp;Time In: <strong>{{ session('time') }}</strong>
                             </div>
-                        </td>
-                        <td>
-                            @if($att)
-                                <span class="status-badge badge-{{ $att->status }}">{{ ucfirst(str_replace('_', ' ', $att->status)) }}</span>
-                            @else
-                                <span class="status-badge badge-unmarked">Not Marked</span>
+                        </div>
+                    @elseif(session('action') === 'out' || session('action') === 'done')
+                        <div class="cm-info-rows">
+                            <div class="cm-hrs">
+                                <i class="fa-solid fa-right-to-bracket"></i>&nbsp;Time In: <strong>{{ session('time_in') }}</strong>
+                            </div>
+                            <div class="cm-hrs">
+                                <i class="fa-solid fa-right-from-bracket"></i>&nbsp;Time Out: <strong>{{ session('time') }}</strong>
+                            </div>
+                            @if(session('hours_worked'))
+                                <div class="cm-hrs">
+                                    <i class="fa-solid fa-clock"></i>&nbsp;Hours Worked: <strong>{{ session('hours_worked') }} hrs</strong>
+                                </div>
                             @endif
-                        </td>
-                        <td>{{ $att && $att->time_in ? \Carbon\Carbon::parse($att->time_in)->format('h:i A') : '—' }}</td>
-                        <td>{{ $att && $att->time_out ? \Carbon\Carbon::parse($att->time_out)->format('h:i A') : '—' }}</td>
-                        <td>{{ $att && $att->hours_worked ? number_format($att->hours_worked, 2) . ' hrs' : '—' }}</td>
-                        <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{ $att->notes ?? '' }}">
-                            {{ $att->notes ?? '—' }}
-                        </td>
-                        <td>
-                            <button type="button" class="btn-mark"
-                                data-id="{{ $employee->id }}"
-                                data-name="{{ $employee->full_name }}"
-                                data-status="{{ $att->status ?? '' }}"
-                                data-time-in="{{ $att && $att->time_in ? \Carbon\Carbon::parse($att->time_in)->format('H:i') : '' }}"
-                                data-time-out="{{ $att && $att->time_out ? \Carbon\Carbon::parse($att->time_out)->format('H:i') : '' }}"
-                                data-notes="{{ $att->notes ?? '' }}"
-                                onclick="openModal(this)">
-                                {{ $att ? 'Edit' : 'Mark' }}
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-                @if($employees->isEmpty())
-                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:#94a3b8;">No employees found.</td></tr>
-                @endif
-            </tbody>
-        </table>
-    </div>
-</div>
+                        </div>
+                    @endif
 
-{{-- Mark/Edit Attendance Modal --}}
-<div class="modal-overlay" id="attendanceModal">
-    <div class="modal">
-        <h3 id="modalTitle">Mark Attendance</h3>
-        <form method="POST" action="{{ route('admin.attendance.mark') }}">
+                    <div class="cm-bar-wrap"><div class="cm-bar"></div></div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Error messages --}}
+        @if($errors->any())
+            <div class="att-alert att-alert-error">
+                <i class="fa fa-circle-exclamation" style="margin-right:6px;"></i>
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('admin.attendance.clock') }}">
             @csrf
-            <input type="hidden" name="employee_id" id="modalEmployeeId">
-            <input type="hidden" name="date" value="{{ $date }}">
-            <div class="modal-grid">
-                <div>
-                    <label>Status *</label>
-                    <select name="status" id="modalStatus" required>
-                        <option value="">Select status</option>
-                        <option value="present">Present</option>
-                        <option value="absent">Absent</option>
-                        <option value="late">Late</option>
-                        <option value="half_day">Half Day</option>
-                        <option value="on_leave">On Leave</option>
-                    </select>
-                </div>
-                <div class="modal-row">
-                    <div>
-                        <label>Time In</label>
-                        <input type="time" name="time_in" id="modalTimeIn">
-                    </div>
-                    <div>
-                        <label>Time Out</label>
-                        <input type="time" name="time_out" id="modalTimeOut">
-                    </div>
-                </div>
-                <div>
-                    <label>Notes</label>
-                    <input type="text" name="notes" id="modalNotes" maxlength="500" placeholder="Optional">
-                </div>
+            <div class="att-form-group">
+                <label for="employee_id">Employee ID</label>
+                <input
+                    type="text"
+                    id="employee_id"
+                    name="employee_id"
+                    placeholder="e.g. 001"
+                    value="{{ old('employee_id') }}"
+                    autocomplete="off"
+                    autofocus
+                />
             </div>
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="btn-save">Save</button>
-            </div>
+            <button type="submit" class="btn-att-clock">
+                Time In / Time Out
+            </button>
         </form>
     </div>
 </div>
 
 <script>
-function openModal(btn) {
-    document.getElementById('modalTitle').textContent = 'Mark Attendance — ' + btn.dataset.name;
-    document.getElementById('modalEmployeeId').value = btn.dataset.id;
-    document.getElementById('modalStatus').value     = btn.dataset.status || '';
-    document.getElementById('modalTimeIn').value     = btn.dataset.timeIn  || '';
-    document.getElementById('modalTimeOut').value    = btn.dataset.timeOut || '';
-    document.getElementById('modalNotes').value      = btn.dataset.notes   || '';
-    document.getElementById('attendanceModal').classList.add('open');
-}
-function closeModal() {
-    document.getElementById('attendanceModal').classList.remove('open');
-}
-document.getElementById('attendanceModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-});
+    const modal = document.getElementById('clockModal');
+    if (modal) {
+        setTimeout(() => {
+            modal.style.transition = 'opacity .4s ease';
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 400);
+        }, 5000);
+    }
 </script>
 @endsection

@@ -14,7 +14,7 @@ class PublicAttendanceController extends Controller
      */
     public function index()
     {
-        return view('attendance.clock');
+        return view('admin.attendance.index');
     }
 
     /**

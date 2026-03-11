@@ -1082,7 +1082,6 @@
                     <h6>Staff Portal</h6>
                     <ul>
                         <li><a href="{{ route('login') }}">Login</a></li>
-                        <li><a href="{{ route('attendance') }}">Employee Attendance</a></li>
                     </ul>
                     <h6 class="mt-3">Address</h6>
                     <p style="font-size:.82rem; color:rgba(255,255,255,.55); line-height:1.7;">

@@ -16,6 +16,7 @@ use App\Http\Controllers\TemperatureMonitoringController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicAttendanceController;
 use App\Http\Controllers\Admin\PayrollController;
+use App\Http\Controllers\Admin\AttendanceController;
 
 // Public routes
 
@@ -69,6 +70,10 @@ Route::middleware(['auth'])->group(function () {
 // Admin-only routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // Attendance
+    Route::get('/admin/attendance', [AttendanceController::class, 'index'])->name('admin.attendance.index');
+    Route::post('/admin/attendance/mark', [AttendanceController::class, 'mark'])->name('admin.attendance.mark');
+
     // Payroll
     Route::get('/admin/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
     Route::get('/admin/payroll/{employee}', [PayrollController::class, 'employeeDetail'])->name('admin.payroll.detail');

@@ -210,7 +210,7 @@ class InventoryController extends Controller
         // Apply sorting
         $query->orderBy($sortColumn, $sortDirection);
 
-        $inventory = $query->paginate(20);
+        $inventory = $query->paginate(15);
 
         return view('warehouse.inventory.index', compact('inventory'));
     }
@@ -256,7 +256,7 @@ class InventoryController extends Controller
         // Apply sorting
         $query->orderBy($sortColumn, $sortDirection);
 
-        $inventory = $query->paginate(20);
+        $inventory = $query->paginate(15);
 
         return view('warehouse.temperature.index', compact('inventory'));
     }
@@ -302,7 +302,7 @@ class InventoryController extends Controller
         // Apply sorting
         $query->orderBy($sortColumn, $sortDirection);
 
-        $inventory = $query->paginate(20);
+        $inventory = $query->paginate(15);
 
         return view('warehouse.payment.index', compact('inventory'));
     }

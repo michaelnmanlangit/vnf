@@ -57,7 +57,7 @@ class EmployeeController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $employees = $query->paginate(20);
+        $employees = $query->paginate(15);
         $departments = ['production', 'warehouse', 'delivery'];
         $statuses = ['active', 'inactive', 'on_leave'];
 

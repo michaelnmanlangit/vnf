@@ -34,9 +34,9 @@
         }
 
         /* Scrollbar */
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 4px; }
+        .sidebar::-webkit-scrollbar, .sidebar .sidebar-menu::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track, .sidebar .sidebar-menu::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb, .sidebar .sidebar-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 4px; }
 
         /* Section labels */
         .menu-section-title {
@@ -105,16 +105,119 @@
             font-weight: 600;
         }
 
+        /* ── Sidebar Collapse ── */
+        .sidebar {
+            width: 234px !important; /* 10% narrower than compiled 260px */
+            transition: width 0.25s ease;
+            overflow-x: hidden;   /* clip only horizontally — restores compiled overflow-y:auto */
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        /* Adjust main content for new sidebar width */
+        .main-content {
+            margin-left: 234px !important;
+            width: calc(100% - 234px) !important;
+            max-width: calc(100vw - 234px) !important;
+        }
+        /* Make the nav area scrollable and fill remaining height */
+        .sidebar .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .sidebar.collapsed { width: 64px !important; }
+        .sidebar.collapsed .menu-label,
+        .sidebar.collapsed .menu-section-title,
+        .sidebar.collapsed .sidebar-logo-text,
+        .sidebar.collapsed .menu-chevron,
+        .sidebar.collapsed .menu-submenu { display: none !important; }
+        /* Center logo icon in header */
+        .sidebar.collapsed .sidebar-header {
+            padding: .75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .sidebar.collapsed .sidebar-header > div {
+            gap: 0 !important;
+            justify-content: center !important;
+        }
+        /* Remove all padding so icon sits dead-center */
+        .sidebar.collapsed .menu-item,
+        .sidebar.collapsed .menu-dropdown-toggle {
+            font-size: 0 !important;
+            justify-content: center !important;
+            padding: .875rem 0 !important;
+        }
+        .sidebar.collapsed .menu-item:hover,
+        .sidebar.collapsed .menu-dropdown-toggle:hover {
+            padding: .875rem 0 !important;
+        }
+        /* Keep icon visible — clear the right-margin so it centres exactly */
+        .sidebar.collapsed .menu-icon {
+            font-size: 1rem !important;
+            width: 20px !important;
+            height: 20px !important;
+            margin-right: 0 !important;
+        }
+        /* Shift the main area — all three properties from compiled CSS must be overridden */
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 64px !important;
+            width: calc(100% - 64px) !important;
+            max-width: calc(100vw - 64px) !important;
+        }
+        .main-content { transition: margin-left 0.25s ease, width 0.25s ease, max-width 0.25s ease; }
+        .sidebar-toggle-footer {
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255,255,255,.2);
+            background: rgba(30, 59, 168, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .sidebar-toggle {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .65rem 1.5rem;
+            width: 100%;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,.82);
+            cursor: pointer;
+            font-size: .875rem;
+            transition: background .2s, color .2s;
+        }
+        .sidebar-toggle:hover { background: rgba(255,255,255,.13); color: #fff; }
+        .sidebar.collapsed .sidebar-toggle { justify-content: center; padding: .65rem 0; gap: 0; }
+        .sidebar-toggle-icon { flex-shrink: 0; width: 18px; height: 18px; transition: transform .25s; }
+        .sidebar.collapsed .sidebar-toggle-icon { transform: rotate(180deg); }
+        .toggle-label { font-size: .875rem; }
+        .sidebar.collapsed .toggle-label { display: none; }
+
+        /* ── No-flash pre-collapsed state (applied before first paint via html class) ── */
+        html.sidebar-pre-collapsed .sidebar {
+            width: 64px !important;
+            transition: none !important;
+            overflow-x: hidden !important;
+        }
+        html.sidebar-pre-collapsed .main-content {
+            margin-left: 64px !important;
+            width: calc(100% - 64px) !important;
+            max-width: calc(100vw - 64px) !important;
+            transition: none !important;
+        }
+
     </style>
+    <script>if(localStorage.getItem('sidebarCollapsed')==='true')document.documentElement.classList.add('sidebar-pre-collapsed');</script>
     <script src="/build/assets/admin-DLbE0-9j.js" defer></script>
     @yield('styles')
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar"><script>if(localStorage.getItem('sidebarCollapsed')==='true')document.currentScript.parentElement.classList.add('collapsed');</script>
         <div class="sidebar-header">
             <div style="display:flex;align-items:center;gap:0.75rem;">
                 <img src="{{ asset('logo.png') }}" alt="V&F Logo" style="width:40px;height:40px;flex-shrink:0;">
-                <h2 style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
+                <h2 class="sidebar-logo-text" style="margin:0;font-size:1.1rem;line-height:1.3;">V&F Ice Plant<br><span style="font-size:0.8rem;font-weight:400;">and Cold Storage Inc.</span></h2>
             </div>
         </div>
         <nav class="sidebar-menu">
@@ -201,7 +304,7 @@
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
-                    <span style="flex:1;text-align:left;">Reports</span>
+                    <span class="menu-label" style="flex:1;text-align:left;">Reports</span>
                     <svg class="menu-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -234,6 +337,14 @@
             </div>
 
         </nav>
+        <div class="sidebar-toggle-footer">
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">
+                <svg class="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span class="toggle-label">Collapse</span>
+            </button>
+        </div>
     </div>
 
     <div class="main-content">
@@ -337,6 +448,24 @@
             allowInput: true,
         });
     });
+    </script>
+    <script>
+    (function () {
+        var sidebar = document.querySelector('.sidebar');
+        var btn     = document.getElementById('sidebarToggle');
+        if (!sidebar || !btn) return;
+        // Collapsed class already applied synchronously — just wire the toggle button
+        btn.addEventListener('click', function () {
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+        // Re-enable transitions after first paint
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                document.documentElement.classList.remove('sidebar-pre-collapsed');
+            });
+        });
+    })();
     </script>
 </body>
 </html>

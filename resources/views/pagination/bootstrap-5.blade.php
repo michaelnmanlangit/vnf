@@ -5,15 +5,15 @@
     </div>
     
     <nav aria-label="Page navigation">
-        <ul class="pagination" style="justify-content:center;">
+        <ul style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;align-items:center;list-style:none;padding:0;margin:0;">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <li class="disabled">
-                    <span>&laquo; Previous</span>
+                <li style="display:inline-flex;">
+                    <span style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#adb5bd;background:#fff;cursor:default;">&laquo; Previous</span>
                 </li>
             @else
-                <li>
-                    <a href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
+                <li style="display:inline-flex;">
+                    <a href="{{ $paginator->previousPageUrl() }}" rel="prev" style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#495057;background:#fff;text-decoration:none;transition:all .2s;">&laquo; Previous</a>
                 </li>
             @endif
 
@@ -21,8 +21,8 @@
             @foreach ($elements as $element)
                 {{-- "Three Dots" Separator --}}
                 @if (is_string($element))
-                    <li class="disabled">
-                        <span>{{ $element }}</span>
+                    <li style="display:inline-flex;">
+                        <span style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#adb5bd;background:#fff;">{{ $element }}</span>
                     </li>
                 @endif
 
@@ -30,12 +30,12 @@
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <li class="active">
-                                <span>{{ $page }}</span>
+                            <li style="display:inline-flex;">
+                                <span style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #4169E1;border-radius:6px;font-size:.9rem;font-weight:600;color:#fff;background:#4169E1;min-width:38px;">{{ $page }}</span>
                             </li>
                         @else
-                            <li>
-                                <a href="{{ $url }}">{{ $page }}</a>
+                            <li style="display:inline-flex;">
+                                <a href="{{ $url }}" style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#495057;background:#fff;text-decoration:none;min-width:38px;transition:all .2s;">{{ $page }}</a>
                             </li>
                         @endif
                     @endforeach
@@ -44,12 +44,12 @@
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
-                <li>
-                    <a href="{{ $paginator->nextPageUrl() }}" rel="next">Next &raquo;</a>
+                <li style="display:inline-flex;">
+                    <a href="{{ $paginator->nextPageUrl() }}" rel="next" style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#495057;background:#fff;text-decoration:none;transition:all .2s;">Next &raquo;</a>
                 </li>
             @else
-                <li class="disabled">
-                    <span>Next &raquo;</span>
+                <li style="display:inline-flex;">
+                    <span style="display:flex;align-items:center;justify-content:center;padding:.5rem .85rem;border:1px solid #dee2e6;border-radius:6px;font-size:.9rem;color:#adb5bd;background:#fff;cursor:default;">Next &raquo;</span>
                 </li>
             @endif
         </ul>

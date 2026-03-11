@@ -422,7 +422,7 @@ class CustomerShopController extends Controller
         $orders = Order::where('customer_id', Auth::id())
             ->with('items')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(15);
 
         $customer = Customer::where('user_id', Auth::id())->first();
 

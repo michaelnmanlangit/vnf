@@ -278,9 +278,11 @@
                 </div>
             @endforeach
 
+            @if($orders->hasPages())
             <div class="d-flex justify-content-center">
                 {{ $orders->appends(request()->query())->render('pagination.bootstrap-5') }}
             </div>
+            @endif
         @else
             <div class="empty-orders">
                 <i class="fas fa-box"></i>

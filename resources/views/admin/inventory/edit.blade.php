@@ -205,6 +205,8 @@
                         <option value="liter" {{ old('unit', $inventory->unit) == 'liter' ? 'selected' : '' }}>Liters (L)</option>
                         <option value="pieces" {{ old('unit', $inventory->unit) == 'pieces' ? 'selected' : '' }}>Pieces</option>
                         <option value="boxes" {{ old('unit', $inventory->unit) == 'boxes' ? 'selected' : '' }}>Boxes</option>
+                        <option value="sack" {{ old('unit', $inventory->unit) == 'sack' ? 'selected' : '' }}>Sack</option>
+                        <option value="plastic" {{ old('unit', $inventory->unit) == 'plastic' ? 'selected' : '' }}>Plastic</option>
                     </select>
                     @error('unit')<span class="error">{{ $message }}</span>@enderror
                 </div>

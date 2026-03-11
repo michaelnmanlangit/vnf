@@ -198,6 +198,8 @@
                         <option value="liter" {{ old('unit') == 'liter' ? 'selected' : '' }}>Liters (L)</option>
                         <option value="pieces" {{ old('unit') == 'pieces' ? 'selected' : '' }}>Pieces</option>
                         <option value="boxes" {{ old('unit') == 'boxes' ? 'selected' : '' }}>Boxes</option>
+                        <option value="sack" {{ old('unit') == 'sack' ? 'selected' : '' }}>Sack</option>
+                        <option value="plastic" {{ old('unit') == 'plastic' ? 'selected' : '' }}>Plastic</option>
                     </select>
                     @error('unit')<span class="error">{{ $message }}</span>@enderror
                 </div>
